@@ -1,1 +1,0 @@
-click(Region(Region(602,575,5,4))#23
