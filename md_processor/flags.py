@@ -3,7 +3,8 @@ class GlobalFlags:
         self.flags = {
             'flag_one_by_one': False,
             'verbose': False,
-            'feature_x_enabled': True,
+            'debug': True,
+            'TR_MODE': False,
         }
 
     def set_flag(self, name, value):
@@ -13,6 +14,8 @@ class GlobalFlags:
             raise KeyError(f"Flag '{name}' not found.")
 
     def get_flag(self, name):
+        print(f"Getting flag '{name}'")
+        print(f"Flags: {self.flags}")
         return self.flags.get(name, None)
 
     def toggle_flag(self, name):
@@ -20,10 +23,12 @@ class GlobalFlags:
             self.flags[name] = not self.flags[name]
         else:
             raise KeyError(f"Flag '{name}' not found.")
+
+
 if __name__ == '__main__':
     # Usage
     flags = GlobalFlags()
     flags.set_flag('debug', True)
-    print(flags.get_flag('debug')) # Output: True
+    print(flags.get_flag('debug'))  # Output: True
     flags.toggle_flag('debug')
-    print(flags.get_flag('debug')) # Output: False
+    print(flags.get_flag('debug'))  # Output: False
