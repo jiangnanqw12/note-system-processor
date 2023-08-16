@@ -1956,19 +1956,46 @@ def rename_folders(path=None, zfill_num=3):
         path = os.getcwd()
     import flags
 
+    Flags = flags.GlobalFlags()
+    Flags.set_flag('TR_MODE', 1)
+    TR_MODE = Flags.get_flag('TR_MODE')
     files = [f for f in os.listdir(
         path) if os.path.isfile(os.path.join(path, f))]
-    r"How Ultrasonic Energy is Created _ Science of Energy Ep. 1 _ Ethicon-Bd2xISKVyFc.mp4"
+    # r"How Ultrasonic Energy is Created _ Science of Energy Ep. 1 _ Ethicon-Bd2xISKVyFc.mp4"
     reg_sring_vid = [
         r'(.+) _ Science of Energy Ep\. (\d{1,2}) _ Ethicon.+\.mp4', '']
+    reg_sring_sub = [
+        r"(.+) _ Science of Energy Ep\. (\d{1,2}) _ Ethicon.+\.en\.(srt|vtt)", r'\1']
     for file in files:
         match = re.search(reg_sring_vid[0], file)
         if match:
-            print(match.group(0))
-            print(match.group(1))
-            # file_name = re.sub(reg_sring_vid[0], reg_sring_vid[1], file)
-            # os.rename(os.path.join(path, file), os.path.join(
-            #     path, file_name))
+
+            series_num = match.group(2)
+            series_num = series_num.zfill(zfill_num)
+            reg_string_vid2 = series_num+"_"+r"\1"+".mp4"
+            if TR_MODE:
+                print("reg_string_vid2 is:", reg_string_vid2)
+            file_name = re.sub(reg_sring_vid[0], reg_string_vid2, file)
+            if TR_MODE:
+                print(file_name)
+
+            os.rename(os.path.join(path, file), os.path.join(
+                path, file_name))
+        match = re.search(reg_sring_sub[0], file)
+        if match:
+
+            series_num = match.group(2)
+            series_num = series_num.zfill(zfill_num)
+            reg_string_sub2 = series_num+"_"+r"\1"+".en."+match.group(3)
+            if TR_MODE:
+
+                print("reg_string_sub2 is:\n", reg_string_sub2)
+            file_name = re.sub(reg_sring_sub[0], reg_string_sub2, file)
+            if TR_MODE:
+                print("file_name is :\n", file_name)
+
+            os.rename(os.path.join(path, file), os.path.join(
+                path, file_name))
 
 
 def os_file_process(num=0):
