@@ -1951,12 +1951,33 @@ def zfill_folder_files(path=None, zfill_num=3):
             path, dir_name_zfilled + dir_ext))
 
 
+def rename_folders(path=None, zfill_num=3):
+    if path is None:
+        path = os.getcwd()
+    import flags
+
+    files = [f for f in os.listdir(
+        path) if os.path.isfile(os.path.join(path, f))]
+    r"How Ultrasonic Energy is Created _ Science of Energy Ep. 1 _ Ethicon-Bd2xISKVyFc.mp4"
+    reg_sring_vid = [
+        r'(.+) _ Science of Energy Ep\. (\d{1,2}) _ Ethicon.+\.mp4', '']
+    for file in files:
+        match = re.search(reg_sring_vid[0], file)
+        if match:
+            print(match.group(0))
+            print(match.group(1))
+            # file_name = re.sub(reg_sring_vid[0], reg_sring_vid[1], file)
+            # os.rename(os.path.join(path, file), os.path.join(
+            #     path, file_name))
+
+
 def os_file_process(num=0):
     operations = {
         1: get_kg_bassets_folder_keyword,
         2: add_timestamp_to_filenames,
         3: get_current_timestamp,
         4: zfill_folder_files,
+        5: rename_folders,
 
 
     }
