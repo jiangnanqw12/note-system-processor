@@ -1172,6 +1172,7 @@ def md_note_process(num=0, head_num=1):
         1: remove_back_matter_and_copy_code,
         2: degrade_markdown_by_head_number,
         3: md_helper.retrieve_document_summary_info,
+        4: md_helper.format_ocr_text,
 
     }
 
@@ -1370,7 +1371,7 @@ def init_note(current_dir=None):
             raise Exception("sub topic not found")
     # RUGUO MATCH COPY
     files_srt = [f for f in os.listdir(
-        bvids_origin_topic_path) if f.endswith('.srt')]
+        bvids_origin_topic_path) if f.endswith('.srt') or f.endswith('.vtt')]
     if TR_MODE:
         print("files_srt:", files_srt)
     reg_srt_string_current_topic = [
@@ -1962,10 +1963,11 @@ def rename_folders(path=None, zfill_num=3):
     files = [f for f in os.listdir(
         path) if os.path.isfile(os.path.join(path, f))]
     # r"How Ultrasonic Energy is Created _ Science of Energy Ep. 1 _ Ethicon-Bd2xISKVyFc.mp4"
+    r"Monopolar Electrosurgery Technology and Principles - Science of Energy Ep. 5 - E.en.srt"
     reg_sring_vid = [
-        r'(.+) _ Science of Energy Ep\. (\d{1,2}) _ Ethicon.+\.mp4', '']
+        r'(.+) - Science of Energy Ep. (\d{1,2}) -.+\.mp4', '']
     reg_sring_sub = [
-        r"(.+) _ Science of Energy Ep\. (\d{1,2}) _ Ethicon.+\.en\.(srt|vtt)", r'\1']
+        r"(.+) - Science of Energy Ep. (\d{1,2}) -.+\.en\.srt", r'\1']
     for file in files:
         match = re.search(reg_sring_vid[0], file)
         if match:
@@ -1986,7 +1988,7 @@ def rename_folders(path=None, zfill_num=3):
 
             series_num = match.group(2)
             series_num = series_num.zfill(zfill_num)
-            reg_string_sub2 = series_num+"_"+r"\1"+".en."+match.group(3)
+            reg_string_sub2 = series_num+"_"+r"\1"+r".en.srt"
             if TR_MODE:
 
                 print("reg_string_sub2 is:\n", reg_string_sub2)

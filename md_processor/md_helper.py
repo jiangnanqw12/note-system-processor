@@ -64,6 +64,25 @@ def retrieve_document_summary_info(content=None):
     pyperclip.copy(content)
 
 
+def format_ocr_text(content=None):
+    TR_mode = 1
+    if content is None:
+        content = pyperclip.paste()
+    if TR_mode:
+        print(":", repr(content))
+
+    content = content.replace('\n', ' ')
+    content = content.replace('\r', ' ')
+    if TR_mode:
+        print(repr(content))
+
+    while '  ' in content:
+        content = content.replace('  ', ' ')
+    if TR_mode:
+        print(repr(content))
+    pyperclip.copy(content)
+
+
 def main():
     content = pyperclip.paste()
     highest_level = get_highest_head_level(content)
