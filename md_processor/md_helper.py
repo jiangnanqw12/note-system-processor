@@ -65,7 +65,7 @@ def retrieve_document_summary_info(content=None):
 
 
 def format_ocr_text(content=None):
-    TR_mode = 1
+    TR_mode = False
     if content is None:
         content = pyperclip.paste()
     if TR_mode:
