@@ -235,7 +235,7 @@ def create_output_directory(root=None):
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
-    print("Created output directory %s" % output_dir)
+    #print("Created output directory %s" % output_dir)
     return output_dir
 
 
@@ -296,7 +296,7 @@ def list_time_head_textshort_text_to_vid_timeline_md(timeline_data, file, match)
 
 
 def get_list_time_head_textshort_text_4_file(file, key_word):
-    print("start to generate time line for video and head text:")
+    #print("start to generate time line for video and head text:")
 
     number_list_head_time_text_pattern_str = r'((\d{1,2}\.)|-)[ ]{1,}(.+) \((\d{1,2}):(\d{1,2})\) (.+)'
     number_list_head_time_pattern_str = r'(\d{1,2}):(\d{1,2}) - (.+)'
@@ -432,7 +432,7 @@ def merge_list_time_head_textshort_text(list_time_text, list_time_head_textshort
     return list_time_head_textshort_text
 
 
-def convert_gpt_summary_to_markdown_vid_timeline(str_url, path=None):
+def convert_gpt_summary_to_markdown_vid_timeline(str_url,TR_MODE,path=None):
 
     # str_url=r'![009_area-and-slope.mp4](file:///C:%5CBaiduSyncdisk%5Cassets%5CO%5CO1%5CO17%5CO172%5CCalculus%203Blue1Brown%5Cassets%5Cbvids%5C009_area-and-slope.mp4)'
 
@@ -442,8 +442,11 @@ def convert_gpt_summary_to_markdown_vid_timeline(str_url, path=None):
         path = os.getcwd()
     file_list = os.listdir(path)
     assets_root_path, assets_root_dir = get_assets_root_path()
+    if TR_MODE:
+        print("assets_root_path is : ", assets_root_path)
     output_dir = create_output_directory(assets_root_path)
-
+    if TR_MODE:
+        print("output_dir is : ", output_dir)
     for file in file_list:
         if file.endswith(".md"):
 
@@ -454,7 +457,8 @@ def convert_gpt_summary_to_markdown_vid_timeline(str_url, path=None):
                 list_time_head_textshort = get_list_time_head_textshort_text_4_file(
                     file, key_word)
                 # list_time_head_textshort_text_to_vid_timeline_md(list_time_head_textshort_text,file,match1)
-
+    if TR_MODE:
+        print("list_time_head_textshort is :", list_time_head_textshort)
     list_time_head_textshort_text_to_vid_timeline_md(
         list_time_head_textshort, file_summary, match1)
     convert_md_vid_link_to_html(output_dir)
@@ -1442,7 +1446,7 @@ def generate_vid_notes_with_timeline_from_text_summary():
     # output_dir, file_summary = convert_subtitle_and_summary_to_markdown_vid_timeline(
     #     md_show_url)
     output_dir, file_summary = convert_gpt_summary_to_markdown_vid_timeline(
-        md_show_url)
+        md_show_url,TR_MODE)
     file_summary_path = os.path.join(output_dir, file_summary)
     note_name = get_note_vid_name()
     if TR_MODE:
