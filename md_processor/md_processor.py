@@ -235,7 +235,7 @@ def create_output_directory(root=None):
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
-    #print("Created output directory %s" % output_dir)
+    # print("Created output directory %s" % output_dir)
     return output_dir
 
 
@@ -256,6 +256,10 @@ def list_time_head_textshort_text_to_vid_timeline_md(timeline_data, file, match)
     assets_root_path, assets_root_dir = get_assets_root_path()
     output_dir = create_output_directory(assets_root_path)
     new_file_name = create_new_file_name(file)
+    flag_write_line_by_line = True
+    if not flag_write_line_by_line:
+        content = ""
+
     with open(os.path.join(output_dir, new_file_name), 'w', encoding='UTF-8') as f:
         for i, (start_time, heading, short_text, text) in enumerate(timeline_data):
             start_time_sec = int(start_time)
@@ -266,7 +270,10 @@ def list_time_head_textshort_text_to_vid_timeline_md(timeline_data, file, match)
                 end_time_sec = int(timeline_data[i + 1][0])
 
             if heading:
-                f.write(f"## {heading}\n\n")
+                if flag_write_line_by_line:
+                    f.write(f"## {heading}\n\n")
+                else:
+                    content += f"## {heading}\n\n"
 
                 i_temp = i
                 flag_find_next_head = False
@@ -275,28 +282,44 @@ def list_time_head_textshort_text_to_vid_timeline_md(timeline_data, file, match)
                     if timeline_data[i_temp][1]:
                         end_time_sec2 = int(timeline_data[i_temp][0])
                         vid_line = f"{match.group(1)}#t={start_time_sec},{end_time_sec2}{match.group(3)}"
-                        f.write(f"{vid_line}\n\n")
+                        if flag_write_line_by_line:
+                            f.write(f"{vid_line}\n\n")
+                        else:
+                            content += f"{vid_line}\n\n"
                         flag_find_next_head = True
                         break
 
                 if not flag_find_next_head:
                     vid_line = f"{match.group(1)}#t={start_time_sec}{match.group(3)}"
-                    f.write(f"{vid_line}\n\n")
+                    if flag_write_line_by_line:
+                        f.write(f"{vid_line}\n\n")
+                    else:
+                        content += f"{vid_line}\n\n"
 
             if short_text:
-                f.write(f"- {short_text}\n\n")
-
-            if short_text or text:
-                vid_line = f"{match.group(1)}#t={start_time_sec},{end_time_sec}{match.group(3)}"
-                f.write(f"{vid_line}\n\n")
+                if flag_write_line_by_line:
+                    f.write(f"- {short_text}\n\n---\n\n\n\n")
+                else:
+                    content += f"- {short_text}\n\n---\n\n\n\n"
 
             if text:
-                f.write(f"{text}\n\n")
+                vid_line = f"{match.group(1)}#t={start_time_sec},{end_time_sec}{match.group(3)}"
+                if flag_write_line_by_line:
+                    f.write(f"{vid_line}\n\n")
+                    f.write(f"{text}\n\n")
+                else:
+                    content += f"{vid_line}\n\n"
+                    content += f"{text}\n\n"
+            if flag_write_line_by_line:
+                pass
+            else:
+                f.write(content)
+                content = ""
     return output_dir, new_file_name
 
 
 def get_list_time_head_textshort_text_4_file(file, key_word):
-    #print("start to generate time line for video and head text:")
+    # print("start to generate time line for video and head text:")
 
     number_list_head_time_text_pattern_str = r'((\d{1,2}\.)|-)[ ]{1,}(.+) \((\d{1,2}):(\d{1,2})\) (.+)'
     number_list_head_time_pattern_str = r'(\d{1,2}):(\d{1,2}) - (.+)'
@@ -432,7 +455,7 @@ def merge_list_time_head_textshort_text(list_time_text, list_time_head_textshort
     return list_time_head_textshort_text
 
 
-def convert_gpt_summary_to_markdown_vid_timeline(str_url,TR_MODE,path=None):
+def convert_gpt_summary_to_markdown_vid_timeline(str_url, TR_MODE, path=None):
 
     # str_url=r'![009_area-and-slope.mp4](file:///C:%5CBaiduSyncdisk%5Cassets%5CO%5CO1%5CO17%5CO172%5CCalculus%203Blue1Brown%5Cassets%5Cbvids%5C009_area-and-slope.mp4)'
 
@@ -1446,7 +1469,7 @@ def generate_vid_notes_with_timeline_from_text_summary():
     # output_dir, file_summary = convert_subtitle_and_summary_to_markdown_vid_timeline(
     #     md_show_url)
     output_dir, file_summary = convert_gpt_summary_to_markdown_vid_timeline(
-        md_show_url,TR_MODE)
+        md_show_url, TR_MODE)
     file_summary_path = os.path.join(output_dir, file_summary)
     note_name = get_note_vid_name()
     if TR_MODE:
