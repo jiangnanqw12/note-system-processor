@@ -298,10 +298,14 @@ def list_time_head_textshort_text_to_vid_timeline_md(timeline_data, file, match)
 
             if short_text:
                 if flag_write_line_by_line:
-                    f.write(f"- {short_text}\n\n---\n\n\n\n")
+                    f.write(f"- {short_text}\n\n")
                 else:
-                    content += f"- {short_text}\n\n---\n\n\n\n"
-
+                    content += f"- {short_text}\n\n"
+            if heading:
+                if flag_write_line_by_line:
+                    f.write(f"---\n\n\n\n")
+                else:
+                    content += f"---\n\n\n\n"
             if text:
                 vid_line = f"{match.group(1)}#t={start_time_sec},{end_time_sec}{match.group(3)}"
                 if flag_write_line_by_line:
@@ -323,7 +327,7 @@ def get_list_time_head_textshort_text_4_file(file, key_word):
 
     number_list_head_time_text_pattern_str = r'((\d{1,2}\.)|-)[ ]{1,}(.+) \((\d{1,2}):(\d{1,2})\) (.+)'
     number_list_head_time_pattern_str = r'(\d{1,2}):(\d{1,2}) - (.+)'
-
+    number_list_head_time_pattern_str2 = r'(\d{1,2}):(\d{1,2}) (.+)'
     time_text_pattern_str = r'\((\d{1,2}):(\d{1,2})\)[ ]{0,}([^\n]+)[\n]{0,}'
 
     pattern_dict = dict()
@@ -353,8 +357,18 @@ def get_list_time_head_textshort_text_4_file(file, key_word):
                         list_time_head_textshort_text.append(
                             [time_line_start_seconds, None, None, match.group(3)])
                 else:
-                    print("no match for line:", line)
-                    print(key_word)
+                    if key_word == "timestamps":
+                        match2 = re.search(
+                            number_list_head_time_pattern_str2, line)
+                        if match2:
+                            list_time_head_textshort_text.append(
+                                [time_line_start_seconds, match2.group(3), None, None])
+                        else:
+                            print("no match for line:", line)
+                            print(key_word)
+                    else:
+                        print("no match for line:", line)
+                        print(key_word)
             else:
                 raise Exception("key_word not in pattern_dict")
 
@@ -952,8 +966,10 @@ def get_bvids_origin_topic_path(BaiduSyncdisk_assets_root):
     return os.path.join(BaiduSyncdisk_assets_root, "assets", "bvids", "mc_1683793602")
 
 
-def get_current_bvid_name():
-    file = os.path.basename(os.getcwd())
+def get_current_bvid_name(path=None):
+    if path is None:
+        path = os.getcwd()
+    file = os.path.basename(path)
     return file+".mp4"
 
 
@@ -1954,8 +1970,9 @@ def generate_vid_notes_with_timeline_from_timestamps():
         # raise Exception("note not found")
         with open(os.path.join(OneDrive_KG_current_note_directory_path, note_name), "w", encoding="utf-8") as f:
             pass
-    merge_all_content_into_md_note_file(
-        note_name, file_summary_path, origin_current_vid_file_name, current_vid_md_link_content)
+    merge_all_content_into_md_note_file(note_name, file_summary_path, origin_current_vid_file_name,
+                                        current_vid_md_link_content, OneDrive_KG_current_note_directory_path)
+
     convert_md_vid_link_to_html(OneDrive_KG_current_note_directory_path)
 
 
