@@ -50,6 +50,21 @@ def downgrade_heads(content, downgrade_level):
     return '\n'.join(new_lines)
 
 
+def degrade_markdown_by_head_number(head_number):
+
+    content = pyperclip.paste()
+    TR_MODE = 1
+    highest_head_level = get_highest_head_level(content)
+    # highest_head_level=3
+    if TR_MODE:
+        print("highest_head_level: ", highest_head_level)
+        print("head_number: ", head_number)
+    if highest_head_level < head_number:
+        content = downgrade_heads(
+            content, head_number+1-highest_head_level)
+        pyperclip.copy(content)
+
+
 def retrieve_document_summary_info(content=None):
     if content is None:
 

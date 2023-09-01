@@ -1213,7 +1213,7 @@ def md_note_process(num=0, head_num=1):
     import md_helper
     operations = {
         1: remove_back_matter_and_copy_code,
-        2: degrade_markdown_by_head_number,
+        2: md_helper.degrade_markdown_by_head_number,
         3: md_helper.retrieve_document_summary_info,
         4: md_helper.format_ocr_text,
 
@@ -1230,22 +1230,6 @@ def md_note_process(num=0, head_num=1):
             print(f"{num}: {func.__name__}")
     else:
         raise ValueError("Invalid operation number.")
-
-
-def degrade_markdown_by_head_number(head_number):
-    import md_helper
-    import pyperclip
-    content = pyperclip.paste()
-    TR_MODE = 1
-    highest_head_level = md_helper.get_highest_head_level(content)
-    # highest_head_level=3
-    if TR_MODE:
-        print("highest_head_level: ", highest_head_level)
-        print("head_number: ", head_number)
-    if highest_head_level < head_number:
-        content = md_helper.downgrade_heads(
-            content, head_number+1-highest_head_level)
-        pyperclip.copy(content)
 
 
 def remove_back_matter_and_copy_code(directory_path=None):
@@ -1318,9 +1302,9 @@ def remove_wiki_equation_svg(directory_path=None):
 
 def vid_note_process(num=0):
     operations = {
-        1: init_note,
-        2: generate_vid_notes_with_timeline_from_text_summary,
-        3: generate_vid_notes_with_timeline_from_timestamps,
+        1: initialize_vid_note_file_structure,
+        2: generate_vid_note_with_timeline_from_text_summary,
+        3: generate_vid_note_with_timeline_from_timestamps,
         4: convert_md_vid_link_to_html,
         5: convert_md_vid_link_to_html_tree,
 
@@ -1337,7 +1321,7 @@ def vid_note_process(num=0):
         raise ValueError("Invalid operation number.")
 
 
-def init_note(current_dir=None):
+def initialize_vid_note_file_structure(current_dir=None):
 
     import pyperclip
     TR_MODE = 1
@@ -1466,7 +1450,7 @@ def srt_format_for_gpt_input(directory_path=None):
         reg_string_list, directory_path, files_md)
 
 
-def generate_vid_notes_with_timeline_from_text_summary():
+def generate_vid_note_with_timeline_from_text_summary():
     TR_MODE = 1
 
     origin_current_vid_file_name, current_bvid_destination_file_path, OneDrive_KG_current_note_directory_path = move_origin_vid_to_destination(
@@ -1946,7 +1930,7 @@ def convert_md_vid_link_to_html_tree(directory_path=None):
     perform_regex_replacement_on_files_tree(reg_string_list, directory_path)
 
 
-def generate_vid_notes_with_timeline_from_timestamps():
+def generate_vid_note_with_timeline_from_timestamps():
     TR_MODE = 1
 
     origin_current_vid_file_name, current_bvid_destination_file_path, OneDrive_KG_current_note_directory_path = move_origin_vid_to_destination(
@@ -1984,6 +1968,7 @@ def os_file_processor(num=0):
         3: get_current_timestamp,
         4: file_operations_utils.zfill_folder_files,
         5: file_operations_utils.rename_folders_4_mooc_b,
+        6: file_operations_utils.initialize_notes_files_structure,
 
 
     }
@@ -2077,8 +2062,8 @@ def main():
                         action='store_true', help='call html2md_tree')
     parser.add_argument('-m2hl', '--convert_md_vid_link_to_html',
                         action='store_true', help='call convert_md_vid_link_to_html')
-    parser.add_argument('-init', '--init_note',
-                        action='store_true', help='call init_note')
+    parser.add_argument('-init', '--initialize_vid_note_file_structure',
+                        action='store_true', help='call initialize_vid_note_file_structure')
     parser.add_argument('-test', '--test',
                         action='store_true', help='call test')
     parser.add_argument('-zbp', '--zhi_book_process',
@@ -2130,10 +2115,9 @@ def main():
         html2md_tree()
     elif args.convert_md_vid_link_to_html:
         convert_md_vid_link_to_html()
-    elif args.init_note:
-        init_note()
-    elif args.full_fill_vid_link_2_summary:
-        full_fill_vid_link_2_summary()
+    elif args.initialize_vid_note_file_structure:
+        initialize_vid_note_file_structure()
+
     elif args.test:
         test(args.input_int)
 
