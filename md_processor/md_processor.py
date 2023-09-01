@@ -1976,81 +1976,14 @@ def generate_vid_notes_with_timeline_from_timestamps():
     convert_md_vid_link_to_html(OneDrive_KG_current_note_directory_path)
 
 
-def zfill_folder_files(path=None, zfill_num=3):
-    if path is None:
-        path = os.getcwd()
-
-    files = [f for f in os.listdir(
-        path) if os.path.isfile(os.path.join(path, f))]
-    for file in files:
-        file_name, file_ext = os.path.splitext(file)
-        file_name_zfilled = file_name.zfill(zfill_num)
-        os.rename(os.path.join(path, file), os.path.join(
-            path, file_name_zfilled + file_ext))
-    dirs = [f for f in os.listdir(
-        path) if os.path.isdir(os.path.join(path, f))]
-    for dir in dirs:
-        dir_name, dir_ext = os.path.splitext(dir)
-        dir_name_zfilled = dir_name.zfill(zfill_num)
-        os.rename(os.path.join(path, dir), os.path.join(
-            path, dir_name_zfilled + dir_ext))
-
-
-def rename_folders(path=None, zfill_num=3):
-    if path is None:
-        path = os.getcwd()
-    import flags
-
-    Flags = flags.GlobalFlags()
-    Flags.set_flag('TR_MODE', 1)
-    TR_MODE = Flags.get_flag('TR_MODE')
-    files = [f for f in os.listdir(
-        path) if os.path.isfile(os.path.join(path, f))]
-    # r"How Ultrasonic Energy is Created _ Science of Energy Ep. 1 _ Ethicon-Bd2xISKVyFc.mp4"
-    r"Monopolar Electrosurgery Technology and Principles - Science of Energy Ep. 5 - E.en.srt"
-    reg_sring_vid = [
-        r'(.+) - Science of Energy Ep. (\d{1,2}) -.+\.mp4', '']
-    reg_sring_sub = [
-        r"(.+) - Science of Energy Ep. (\d{1,2}) -.+\.en\.srt", r'\1']
-    for file in files:
-        match = re.search(reg_sring_vid[0], file)
-        if match:
-
-            series_num = match.group(2)
-            series_num = series_num.zfill(zfill_num)
-            reg_string_vid2 = series_num+"_"+r"\1"+".mp4"
-            if TR_MODE:
-                print("reg_string_vid2 is:", reg_string_vid2)
-            file_name = re.sub(reg_sring_vid[0], reg_string_vid2, file)
-            if TR_MODE:
-                print(file_name)
-
-            os.rename(os.path.join(path, file), os.path.join(
-                path, file_name))
-        match = re.search(reg_sring_sub[0], file)
-        if match:
-
-            series_num = match.group(2)
-            series_num = series_num.zfill(zfill_num)
-            reg_string_sub2 = series_num+"_"+r"\1"+r".en.srt"
-            if TR_MODE:
-
-                print("reg_string_sub2 is:\n", reg_string_sub2)
-            file_name = re.sub(reg_sring_sub[0], reg_string_sub2, file)
-            if TR_MODE:
-                print("file_name is :\n", file_name)
-
-            os.rename(os.path.join(path, file), os.path.join(
-                path, file_name))
-
-
-def os_file_process(num=0):
+def os_file_processor(num=0):
+    import file_operations_utils
     operations = {
         1: get_kg_bassets_folder_keyword,
         2: add_timestamp_to_filenames,
         3: get_current_timestamp,
-        4: zfill_folder_files,
-        5: rename_folders,
+        4: file_operations_utils.zfill_folder_files,
+        5: file_operations_utils.rename_folders_4_mooc_b,
 
 
     }
@@ -2150,8 +2083,8 @@ def main():
                         action='store_true', help='call test')
     parser.add_argument('-zbp', '--zhi_book_process',
                         action='store_true', help='call zhi_book_process')
-    parser.add_argument('-osf', '--os_file_process',
-                        action='store_true', help='call os_file_process')
+    parser.add_argument('-osf', '--os_file_processor',
+                        action='store_true', help='call os_file_processor')
     parser.add_argument('-vls', '--full_fill_vid_link_2_summary',
                         action='store_true', help='call full_fill_vid_link_2_summary')
     parser.add_argument('-gp', '--get_prompts',
@@ -2206,8 +2139,8 @@ def main():
 
     elif args.zhi_book_process:
         zhi_book_process(args.input_int)
-    elif args.os_file_process:
-        os_file_process(args.input_int)
+    elif args.os_file_processor:
+        os_file_processor(args.input_int)
     elif args.get_prompts:
         get_prompts(args.input_int)
     else:
