@@ -1,6 +1,8 @@
 import pyperclip
-
+import os
 import re
+
+import time
 
 
 def get_highest_head_level(content):
@@ -96,6 +98,39 @@ def format_ocr_text(content=None):
     if TR_mode:
         print(repr(content))
     pyperclip.copy(content)
+
+
+def create_file_based_on_content(content=None, path=None):
+    """
+    This function creates a file based on the content provided.
+
+    Parameters:
+    content (str): The content to be written to the file. If not provided, it will use the content from the clipboard.
+    path (str): The path where the file will be created. If not provided, it will use the current working directory.
+
+    Raises:
+    ValueError: If the length of the content is less than 1 or greater than 100.
+    TypeError: If the content contains more than 2 newline characters.
+    """
+
+    if content is None:
+        content = pyperclip.paste()
+    if path is None:
+        path = os.getcwd()
+
+    if len(content) > 100:
+        raise ValueError("Content length exceeds 100 characters")
+    if len(content) < 1:
+        raise ValueError("Content length is less than 1 character")
+
+    if content.count("\n") > 2:
+        raise TypeError("Content contains more than 2 newline characters")
+
+    timestamp = str(int(time.time()))
+    new_name = content.strip() + "_" + timestamp + ".md"
+
+    with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:
+        file.write(content)
 
 
 def main():
