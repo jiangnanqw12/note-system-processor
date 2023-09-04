@@ -25,6 +25,16 @@ class GlobalFlags:
             raise KeyError(f"Flag '{name}' not found.")
 
 
+def get_flag_one_by_one(TR_MODE=0):
+    flag_one_by_one = True
+    return flag_one_by_one
+
+
+def get_flag_search_sub_topic1_in_bvids_origin_topic_path(TR_MODE=0):
+    flag_search_sub_topic1 = False
+    return flag_search_sub_topic1
+
+
 if __name__ == '__main__':
     # Usage
     flags = GlobalFlags()
