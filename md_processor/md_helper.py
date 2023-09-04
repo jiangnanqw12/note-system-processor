@@ -125,12 +125,15 @@ def create_file_based_on_content(content=None, path=None):
 
     if content.count("\n") > 2:
         raise TypeError("Content contains more than 2 newline characters")
-
+    content = content.replace('\n', ' ')
+    content = content.replace('\r', ' ')
+    reg = [r"\s{2,}", r' ']
+    content = re.sub(reg[0], reg[1], content)
     timestamp = str(int(time.time()))
     new_name = content.strip() + "_" + timestamp + ".md"
 
     with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:
-        file.write(content)
+        file.write("")
 
 
 def main():

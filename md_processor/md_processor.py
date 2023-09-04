@@ -851,7 +851,7 @@ def md_note_process(num=0, head_num=1):
         2: md_helper.degrade_markdown_by_head_number,
         3: md_helper.retrieve_document_summary_info,
         4: md_helper.format_ocr_text,
-        5: md_helper.create_file_base_on_content
+        5: md_helper.create_file_based_on_content,
 
     }
 
