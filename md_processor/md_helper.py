@@ -136,6 +136,47 @@ def create_file_based_on_content(content=None, path=None):
         file.write("")
 
 
+def create_excalidraw_file_based_on_content(content=None, path=None):
+    if content is None:
+        content = pyperclip.paste()
+    if path is None:
+        path = os.getcwd()
+
+    if len(content) > 100:
+        raise ValueError("Content length exceeds 100 characters")
+    if len(content) < 1:
+        raise ValueError("Content length is less than 1 character")
+
+    if content.count("\n") > 2:
+        raise TypeError("Content contains more than 2 newline characters")
+    content = content.replace('\n', ' ')
+    content = content.replace('\r', ' ')
+    reg = [r"\s{2,}", r' ']
+    content = re.sub(reg[0], reg[1], content)
+    timestamp = str(int(time.time()))
+    new_name = content.strip() + "_" + timestamp+".excalidraw" + ".md"
+    write_string = """
+---
+
+excalidraw-plugin: parsed
+tags: [excalidraw]
+
+---
+==⚠  Switch to EXCALIDRAW VIEW in the MORE OPTIONS menu of this document. ⚠==
+
+
+%%
+# Drawing
+```json
+{"type":"excalidraw","version":2,"source":"https://github.com/zsviczian/obsidian-excalidraw-plugin/releases/tag/1.9.19","elements":[],"appState":{"gridSize":null,"viewBackgroundColor":"#ffffff"}}
+```
+%%
+"""
+    with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:
+
+        file.write(write_string)
+
+
 def main():
     content = pyperclip.paste()
     highest_level = get_highest_head_level(content)
