@@ -4,6 +4,7 @@ import file_operations_utils
 import pyperclip
 import flags_utils
 import shutil
+import prompts
 
 
 def srt_format_4_gpt(directory_path=None):
@@ -26,10 +27,15 @@ def srt_format_4_gpt(directory_path=None):
 
             # if line_temp != "":
             #     content += "\n"
-        reg_srt_2_gpt = [
-            r'\d{1,3}\d{2}:(\d{2}:\d{2}),\d{3} --> \d{1,2}:\d{2}:\d{2},\d{3}', r'\n($1)\n']
-        with open(os.path.join(directory_path, "output_"+file), "w", encoding="utf-8") as f1:
+        reg_srt_2_gpt1 = [
+            r'\d{1,3}\d{2}:(\d{2}:\d{2}),\d{3} --> \d{1,2}:\d{2}:\d{2},\d{3}', r'\n(\1) ']
+        reg_srt_2_gpt = reg_srt_2_gpt1
+        content = re.sub(reg_srt_2_gpt[0], reg_srt_2_gpt[1], content)
+        with open(os.path.join(directory_path, file), "w", encoding="utf-8") as f1:
             f1.write(content)
+    if files_srt != []:
+        print(files_srt)
+        prompts.video_summarization_expert_one(content)
 
 
 def vtt_format_4_gpt(directory_path=None):
@@ -52,6 +58,7 @@ def vtt_format_4_gpt(directory_path=None):
 
             # if line_temp != "":
             #     content += "\n"
+        # replace time
         reg_vtt_2_gpt1 = [
             r'\d{2}:(\d{2}:\d{2}).\d{3} --> \d{1,2}:\d{2}:\d{2}.\d{3}', r'\n(\1) ']
 
@@ -60,41 +67,45 @@ def vtt_format_4_gpt(directory_path=None):
         reg_vtt_2_gpt2 = [
             r'WEBVTTKind:.+Language:.+\n', r'']
         reg_vtt_2_gpt = reg_vtt_2_gpt2
-        reg_vtt_2_gpt3=[r"(\d{2}:|)(\d{2}:\d{2})(.\d{3}|)",r"\n\1 \2 \3\n"]
+        reg_vtt_2_gpt3 = [r"(\d{2}:|)(\d{2}:\d{2})(.\d{3}|)", r"\n\1 \2 \3\n"]
         content = re.sub(reg_vtt_2_gpt[0], reg_vtt_2_gpt[1], content)
-        with open(os.path.join(directory_path, "output_"+file), "w", encoding="utf-8") as f1:
+        with open(os.path.join(directory_path, file), "w", encoding="utf-8") as f1:
             f1.write(content)
+    if files_srt != []:
+        print(files_srt)
+        prompts.video_summarization_expert_one(content)
 
 
-def srt_format_for_gpt_input(directory_path=None):
+def subtitles_format_for_gpt_input(directory_path=None):
     if directory_path is None:
         directory_path = os.getcwd()
+    vtt_format_4_gpt(directory_path)
+    srt_format_4_gpt(directory_path)
+    # files_md = [f for f in os.listdir(directory_path) if f.endswith('.md')]
 
-    files_md = [f for f in os.listdir(directory_path) if f.endswith('.md')]
+    # reg_string_list = []
 
-    reg_string_list = []
-
-    reg_srt_time = [
-        r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n']
-    for file in files_md:
-        with open(os.path.join(directory_path, file), "r", encoding="utf-8") as f1:
-            lines = f1.readlines()
-        for i, line in enumerate(lines):
-            line = line.strip()
-    r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)\n(.+)\n\n'
-    reg_string1 = [
-        r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)\n(.+)\n\n', r"[[\1],[\2],[\3]]"]
-    reg_string_list.extend([reg_string1])
-    reg_string2 = [
-        r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)\n(.+)', r"[[\1],[\2],[\3]]"]
-    reg_string_list.extend([reg_string2])
-    reg_string2 = [
-        r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)', r"[[\1],[\2]]"]
-    reg_string_list.extend([reg_string2])
-    reg_string3 = [r'\n\n', r"\n"]
-    reg_string_list.extend([reg_string3])
-    file_operations_utils.perform_regex_replacement_on_files(
-        reg_string_list, directory_path, files_md)
+    # reg_srt_time = [
+    #     r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n']
+    # for file in files_md:
+    #     with open(os.path.join(directory_path, file), "r", encoding="utf-8") as f1:
+    #         lines = f1.readlines()
+    #     for i, line in enumerate(lines):
+    #         line = line.strip()
+    # r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)\n(.+)\n\n'
+    # reg_string1 = [
+    #     r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)\n(.+)\n\n', r"[[\1],[\2],[\3]]"]
+    # reg_string_list.extend([reg_string1])
+    # reg_string2 = [
+    #     r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)\n(.+)', r"[[\1],[\2],[\3]]"]
+    # reg_string_list.extend([reg_string2])
+    # reg_string2 = [
+    #     r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)', r"[[\1],[\2]]"]
+    # reg_string_list.extend([reg_string2])
+    # reg_string3 = [r'\n\n', r"\n"]
+    # reg_string_list.extend([reg_string3])
+    # file_operations_utils.perform_regex_replacement_on_files(
+    #     reg_string_list, directory_path, files_md)
 
 
 def initialize_vid_note_file_structure(current_dir=None):
@@ -182,7 +193,7 @@ def initialize_vid_note_file_structure(current_dir=None):
     if TR_MODE:
         print("files_subtitle:", files_subtitle)
     reg_sub_string_current_topic = [
-        r'(\d{1,3}_|)'+current_topic+r'(\.en|\.eng|\.zh|\.cn|\.zho|\.chi|\.zh-Hans|\.zh-Hant|)\.(srt|vtt)', r'']
+        r'(\d{1,3}_|)'+current_topic+r'(\.en|\.eng|\.zh|\.cn|\.zho|\.chi|\.zh-Hans|\.zh-Hant|)(\.srt|\.vtt)', r'']
 
     flag_one_by_one = flags_utils.get_flag_one_by_one()
     for file_srt in files_subtitle:
@@ -193,7 +204,7 @@ def initialize_vid_note_file_structure(current_dir=None):
             flag_find_match = True
             if ((match.group(2) == ".en") or (match.group(2) == "")):
                 # copy srt to note_assets_dir_path
-                new_srt_name = note_file[:-3]+match.group(2)+".md"
+                new_srt_name = note_file[:-3]+match.group(2)+match.group(3)
                 src_srt_file_path = os.path.join(
                     bvids_origin_topic_path, file_srt)
                 des_srt_file_path = os.path.join(
@@ -202,13 +213,14 @@ def initialize_vid_note_file_structure(current_dir=None):
     if not flag_find_match:
         if flag_one_by_one:
             file_srt = files_subtitle[0]
+
             src_srt_file_path = os.path.join(
                 bvids_origin_topic_path, file_srt)
             des_srt_file_path = os.path.join(
-                note_assets_dir_path, file_srt[:-4]+".md")
+                note_assets_dir_path, file_srt)
             shutil.copy(src_srt_file_path, des_srt_file_path)
 
-    srt_format_for_gpt_input(note_assets_dir_path)
+    subtitles_format_for_gpt_input(note_assets_dir_path)
     # todo generate prompt
 
 
@@ -389,15 +401,8 @@ def convert_chatgpt_summary_text_to_one_line_summary(directory_path=None):
 
     reg_string_list = []
     reg_string1 = [
-        r'Section \d{1,2}: (.+)\n{1,2}(Start|Start Timestamp): (\d{1,2}:\d{1,2})\nSummary(: |:\n)(.+)', r"- \1 (\3) \5"]
-    reg_string_list.extend([reg_string1])
-    reg_string2 = [
-        r'Title: (.+)\nStart Timestamp: (\d{1,2}:\d{1,2})\nSummary(: |:\n)(.+)', r"- \1 (\2) \4"]
-    reg_string_list.extend([reg_string2])
-    reg_string2 = [
-        r'Title: (.+)\nStart Timestamp: \d{1,2}:(\d{1,2}:\d{1,2}),\d{1,3}\nSummary(: |:\n)(.+)', r"- \1 (\2) \4"]
-    reg_string_list.extend([reg_string2])
-
+        r'(Section \d{1,2}: |Title: )(.+)\n{1,2}(Start|Start Timestamp): (|\()(\d{1,2}:\d{1,2})(|\))\n{1,2}Summary(: |:\n)(.+)', r"- \2 (\5) \8"]
+    reg_string_list.append(reg_string1)
     file_operations_utils.perform_regex_replacement_on_files(
         reg_string_list, directory_path, files_md)
 
