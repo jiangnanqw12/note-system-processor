@@ -294,17 +294,17 @@ def move_origin_vid_to_destination(TR_MODE=0):
             origin_current_vid_file_name = vid_name_origin
             os.rename(os.path.join(bvids_origin_topic_path,
                       vid_name_origin), current_bvid_destination_file_path)
-        reg_string_sub = r"^"+vid_name_origin[:-4]+r"(\..+|)(\.srt|\.vtt)$"
-        files_sub = [f for f in os.listdir(bvids_origin_topic_path) if os.path.isfile(
-            os.path.join(bvids_origin_topic_path, f)) and (f.endswith(".srt") or f.endswith(".vtt"))]
+            reg_string_sub = r"^"+vid_name_origin[:-4]+r"(\..+|)(\.srt|\.vtt)$"
+            files_sub = [f for f in os.listdir(bvids_origin_topic_path) if os.path.isfile(
+                os.path.join(bvids_origin_topic_path, f)) and (f.endswith(".srt") or f.endswith(".vtt"))]
 
-        for file_sub in files_sub:
-            match = re.search(reg_string_sub, file_sub)
+            for file_sub in files_sub:
+                match = re.search(reg_string_sub, file_sub)
 
-            if match:
+                if match:
 
-                os.rename(os.path.join(
-                    bvids_origin_topic_path, file_sub), os.path.join(bvids_destination_directory_path, file_sub))
+                    os.rename(os.path.join(
+                        bvids_origin_topic_path, file_sub), os.path.join(bvids_destination_directory_path, file_sub))
 
         # current_bsrt_name = current_bvid_name[:-4]+".srt"
         # if TR_MODE:
