@@ -14,19 +14,13 @@ def srt_format_4_gpt(directory_path=None):
     for file in files_srt:
         with open(os.path.join(directory_path, file), "r", encoding="utf-8") as f1:
             lines = f1.readlines()
-        lines_temp = []
-        for line in lines:
-            # print(line.strip())
-            lines_temp.append(line.strip())
-        # print(lines_temp)
+
         content = ''
 
         for line in lines:
             line_temp = line.strip()
             content += line_temp
 
-            # if line_temp != "":
-            #     content += "\n"
         reg_srt_2_gpt1 = [
             r'\d{1,3}\d{2}:(\d{2}:\d{2}),\d{3} --> \d{1,2}:\d{2}:\d{2},\d{3}', r'\n(\1) ']
         reg_srt_2_gpt = reg_srt_2_gpt1
@@ -45,30 +39,28 @@ def vtt_format_4_gpt(directory_path=None):
     for file in files_srt:
         with open(os.path.join(directory_path, file), "r", encoding="utf-8") as f1:
             lines = f1.readlines()
-        lines_temp = []
-        for line in lines:
-            # print(line.strip())
-            lines_temp.append(line.strip())
-        # print(lines_temp)
+
         content = ''
 
         for line in lines:
-            line_temp = line.strip()
-            content += line_temp
 
-            # if line_temp != "":
-            #     content += "\n"
-        # replace time
+            content += line.strip()+" "
+        reg_vtt_2_gpt_list = []
+
         reg_vtt_2_gpt1 = [
-            r'\d{2}:(\d{2}:\d{2}).\d{3} --> \d{1,2}:\d{2}:\d{2}.\d{3}', r'\n(\1) ']
-
-        reg_vtt_2_gpt = reg_vtt_2_gpt1
-        content = re.sub(reg_vtt_2_gpt[0], reg_vtt_2_gpt[1], content)
+            r'\d{2}:(\d{2}:\d{2}).\d{3} --> \d{1,2}:\d{2}:\d{2}.\d{3}', r'\n(\1)']
         reg_vtt_2_gpt2 = [
-            r'WEBVTTKind:.+Language:.+\n', r'']
-        reg_vtt_2_gpt = reg_vtt_2_gpt2
-        reg_vtt_2_gpt3 = [r"(\d{2}:|)(\d{2}:\d{2})(.\d{3}|)", r"\n\1 \2 \3\n"]
-        content = re.sub(reg_vtt_2_gpt[0], reg_vtt_2_gpt[1], content)
+            r'WEBVTT Kind:.+ Language:.+\n', r'']
+        reg_vtt_2_gpt3 = [r'&nbsp;', r' ']
+        reg_vtt_2_gpt4 = [r'[ ]{1,}', r' ']
+
+        reg_vtt_2_gpt_list.append(reg_vtt_2_gpt1)
+        reg_vtt_2_gpt_list.append(reg_vtt_2_gpt2)
+        reg_vtt_2_gpt_list.append(reg_vtt_2_gpt3)
+        reg_vtt_2_gpt_list.append(reg_vtt_2_gpt4)
+        for reg_vtt_2_gpt in reg_vtt_2_gpt_list:
+
+            content = re.sub(reg_vtt_2_gpt[0], reg_vtt_2_gpt[1], content)
         with open(os.path.join(directory_path, file), "w", encoding="utf-8") as f1:
             f1.write(content)
     if files_srt != []:
@@ -302,52 +294,61 @@ def move_origin_vid_to_destination(TR_MODE=0):
             origin_current_vid_file_name = vid_name_origin
             os.rename(os.path.join(bvids_origin_topic_path,
                       vid_name_origin), current_bvid_destination_file_path)
-        files_srt_dest = [f for f in os.listdir(bvids_destination_directory_path) if os.path.isfile(
-            os.path.join(bvids_destination_directory_path, f)) and f.endswith(".srt")]
-        current_bsrt_name = current_bvid_name[:-4]+".srt"
-        if TR_MODE:
-            print("current_bsrt_name:", current_bsrt_name)
-        current_bsrt_name_en = current_bvid_name[:-4]+".en.srt"
-        if TR_MODE:
-            print("current_bsrt_name_en:", current_bsrt_name_en)
-        current_bsrt_file_path = os.path.join(
-            bvids_destination_directory_path, current_bsrt_name)
-        current_bsrt_file_path_en = os.path.join(
-            bvids_destination_directory_path, current_bsrt_name_en)
-        if (not os.path.exists(current_bsrt_file_path)) and (not os.path.exists(current_bsrt_file_path_en)):
+        reg_string_sub = r"^"+vid_name_origin[:-4]+r"(\..+|)(\.srt|\.vtt)$"
+        files_sub = [f for f in os.listdir(bvids_origin_topic_path) if os.path.isfile(
+            os.path.join(bvids_origin_topic_path, f)) and (f.endswith(".srt") or f.endswith(".vtt"))]
 
-            srt_name_front = vid_name_origin[:-4]
+        for file_sub in files_sub:
+            match = re.search(reg_string_sub, file_sub)
 
-            reg_string_srt = r"^"+srt_name_front+r"(.+)\.srt$"
-            files_srt = [f for f in os.listdir(bvids_origin_topic_path) if os.path.isfile(
-                os.path.join(bvids_origin_topic_path, f)) and f.endswith(".srt")]
-            for file_srt in files_srt:
-                match = re.search(reg_string_srt, file_srt)
-                if match:
-                    srt_name_origin = file_srt
+            if match:
 
-                    new_srt_name = current_bvid_name[:-4]+match.group(1)+".srt"
-                    if TR_MODE:
-                        print("srt_name_origin:", srt_name_origin)
-                        print("new_srt_name:", new_srt_name)
-                    new_srt_file_path = os.path.join(
-                        bvids_destination_directory_path, new_srt_name)
-                    os.rename(os.path.join(
-                        bvids_origin_topic_path, srt_name_origin), new_srt_file_path)
-                else:
-                    reg_string_srt2 = r"^"+srt_name_front+r"\.srt$"
-                    match = re.search(reg_string_srt2, file_srt)
-                    if match:
-                        srt_name_origin = file_srt
+                os.rename(os.path.join(
+                    bvids_origin_topic_path, file_sub), os.path.join(bvids_destination_directory_path, file_sub))
 
-                        new_srt_name = current_bvid_name[:-4]+".srt"
-                        if TR_MODE:
-                            print("srt_name_origin:", srt_name_origin)
-                            print("new_srt_name:", new_srt_name)
-                        new_srt_file_path = os.path.join(
-                            bvids_destination_directory_path, new_srt_name)
-                        os.rename(os.path.join(
-                            bvids_origin_topic_path, srt_name_origin), new_srt_file_path)
+        # current_bsrt_name = current_bvid_name[:-4]+".srt"
+        # if TR_MODE:
+        #     print("current_bsrt_name:", current_bsrt_name)
+        # current_bsrt_name_en = current_bvid_name[:-4]+".en.srt"
+        # if TR_MODE:
+        #     print("current_bsrt_name_en:", current_bsrt_name_en)
+        # current_bsrt_file_path = os.path.join(
+        #     bvids_destination_directory_path, current_bsrt_name)
+        # current_bsrt_file_path_en = os.path.join(
+        #     bvids_destination_directory_path, current_bsrt_name_en)
+        # if (not os.path.exists(current_bsrt_file_path)) and (not os.path.exists(current_bsrt_file_path_en)):
+
+        #     srt_name_front = vid_name_origin[:-4]
+
+        #     reg_string_srt = r"^"+srt_name_front+r"(.+)\.srt$"
+
+        #     for file_srt in files_sub:
+        #         match = re.search(reg_string_srt, file_srt)
+        #         if match:
+        #             srt_name_origin = file_srt
+
+        #             new_srt_name = current_bvid_name[:-4]+match.group(1)+".srt"
+        #             if TR_MODE:
+        #                 print("srt_name_origin:", srt_name_origin)
+        #                 print("new_srt_name:", new_srt_name)
+        #             new_srt_file_path = os.path.join(
+        #                 bvids_destination_directory_path, new_srt_name)
+        #             os.rename(os.path.join(
+        #                 bvids_origin_topic_path, srt_name_origin), new_srt_file_path)
+        #         else:
+        #             reg_string_srt2 = r"^"+srt_name_front+r"\.srt$"
+        #             match = re.search(reg_string_srt2, file_srt)
+        #             if match:
+        #                 srt_name_origin = file_srt
+
+        #                 new_srt_name = current_bvid_name[:-4]+".srt"
+        #                 if TR_MODE:
+        #                     print("srt_name_origin:", srt_name_origin)
+        #                     print("new_srt_name:", new_srt_name)
+        #                 new_srt_file_path = os.path.join(
+        #                     bvids_destination_directory_path, new_srt_name)
+        #                 os.rename(os.path.join(
+        #                     bvids_origin_topic_path, srt_name_origin), new_srt_file_path)
 
     # else:
     #     bvid_reg_string, bvid_srt_reg_string = get_bvid_reg_string(

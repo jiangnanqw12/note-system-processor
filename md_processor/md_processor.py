@@ -989,7 +989,7 @@ def get_bvid_reg_string(sub_topic1_to_sub_topicn_folder_list, TR_MODE=0):
 def os_file_processor(num=0):
     import file_operations_utils
     operations = {
-        1: get_kg_bassets_folder_keyword,
+        1: file_operations_utils.get_kg_bassets_folder_keyword,
         2: add_timestamp_to_filenames,
         3: get_current_timestamp,
         4: file_operations_utils.zfill_folder_files,
