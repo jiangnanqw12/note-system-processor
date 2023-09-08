@@ -15,36 +15,19 @@ concepts is :
 
 
 def video_summarization_expert_one(content=None):
-    """
-## video summarization expert one
-Hello ChatGPT,
-I have an extensive video subtitle data in SRT format that needs your expertise. My aim is to break down this data into as many thematic segments as possible, where each segment represents a unique topic or theme discussed in the video.
-For each segment, I expect you to craft a detailed summary that includes:
-- Title: A descriptive title that encapsulates the main point of the segment.
-- Start Timestamp: The starting time of the segment within the video.
-- Summary: A concise summary text detailing the main points or topics discussed in that segment.
-Here is the format I expect for each segment:
-Title:
-Start Timestamp:
-Summary:
-Kindly start analyzing the following SRT data:
-[
 
-]
-I appreciate your assistance. Thank you!
-"""
     prompt_string1 = '''## video summarization expert one
 Hello ChatGPT,
-I have an extensive video subtitle data in SRT format that needs your expertise. My aim is to break down this data into as many thematic segments as possible, where each segment represents a unique topic or theme discussed in the video.
+I have an extensive video subtitle data that needs your expertise. My aim is to break down this data into as many thematic segments as possible, where each segment represents a unique topic or theme discussed in the video.
 For each segment, I expect you to craft a detailed summary that includes:
 - Title: A descriptive title that encapsulates the main point of the segment.
 - Start Timestamp: The starting time of the segment within the video.
-- Summary: A concise summary text detailing the main points or topics discussed in that segment.
+- Summary: A brief summary text showing the main points or topics discussed in that segment.
 Here is the format I expect for each segment:
 Title:
 Start Timestamp:
 Summary:
-Kindly start analyzing the following SRT data:
+Kindly start analyzing the following subtitle data:
 [
 '''
     prompt_string2 = '''
