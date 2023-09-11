@@ -198,114 +198,6 @@ def get_father_path(path):
 # 0
 
 
-def convert_subtitle_chatgpt_summary_to_markdown_vid_timeline(str_url):
-
-    # str_url=r'![009_area-and-slope.mp4](file:///C:%5CBaiduSyncdisk%5Cassets%5CO%5CO1%5CO17%5CO172%5CCalculus%203Blue1Brown%5Cassets%5Cbvids%5C009_area-and-slope.mp4)'
-
-    match1 = check_video_file_path_conforms_to_pattern(str_url)
-    cwd = os.getcwd()
-    file_list = os.listdir(cwd)
-    assets_root_path, assets_root_dir = get_assets_root_path()
-    create_output_directory(assets_root_path)
-
-    for file in file_list:
-        if file.endswith(".md"):
-            if file.find("summary_gpt") != -1:
-                key_word = "summary_gpt"
-                list_time_head_textshort_text = get_list_time_head_textshort_text_4_file(
-                    file, key_word)
-                list_time_head_textshort_text_to_vid_timeline_md(
-                    list_time_head_textshort_text, file, match1)
-
-
-def merge_list_time_head_textshort_text(list_time_text, list_time_head_textshort):
-    # print("list_time_head_textshort is :")
-    # print(list_time_head_textshort)
-    # print("list_time_text is :")
-    # print(list_time_text)
-
-    for i in range(len(list_time_head_textshort)):
-        # print(list_time_head_textshort[i][0])
-        for j in range(len(list_time_text)):
-            if list_time_head_textshort[i][0] == list_time_text[j][0]:
-
-                time_text = list_time_text.pop(j)
-                print(time_text)
-                list_time_head_textshort[i][3] = time_text[3]
-                # list_time_head_textshort.append([list_time_head_textshort[i][0],list_time_head_textshort[i][1],list_time_head_textshort[i][2],time_text[3]])
-                break
-    # print("first merge list_time_head_textshort_text is :")
-    # print(list_time_head_textshort)
-    list_time_head_textshort_text = list_time_head_textshort
-    if len(list_time_text) > 0:
-        # print("remain:",list_time_text)
-
-        list_pop = []
-        for i in range(len(list_time_text)):
-            for j in range(len(list_time_head_textshort_text)):
-                time_text = int(list_time_text[i][0])
-                time_shorttext = int(list_time_head_textshort_text[j][0])
-                if j != len(list_time_head_textshort_text)-1:
-                    time_shorttext_next = int(
-                        list_time_head_textshort_text[j+1][0])
-
-                    if time_text > time_shorttext and time_text < time_shorttext_next:
-
-                        list_time_head_textshort_text.insert(
-                            j+1, [list_time_text[i][0], None, None, list_time_text[i][3]])
-                        list_pop.append(list_time_text[i])
-                        break
-                else:
-                    if time_text > time_shorttext:
-                        list_time_head_textshort_text.append(
-                            [list_time_text[i][0], None, None, list_time_text[i][3]])
-                        list_pop.append(list_time_text[i])
-                        break
-        for elment in list_pop:
-            index = list_time_text.index(elment)
-            list_time_text.pop(index)
-    if len(list_time_text) > 0:
-        print("remain:", list_time_text)
-
-    return list_time_head_textshort_text
-
-
-def convert_subtitle_and_summary_to_markdown_vid_timeline(str_url):
-
-    # str_url=r'![009_area-and-slope.mp4](file:///C:%5CBaiduSyncdisk%5Cassets%5CO%5CO1%5CO17%5CO172%5CCalculus%203Blue1Brown%5Cassets%5Cbvids%5C009_area-and-slope.mp4)'
-
-    match1 = check_video_file_path_conforms_to_pattern(str_url)
-    cwd = os.getcwd()
-    file_list = os.listdir(cwd)
-    assets_root_path, assets_root_dir = get_assets_root_path()
-    output_dir = create_output_directory(assets_root_path)
-
-    for file in file_list:
-        if file.endswith(".md"):
-            if file.find("subtitle") != -1:
-                key_word = "subtitle"
-                list_time_text = get_list_time_head_textshort_text_4_file(
-                    file, key_word)
-                # list_time_head_textshort_text_to_vid_timeline_md(list_time_head_textshort_text,file,match1)
-
-            if file.find("summary_gpt") != -1:
-                cwd_floder_name = os.path.basename(cwd)
-                file_summary = file
-                key_word = "summary_gpt"
-                list_time_head_textshort = get_list_time_head_textshort_text_4_file(
-                    file, key_word)
-                # list_time_head_textshort_text_to_vid_timeline_md(list_time_head_textshort_text,file,match1)
-
-    list_time_head_textshort_text = merge_list_time_head_textshort_text(
-        list_time_text, list_time_head_textshort)
-    print("final is:")
-    print(list_time_head_textshort_text)
-    list_time_head_textshort_text_to_vid_timeline_md(
-        list_time_head_textshort_text, file_summary, match1)
-    convert_md_vid_link_to_html(output_dir)
-    return output_dir, file_summary
-
-
 def get_current_timestamp():
     timestamp = int(time.time())
     print(timestamp)
@@ -1097,8 +989,7 @@ def main():
                         action='store_true', help='call zhi_book_process')
     parser.add_argument('-osf', '--os_file_processor',
                         action='store_true', help='call os_file_processor')
-    parser.add_argument('-vls', '--full_fill_vid_link_2_summary',
-                        action='store_true', help='call full_fill_vid_link_2_summary')
+
     parser.add_argument('-gp', '--get_prompts',
                         action='store_true', help='call get_prompts')
     # parse the command-line arguments
@@ -1113,16 +1004,12 @@ def main():
         vid_note_process(args.input_int)
     elif args.copy_timestamps_and_index_2_root:
         copy_timestamps_and_index_2_root()
-    elif args.convert_subtitle_chatgpt_summary_to_markdown_vid_timeline:
-        convert_subtitle_chatgpt_summary_to_markdown_vid_timeline(args.str_url)
-    elif args.convert_subtitle_and_summary_to_markdown_vid_timeline:
-        convert_subtitle_and_summary_to_markdown_vid_timeline(args.str_url)
+
     elif args.mdx2md:
         mdx2md(args.timestamp)
     elif args.open_b_assets_folder:
         open_b_assets_folder()
-    elif args.timestamps_3blue1brown_2_timeline:
-        timestamps_3blue1brown_2_timeline(args.str_url)
+
     elif args.get_timestamp:
         get_current_timestamp()
     elif args.add_timestamp:
@@ -1132,18 +1019,13 @@ def main():
         create_directory_assets_imgs()
     elif args.creat_concept_folder:
         create_directory_assets_concept_structure()
-    elif args.creat_subtitle_summary:
-        create_file_subtitle_summary_gpt_md()
+
     elif args.html2md:
         html2md()
     elif args.html2md2:
         html2md2()
     elif args.html2md_tree:
         html2md_tree()
-    elif args.convert_md_vid_link_to_html:
-        convert_md_vid_link_to_html()
-    elif args.initialize_vid_note_file_structure:
-        initialize_vid_note_file_structure()
 
     elif args.test:
         test(args.input_int)

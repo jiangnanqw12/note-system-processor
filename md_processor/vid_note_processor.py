@@ -728,3 +728,111 @@ def generate_vid_note_with_timeline_from_timestamps():
                                         current_vid_md_link_content, OneDrive_KG_current_note_directory_path)
 
     convert_md_vid_link_to_html(OneDrive_KG_current_note_directory_path)
+
+
+def convert_subtitle_chatgpt_summary_to_markdown_vid_timeline(str_url):
+
+    # str_url=r'![009_area-and-slope.mp4](file:///C:%5CBaiduSyncdisk%5Cassets%5CO%5CO1%5CO17%5CO172%5CCalculus%203Blue1Brown%5Cassets%5Cbvids%5C009_area-and-slope.mp4)'
+
+    match1 = check_video_file_path_conforms_to_pattern(str_url)
+    cwd = os.getcwd()
+    file_list = os.listdir(cwd)
+    assets_root_path, assets_root_dir = get_assets_root_path()
+    create_output_directory(assets_root_path)
+
+    for file in file_list:
+        if file.endswith(".md"):
+            if file.find("summary_gpt") != -1:
+                key_word = "summary_gpt"
+                list_time_head_textshort_text = get_list_time_head_textshort_text_4_file(
+                    file, key_word)
+                list_time_head_textshort_text_to_vid_timeline_md(
+                    list_time_head_textshort_text, file, match1)
+
+
+def merge_list_time_head_textshort_text(list_time_text, list_time_head_textshort):
+    # print("list_time_head_textshort is :")
+    # print(list_time_head_textshort)
+    # print("list_time_text is :")
+    # print(list_time_text)
+
+    for i in range(len(list_time_head_textshort)):
+        # print(list_time_head_textshort[i][0])
+        for j in range(len(list_time_text)):
+            if list_time_head_textshort[i][0] == list_time_text[j][0]:
+
+                time_text = list_time_text.pop(j)
+                print(time_text)
+                list_time_head_textshort[i][3] = time_text[3]
+                # list_time_head_textshort.append([list_time_head_textshort[i][0],list_time_head_textshort[i][1],list_time_head_textshort[i][2],time_text[3]])
+                break
+    # print("first merge list_time_head_textshort_text is :")
+    # print(list_time_head_textshort)
+    list_time_head_textshort_text = list_time_head_textshort
+    if len(list_time_text) > 0:
+        # print("remain:",list_time_text)
+
+        list_pop = []
+        for i in range(len(list_time_text)):
+            for j in range(len(list_time_head_textshort_text)):
+                time_text = int(list_time_text[i][0])
+                time_shorttext = int(list_time_head_textshort_text[j][0])
+                if j != len(list_time_head_textshort_text)-1:
+                    time_shorttext_next = int(
+                        list_time_head_textshort_text[j+1][0])
+
+                    if time_text > time_shorttext and time_text < time_shorttext_next:
+
+                        list_time_head_textshort_text.insert(
+                            j+1, [list_time_text[i][0], None, None, list_time_text[i][3]])
+                        list_pop.append(list_time_text[i])
+                        break
+                else:
+                    if time_text > time_shorttext:
+                        list_time_head_textshort_text.append(
+                            [list_time_text[i][0], None, None, list_time_text[i][3]])
+                        list_pop.append(list_time_text[i])
+                        break
+        for elment in list_pop:
+            index = list_time_text.index(elment)
+            list_time_text.pop(index)
+    if len(list_time_text) > 0:
+        print("remain:", list_time_text)
+
+    return list_time_head_textshort_text
+
+
+def convert_subtitle_and_summary_to_markdown_vid_timeline(str_url):
+
+    # str_url=r'![009_area-and-slope.mp4](file:///C:%5CBaiduSyncdisk%5Cassets%5CO%5CO1%5CO17%5CO172%5CCalculus%203Blue1Brown%5Cassets%5Cbvids%5C009_area-and-slope.mp4)'
+
+    match1 = check_video_file_path_conforms_to_pattern(str_url)
+    cwd = os.getcwd()
+    file_list = os.listdir(cwd)
+    assets_root_path, assets_root_dir = get_assets_root_path()
+    output_dir = create_output_directory(assets_root_path)
+
+    for file in file_list:
+        if file.endswith(".md"):
+            if file.find("subtitle") != -1:
+                key_word = "subtitle"
+                list_time_text = get_list_time_head_textshort_text_4_file(
+                    file, key_word)
+                # list_time_head_textshort_text_to_vid_timeline_md(list_time_head_textshort_text,file,match1)
+
+            if file.find("summary_gpt") != -1:
+                cwd_floder_name = os.path.basename(cwd)
+                file_summary = file
+                key_word = "summary_gpt"
+                list_time_head_textshort = get_list_time_head_textshort_text_4_file(
+                    file, key_word)
+                # list_time_head_textshort_text_to_vid_timeline_md(list_time_head_textshort_text,file,match1)
+
+    list_time_head_textshort_text = merge_list_time_head_textshort_text(
+        list_time_text, list_time_head_textshort)
+    print("final is:")
+    print(list_time_head_textshort_text)
+    list_time_head_textshort_text_to_vid_timeline_md(
+        list_time_head_textshort_text, file_summary, match1)
+    convert_md_vid_link_to_html(output_dir)
+    return output_dir, file_summary
