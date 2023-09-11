@@ -937,7 +937,7 @@ def main():
                         help='input timestamp to pass to the function')
     parser.add_argument('-u', '--str_url', type=str, default=r'test',
                         help='input str_url to pass to the function')
-    parser.add_argument('-ii', '--input_int', type=int, default=r'0',
+    parser.add_argument('-i', '--input_int', type=int, default=r'0',
                         help='input input_int to pass to the function')
     parser.add_argument('-hn', '--head_num', type=int, default=r'1',
                         help='input head_num to pass to the function')
@@ -957,21 +957,12 @@ def main():
                         action='store_true', help='call wiki_note_process')
     parser.add_argument('-vid', '--vid_note_process',
                         action='store_true', help='call vid_note_process')
-    parser.add_argument('-tt', '--timestamps_3blue1brown_2_timeline',
-                        action='store_true', help='call timestamps_3blue1brown_2_timeline')
-    parser.add_argument('-cti', '--copy_timestamps_and_index_2_root',
-                        action='store_true', help='call copy_timestamps_and_index_2_root')
-    parser.add_argument('-csm', '--convert_subtitle_chatgpt_summary_to_markdown_vid_timeline',
-                        action='store_true', help='call convert_subtitle_chatgpt_summary_to_markdown_vid_timeline')
-    parser.add_argument('-cssm', '--convert_subtitle_and_summary_to_markdown_vid_timeline',
-                        action='store_true', help='call convert_subtitle_and_summary_to_markdown_vid_timeline')
 
     parser.add_argument('-ci', '--create_imgs_folder',
                         action='store_true', help='call create_directory_assets_imgs')
     parser.add_argument('-cc', '--creat_concept_folder', action='store_true',
                         help='call create_directory_assets_concept_structure')
-    parser.add_argument('-css', '--creat_subtitle_summary', action='store_true',
-                        help='call create_file_subtitle_summary_gpt_md')
+
     parser.add_argument('-h2m', '--html2md',
                         action='store_true', help='call html2md')
     parser.add_argument('-h2m2', '--html2md2',
@@ -979,15 +970,12 @@ def main():
 
     parser.add_argument('-h2mt', '--html2md_tree',
                         action='store_true', help='call html2md_tree')
-    parser.add_argument('-m2hl', '--convert_md_vid_link_to_html',
-                        action='store_true', help='call convert_md_vid_link_to_html')
-    parser.add_argument('-init', '--initialize_vid_note_file_structure',
-                        action='store_true', help='call initialize_vid_note_file_structure')
+
     parser.add_argument('-test', '--test',
                         action='store_true', help='call test')
     parser.add_argument('-zbp', '--zhi_book_process',
                         action='store_true', help='call zhi_book_process')
-    parser.add_argument('-osf', '--os_file_processor',
+    parser.add_argument('-ofp', '--os_file_processor',
                         action='store_true', help='call os_file_processor')
 
     parser.add_argument('-gp', '--get_prompts',
