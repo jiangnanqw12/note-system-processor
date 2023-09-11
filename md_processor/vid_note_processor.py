@@ -836,3 +836,86 @@ def convert_subtitle_and_summary_to_markdown_vid_timeline(str_url):
         list_time_head_textshort_text, file_summary, match1)
     convert_md_vid_link_to_html(output_dir)
     return output_dir, file_summary
+
+def get_bvid_reg_string(sub_topic1_to_sub_topicn_folder_list, TR_MODE=0):
+
+    # sub_topic=sub_topic1_to_sub_topicn_folder_list[-2].split("_")[-2]+" "+sub_topic1_to_sub_topicn_folder_list[-2].split("_")[-1]
+    # sub_topic=sub_topic1_to_sub_topicn_folder_list[-2].split("_")[-1]
+    reg_sub = [r'\d{3}_(.+)', r'\1']
+
+    match = re.search(reg_sub[0], sub_topic1_to_sub_topicn_folder_list[-2])
+    if match:
+        sub_topic1 = re.sub(reg_sub[0], reg_sub[1],
+                            sub_topic1_to_sub_topicn_folder_list[-2])
+        sub_topic1.replace("_", " ")
+    else:
+        raise Exception("sub_topic1 not found")
+    if TR_MODE:
+        print("Sub topic1:", sub_topic1)
+    current_topic = sub_topic1_to_sub_topicn_folder_list[-1].split("_")[-1]
+    if TR_MODE:
+        print("Current topic:", current_topic)
+    bvid_reg_string = current_topic+r'(( - )|(- - ))'+sub_topic1+r'\.mp4'
+    if TR_MODE:
+        print("bvid_reg_string:", bvid_reg_string)
+    bvid_srt_reg_string = current_topic + \
+        r'(( - )|(- - ))'+sub_topic1+r'(\.en|\.en.+)'+r'\.srt'
+    return bvid_reg_string, bvid_srt_reg_string
+
+def get_bvids_destination_short(sub_topic1_to_sub_topicn_folder_list, BaiduSyncdisk_assets_root):
+    path_temp = BaiduSyncdisk_assets_root
+    for i in range(len(sub_topic1_to_sub_topicn_folder_list)-1):
+
+        folder_temp = sub_topic1_to_sub_topicn_folder_list[i].split('_')[0]
+        if folder_temp != "FPCV":
+            path_temp = os.path.join(path_temp, folder_temp)
+        else:
+            path_temp = os.path.join(
+                path_temp, sub_topic1_to_sub_topicn_folder_list[i])
+        if not os.path.exists(path_temp):
+            os.makedirs(path_temp)
+    return path_temp
+
+
+def get_bvids_origin_topic_path(BaiduSyncdisk_assets_root):
+    return os.path.join(BaiduSyncdisk_assets_root, "assets", "bvids", "mc_1683793602")
+
+
+def get_note_name():
+    file = os.path.basename(os.getcwd())
+    return file+".md"
+
+
+def get_note_vid_tra_name():
+    file = os.path.basename(os.getcwd())
+    return file+r'_vid_tra'+".md"
+
+def copy_timestamps_and_index_2_root(directory=None):
+    """
+    Copies files with 'timestamps' in their name and '.mdx' extension to the root directory
+    with an updated name. Also copies files with 'index' in their name and '.mdx' extension
+    to the root directory with an updated name.
+    """
+    if directory is None:
+        directory = os.getcwd()
+
+    current_folder_name = os.path.basename(directory)
+    filelist = os.listdir(directory)
+
+    for file in filelist:
+        file_name, file_extension = os.path.splitext(file)
+
+        if "timestamps" in file_name and file_extension == '.md':
+            new_file_name1 = f"timestamps_{current_folder_name}.md"
+            dest_path1 = os.path.join(directory, '../..', new_file_name1)
+
+            if not os.path.exists(dest_path1):
+                shutil.copy(file, dest_path1)
+
+        if file_extension == '.mdx':
+            if "index" in file_name:
+                new_file_name = f"{current_folder_name}.md"
+                dest_path = os.path.join(directory, '../..', new_file_name)
+
+                if not os.path.exists(dest_path):
+                    shutil.copy(file, dest_path)

@@ -3,6 +3,105 @@ import os
 import re
 
 import time
+import file_operations_utils
+
+
+def text_replace(root_dir: str, replace_list: list):
+    assets_root_path, assets_root_dir = get_assets_root_path()
+    output_dir = create_output_directory(assets_root_path)
+    for filename_with_ext in os.listdir(root_dir):
+        if filename_with_ext.endswith('.md'):
+            src_path = os.path.join(root_dir, filename_with_ext)
+            dest_path = os.path.join(output_dir, filename_with_ext)
+
+            with open(src_path, 'r', encoding='UTF-8') as f_src, open(dest_path, 'w', encoding='UTF-8') as f_dest:
+                for line in f_src:
+                    for replace_item in replace_list:
+                        line = line.replace(replace_item[0], replace_item[1])
+                    f_dest.write(line)
+
+
+def mdx2md(timestamp: int = 1676880280):
+    assets_root_path, assets_root_dir = get_assets_root_path()
+    output_dir = create_output_directory(assets_root_path)
+    cwd = os.getcwd()
+    # text_replace_list_mdx2md3 = [
+    #                              ]
+    # replace_list = text_replace_list_mdx2md3
+    # <Figure
+    for filename_with_ext in os.listdir(cwd):
+        if filename_with_ext.endswith('.md'):
+            src_path = os.path.join(cwd, filename_with_ext)
+            dest_path = os.path.join(output_dir, filename_with_ext)
+
+            # with open(src_path, 'r', encoding='UTF-8') as f_src, open(dest_path, 'w', encoding='UTF-8') as f_dest:
+            #     for line in f_src:
+            #         for replace_item in replace_list:
+            #             line = line.replace(replace_item[0], replace_item[1])
+            #         f_dest.write(line)
+            with open(src_path, 'r', encoding='UTF-8') as f_src:
+                content = f_src.read()
+            # Define the regex pattern and replacement string
+
+            replace_list_regex = [
+                                 [r"<PiCreature\n{0,}\s{0,}(.+)\n{0,}\s{0,}(.+)\n{0,}\s{0,}/>", r"\1\n\2\n"],
+                # [r"show=\"video\"\n", r""],
+                #  [r"<!--", r""],
+                #  [r"-->", r""],
+                                 [r"<Question", r"---"],
+                                 [r"<FreeResponse>", r"---"],
+                [r"</FreeResponse>", r"---"],
+                [r"</Question>", r"---"],
+                [r'''<Figure[\n ]{1,}image="(.+)(\.svg|\.png|\.jpg)"[\w ._="'\n_%]{0,}/>''',
+                                     r'![](\1_'+str(timestamp)+r'\2)'],
+                [r'<Accordion\stitle=".+">\n', r''],
+                [r'</Accordion>\n', r''],
+                # [r'emotion="\w+"[ \t]+\n', r''],
+                # [r'flip=\{(true|false)\}\n', r''],
+                # [r'(?s)<Question .+?</Question>', r'tttttttttttttttttttt'],
+                [r'answer=\{(\d)\}[ \n\t]{0,}>',
+                                     r'\n<details><summary>answer</summary><p>Choice= \1</p></details>\n\n- **Explanation**'],
+                # [r'''<Question[\n \t]{0,}question="(.+)"[\n \t]{0,}choice1="(.+)"[\n \t]{0,}choice2="(.+)"[\n \t]{0,}choice3="(.+)"[\n \t]{0,}choice4="(.+)"[\n \t]answer=\{(\d)\}[\n \t]{0,}>''',r'- **Question**\n\t\1']
+                [r'[ \t]{0,}question="(.+)"',
+                                     r'- **Question**\n\t\1'],
+                [r'[ \t]{0,}choice1="(.+)"',
+                                     r'    - **Choice 1=** \1'],
+                [r'[ \t]{0,}choice2="(.+)"',
+                                     r'    - **Choice 2=** \1'],
+                [r'[ \t]{0,}choice3="(.+)"', r'    - **Choice 3=** \1'],
+                [r'[ \t]{0,}choice4="(.+)"', r'    - **Choice 4=** \1'],
+                # [r'video=".+\.mp4"', r''],
+                # [r'show="video"', r''],
+                [r'([ \t]{0,}\n){3,}', r'\1\1'],
+                # ['/>', r''],
+            ]
+
+            for i in range(len(replace_list_regex)):
+                pattern = replace_list_regex[i][0]
+                replacement = replace_list_regex[i][1]
+
+                # Perform the regex replacement
+                content = re.sub(pattern, replacement, content)
+            # Write the modified content to the output Markdown file with UTF-8 encoding
+            with open(dest_path, 'w', encoding='utf-8') as file:
+                file.write(content)
+
+
+def remove_back_matter_and_copy_code(directory_path=None):
+
+    if directory_path is None:
+        directory_path = os.getcwd()
+
+    files_md = [f for f in os.listdir(directory_path) if f.endswith('.md')]
+
+    reg_string_list = []
+
+    reg_Back_matter_template = [r"---\n\n- created:.+\n- source: .+", r""]
+    reg_string_list.extend([reg_Back_matter_template])
+    reg_string_copy_code = [r"```\n(.+)Copy code", r"```\1\n"]
+    reg_string_list.extend([reg_string_copy_code])
+    file_operations_utils.perform_regex_replacement_on_files(
+        reg_string_list, directory_path, files_md)
 
 
 def get_highest_head_level(content):

@@ -2,6 +2,145 @@ import os
 import re
 import time
 
+def back_up_dir_tree(path):
+
+    time_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    # get the father path
+    father_path = os.path.abspath(os.path.dirname(path) + os.path.sep + ".")
+    # get current dir name
+    dir_name = os.path.basename(path)
+    back_path = os.path.join(father_path, dir_name+"_"+time_str)
+    # os.mkdir(back_path)
+    # copy all files in the current path to the back_path
+    shutil.copytree(path, back_path)
+
+
+def back_up_dir(src_dir):
+
+    time_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    # get the father path
+    father_path = os.path.abspath(os.path.dirname(src_dir) + os.path.sep + ".")
+    # get current dir name
+    dir_name = os.path.basename(src_dir)
+    back_path = os.path.join(src_dir, dir_name+"_"+time_str)
+    # os.mkdir(back_path)
+    if not os.path.exists(back_path):
+        os.makedirs(back_path)
+    # copy all files in the current path to the back_path
+    for filename in os.listdir(src_dir):
+        src_path = os.path.join(src_dir, filename)
+        dst_path = os.path.join(back_path, filename)
+        if os.path.isfile(src_path):
+            shutil.copy2(src_path, dst_path)
+def get_father_path(path):
+    return os.path.dirname(path)
+
+
+# 0
+
+
+def create_directory_assets_imgs():
+    dirs = [
+        "assets/imgs",
+        "assets/vids"
+    ]
+
+    for directory in dirs:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            print(f"Created directory: {directory}")
+        else:
+            print(f"Directory already exists: {directory}")
+
+
+def create_directory_assets_concept_structure():
+    dirs = [
+        "assets",
+        "assets/imgs",
+        "assets/lectures",
+        "assets/papers",
+        "lectures",
+        "papers",
+    ]
+
+    for directory in dirs:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            print(f"Created directory: {directory}")
+        else:
+            print(f"Directory already exists: {directory}")
+
+
+def open_folder_in_windows(folder_path):
+    """Open a folder in Windows File Explorer based on the folder path.
+
+    Args:
+    folder_path (str): The folder path to open.
+
+    Returns:
+    None
+    """
+    if os.path.exists(folder_path):
+        os.startfile(folder_path)
+    else:
+        print(f"Folder path {folder_path} does not exist.")
+
+
+def open_b_assets_folder(cwd=None):
+    if cwd is None:
+        cwd = os.getcwd()
+    print(cwd)
+    if cwd.find("OneDrive") == -1:
+        raise Exception("This script is only for use with OneDrive.")
+    assets_path_front = "C:/BaiduSyncdisk/assets"
+
+    # Split the path after 'KG' and replace backslashes with forward slashes
+    kg_path_back = cwd.split("\\KG")[1].replace("\\", "/")
+
+    # Remove the leading forward slash from kg_path_back
+    kg_path_back = kg_path_back.lstrip("/")
+
+    assets_path = os.path.join(assets_path_front, kg_path_back)
+    if assets_path.find("BaiduSyncdisk") == -1:
+        raise Exception("The assets path is not in BaiduSyncdisk.")
+    open_folder_in_windows(assets_path)
+
+
+def perform_regex_rename_on_files(reg_string_list, path=None, files=None):
+    if path is None:
+        path = os.getcwd()
+    if files is None:
+        files = os.listdir(path)
+
+    for file in files:
+        for reg_string in reg_string_list:
+            match = re.search(reg_string[0], file)
+            if match is not None:
+                new_file = re.sub(reg_string[0], reg_string[1], file)
+                try:
+                    os.rename(file, new_file)
+                    print(f"Renamed '{file}' to '{new_file}'")
+                except OSError as e:
+                    print(f"Error renaming '{file}' to '{new_file}': {e}")
+
+
+def get_current_timestamp():
+    timestamp = int(time.time())
+    print(timestamp)
+    return timestamp
+
+
+def add_timestamp_to_filenames():
+    current_dir = os.getcwd()
+    timestamp = int(time.time())
+    print("add_timestamp is : ", timestamp)
+    for filename in os.listdir(current_dir):
+        if os.path.isfile(os.path.join(current_dir, filename)) and not filename.endswith(".py"):
+            filename_without_ext, ext = os.path.splitext(filename)
+            new_filename = f"{filename_without_ext}_{timestamp}{ext}"
+            os.replace(os.path.join(current_dir, filename),
+                       os.path.join(current_dir, new_filename))
+
 
 def get_Topic_in_kg(TR_MODE=0):
     assets_sub_topic1_to_sub_topicn_folder_list, OneDrive_KG_note_root_directory_path = get_kg_assets_root()
