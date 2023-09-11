@@ -5,33 +5,6 @@
 import argparse
 
 
-def zhi_book_processor(num=0):
-    import zhi_book_processor
-    operations = {
-        1: zhi_book_processor.perform_regex_replacement_on_index_file,
-
-        2: zhi_book_processor.perform_regex_replacement_on_zhi_book_mds_name,
-        3: zhi_book_processor.rename_files_base_on_index_markdown,
-        4: zhi_book_processor.prepend_filename_as_header_if_chapter_present,
-        5: zhi_book_processor.lower_header_level_in_md_files,
-
-        6: zhi_book_processor.remove_md_copy_code,
-        7: zhi_book_processor.perform_regex_replacement_on_zhi_mds,
-        8: zhi_book_processor.convert_zhi_footnote_to_obsidian,
-        10: zhi_book_processor.merge_all_md_files_into_one,
-    }
-
-    if num in operations:
-        operations[num]()
-    elif num == 0:
-        print("Available operations:")
-        for num, func in operations.items():
-            print(f"{num}: {func.__name__}")
-    else:
-        raise ValueError(
-            "Invalid operation number. Please choose a number between 0 and 4.")
-
-
 def test():
     pass
 
@@ -80,6 +53,33 @@ def wiki_note_process(num=0):
         raise ValueError("Invalid operation number.")
 
 
+def zhi_book_processor(num=0):
+    import zhi_book_processor
+    operations = {
+        1: zhi_book_processor.perform_regex_replacement_on_index_file,
+
+        2: zhi_book_processor.perform_regex_replacement_on_zhi_book_mds_name,
+        3: zhi_book_processor.rename_files_base_on_index_markdown,
+        4: zhi_book_processor.prepend_filename_as_header_if_chapter_present,
+        5: zhi_book_processor.lower_header_level_in_md_files,
+
+        6: zhi_book_processor.remove_md_copy_code,
+        7: zhi_book_processor.perform_regex_replacement_on_zhi_mds,
+        8: zhi_book_processor.convert_zhi_footnote_to_obsidian,
+        10: zhi_book_processor.merge_all_md_files_into_one,
+    }
+
+    if num in operations:
+        operations[num]()
+    elif num == 0:
+        print("Available operations:")
+        for num, func in operations.items():
+            print(f"{num}: {func.__name__}")
+    else:
+        raise ValueError(
+            "Invalid operation number. Please choose a number between 0 and 4.")
+
+
 def vid_note_process(num=0):
     import vid_note_processor
     operations = {
@@ -124,11 +124,6 @@ def os_file_processor(num=0):
             print(f"{num}: {func.__name__}")
     else:
         raise ValueError("Invalid operation number.")
-
-
-# def get_prompt_explain_c_cpp():
-#     import prompts
-#     prompts.get_prompt_explain_c_cpp()
 
 
 def get_prompts(num=0):
