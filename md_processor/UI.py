@@ -23,12 +23,12 @@ class MyApp(QWidget):
         self.prompts_text_edit = QTextEdit()
         prompts_layout.addWidget(self.prompts_text_edit)
 
-        btn1 = QPushButton('Get Prompt Explain C/C++')
+        btn1 = QPushButton('video_summarization_expert_one')
         btn1.clicked.connect(lambda: prompts.video_summarization_expert_one(
             self.prompts_text_edit.toPlainText()))
         prompts_layout.addWidget(btn1)
 
-        btn2 = QPushButton('Video Summarization Expert One')
+        btn2 = QPushButton('Get Prompt Explain C/C++')
         btn2.clicked.connect(lambda: prompts.get_prompt_explain_c_cpp(
             self.prompts_text_edit.toPlainText()))
         prompts_layout.addWidget(btn2)

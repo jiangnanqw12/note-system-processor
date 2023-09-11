@@ -5,6 +5,7 @@ import pyperclip
 import flags_utils
 import shutil
 import prompts
+import urllib.parse
 
 
 def srt_format_4_gpt(directory_path=None):
@@ -47,17 +48,13 @@ def vtt_format_4_gpt(directory_path=None):
             content += line.strip()+" "
         reg_vtt_2_gpt_list = []
 
-        reg_vtt_2_gpt1 = [
-            r'\d{2}:(\d{2}:\d{2}).\d{3} --> \d{1,2}:\d{2}:\d{2}.\d{3}', r'\n(\1)']
-        reg_vtt_2_gpt2 = [
-            r'WEBVTT Kind:.+ Language:.+\n', r'']
-        reg_vtt_2_gpt3 = [r'&nbsp;', r' ']
-        reg_vtt_2_gpt4 = [r'[ ]{1,}', r' ']
-
-        reg_vtt_2_gpt_list.append(reg_vtt_2_gpt1)
-        reg_vtt_2_gpt_list.append(reg_vtt_2_gpt2)
-        reg_vtt_2_gpt_list.append(reg_vtt_2_gpt3)
-        reg_vtt_2_gpt_list.append(reg_vtt_2_gpt4)
+        reg_vtt_2_gpt_list.append([
+            r'\d{2}:(\d{2}:\d{2}).\d{3} --> \d{1,2}:\d{2}:\d{2}.\d{3}', r'\n(\1)'])
+        reg_vtt_2_gpt_list.append([
+            r'WEBVTT Kind:.+ Language:.+\n', r''])
+        reg_vtt_2_gpt_list.append([r'&nbsp;', r' '])
+        reg_vtt_2_gpt_list.append([r' line:\d{1,3}%', r' '])
+        reg_vtt_2_gpt_list.append([r'[ ]{1,}', r' '])
         for reg_vtt_2_gpt in reg_vtt_2_gpt_list:
 
             content = re.sub(reg_vtt_2_gpt[0], reg_vtt_2_gpt[1], content)
@@ -837,6 +834,7 @@ def convert_subtitle_and_summary_to_markdown_vid_timeline(str_url):
     convert_md_vid_link_to_html(output_dir)
     return output_dir, file_summary
 
+
 def get_bvid_reg_string(sub_topic1_to_sub_topicn_folder_list, TR_MODE=0):
 
     # sub_topic=sub_topic1_to_sub_topicn_folder_list[-2].split("_")[-2]+" "+sub_topic1_to_sub_topicn_folder_list[-2].split("_")[-1]
@@ -861,6 +859,7 @@ def get_bvid_reg_string(sub_topic1_to_sub_topicn_folder_list, TR_MODE=0):
     bvid_srt_reg_string = current_topic + \
         r'(( - )|(- - ))'+sub_topic1+r'(\.en|\.en.+)'+r'\.srt'
     return bvid_reg_string, bvid_srt_reg_string
+
 
 def get_bvids_destination_short(sub_topic1_to_sub_topicn_folder_list, BaiduSyncdisk_assets_root):
     path_temp = BaiduSyncdisk_assets_root
@@ -889,6 +888,7 @@ def get_note_name():
 def get_note_vid_tra_name():
     file = os.path.basename(os.getcwd())
     return file+r'_vid_tra'+".md"
+
 
 def copy_timestamps_and_index_2_root(directory=None):
     """
