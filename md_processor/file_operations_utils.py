@@ -2,6 +2,7 @@ import os
 import re
 import time
 
+
 def back_up_dir_tree(path):
 
     time_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
@@ -32,6 +33,8 @@ def back_up_dir(src_dir):
         dst_path = os.path.join(back_path, filename)
         if os.path.isfile(src_path):
             shutil.copy2(src_path, dst_path)
+
+
 def get_father_path(path):
     return os.path.dirname(path)
 
@@ -368,14 +371,21 @@ def rename_folders_4_mooc_b(path=None, zfill_num=3):
     Flags = flags_utils.GlobalFlags()
     Flags.set_flag('TR_MODE', 1)
     TR_MODE = Flags.get_flag('TR_MODE')
-    files = [f for f in os.listdir(
-        path) if os.path.isfile(os.path.join(path, f))]
+    # files_mp4 = [f for f in os.listdir(
+    #     path) if f.endswith(".mp4")]
+    # files_vtt = [f for f in os.listdir(
+    #     path) if f.endswith(".vtt")]
+    # files_srt = [f for f in os.listdir(
+    #     path) if f.endswith(".srt")]
+    files = os.listdir(path)
+    # for file_mp4 in files_mp4:
+
     # r"How Ultrasonic Energy is Created _ Science of Energy Ep. 1 _ Ethicon-Bd2xISKVyFc.mp4"
     r"Monopolar Electrosurgery Technology and Principles - Science of Energy Ep. 5 - E.en.srt"
     reg_string_vid1 = [
-        r'(.+) ｜ Understanding PID Control, Part (\d{1,2})\.mp4', '']
+        r'(.+) ｜ Fuzzy Logic.+Part (\d{1,2})\.mp4', '']
     reg_string_sub1 = [
-        r"(.+) ｜ Understanding PID Control, Part (\d{1,2})(.+|)(\.vtt|\.srt)", r'\1']
+        r"(.+) ｜ Fuzzy Logic.+Part (\d{1,2})(\.en|\.eng|\.zh|\.cn|\.zho|\.chi|\.zh-Hans|\.zh-Hant|)-eEY6OEpapPo(\.vtt|\.srt)", r'\1']
     reg_string_vid2 = [
         r'(.+) - Science of Energy Ep. (\d{1,2}) -.+\.mp4', '']
     reg_string_sub2 = [
