@@ -1,6 +1,7 @@
 import os
 import re
 import time
+import pyperclip
 
 
 def back_up_dir_tree(path):
@@ -613,3 +614,60 @@ def create_new_file_name(file):
         new_file_name = file
     print(new_file_name)
     return new_file_name
+
+
+def create_excalidraw_file_based_on_content(content=None, path=None):
+    write_string = """
+---
+
+excalidraw-plugin: parsed
+tags: [excalidraw]
+
+---
+==⚠  Switch to EXCALIDRAW VIEW in the MORE OPTIONS menu of this document. ⚠==
+
+
+%%
+# Drawing
+```json
+{"type":"excalidraw","version":2,"source":"https://github.com/zsviczian/obsidian-excalidraw-plugin/releases/tag/1.9.19","elements":[],"appState":{"gridSize":null,"viewBackgroundColor":"#ffffff"}}
+```
+%%
+"""
+    ext = ".excalidraw" + ".md"
+    create_file_based_on_content(
+        write_string, ext, content, path)
+
+
+def create_drawio_file_based_on_content(content=None, path=None):
+    write_string = """
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0px" width="0px" viewBox="-10 -10 20 20" content="&lt;mxGraphModel dx=&quot;801&quot; dy=&quot;859&quot; grid=&quot;1&quot; gridSize=&quot;10&quot; guides=&quot;1&quot; tooltips=&quot;1&quot; connect=&quot;1&quot; arrows=&quot;1&quot; fold=&quot;1&quot; page=&quot;1&quot; pageScale=&quot;1&quot; pageWidth=&quot;827&quot; pageHeight=&quot;1169&quot; math=&quot;0&quot; shadow=&quot;0&quot;&gt;&lt;root&gt;&lt;mxCell id=&quot;0&quot;/&gt;&lt;mxCell id=&quot;1&quot; parent=&quot;0&quot;/&gt;&lt;/root&gt;&lt;/mxGraphModel&gt;"><style type="text/css"></style></svg>
+"""
+    ext = ".drawio.svg"
+    create_file_based_on_content(
+        write_string, ext, content, path)
+
+
+def create_file_based_on_content(write_string="", ext="", content=None, path=None):
+    if content is None:
+        content = pyperclip.paste()
+    if path is None:
+        path = os.getcwd()
+
+    if len(content) > 100:
+        raise ValueError("Content length exceeds 100 characters")
+    if len(content) < 1:
+        raise ValueError("Content length is less than 1 character")
+
+    if content.count("\n") > 2:
+        raise TypeError("Content contains more than 2 newline characters")
+    content = content.replace('\n', ' ')
+    content = content.replace('\r', ' ')
+    reg = [r"\s{2,}", r' ']
+    content = re.sub(reg[0], reg[1], content)
+    timestamp = str(int(time.time()))
+    new_name = content.strip() + "_" + timestamp+ext
+
+    with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:
+
+        file.write(write_string)

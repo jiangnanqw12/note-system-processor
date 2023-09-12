@@ -17,7 +17,7 @@ def md_note_process(num=0, head_num=1):
         3: md_helper.retrieve_document_summary_info,
         4: md_helper.format_ocr_text,
         5: md_helper.create_file_based_on_content,
-        6: md_helper.create_excalidraw_file_based_on_content,
+
 
     }
 
@@ -106,12 +106,14 @@ def vid_note_process(num=0):
 def os_file_processor(num=0):
     import file_operations_utils
     operations = {
-        1: file_operations_utils.get_kg_bassets_folder_keyword,
+        1: file_operations_utils.initialize_notes_files_structure,
         2: file_operations_utils.add_timestamp_to_filenames,
         3: file_operations_utils.get_current_timestamp,
-        4: file_operations_utils.zfill_folder_files,
+
         5: file_operations_utils.rename_folders_4_mooc_b,
         6: file_operations_utils.initialize_notes_files_structure,
+        7: file_operations_utils.create_excalidraw_file_based_on_content,
+        8: file_operations_utils.create_drawio_file_based_on_content,
 
 
     }
