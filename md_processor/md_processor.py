@@ -111,9 +111,9 @@ def os_file_processor(num=0):
         3: file_operations_utils.get_current_timestamp,
 
         5: file_operations_utils.rename_folders_4_mooc_b,
-        6: file_operations_utils.initialize_notes_files_structure,
+        6: file_operations_utils.create_drawio_file_based_on_content,
         7: file_operations_utils.create_excalidraw_file_based_on_content,
-        8: file_operations_utils.create_drawio_file_based_on_content,
+
 
 
     }
