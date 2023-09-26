@@ -95,3 +95,18 @@ You're first response should only be a greeting to the user and to ask what the 
 """
     pyperclip.copy(final_string)
     return final_string
+
+
+def draw_flowchart():
+    """{
+  "instruction": "ChatGPT, could you assist me in designing two flowcharts based on the provided code?",
+  "codePlaceholder": "[YOUR CODE HERE]",
+  "description": "[YOUR CODE DESCRIPTION HERE]",
+  "syntax": "Mermaid",
+  "flowchartTypes": [
+    "high-level overview",
+    "detailed, including minor processes"
+  ],
+  "tone": "formal documentation"
+}
+"""

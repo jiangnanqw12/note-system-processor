@@ -104,6 +104,15 @@ def remove_back_matter_and_copy_code(directory_path=None):
         reg_string_list, directory_path, files_md)
 
 
+def Is_head_line(line):
+    pattern = r"^(#{1,}) (.+|)"
+    match = re.search(pattern, line)
+    if match:
+        return True
+    else:
+        return False
+
+
 def get_highest_head_level(content):
     lines = content.split('\n')
     lowest_level = float('inf')
@@ -118,19 +127,31 @@ def get_highest_head_level(content):
 
     return lowest_level if lowest_level != float('inf') else None
 
-# def get_highest_head_level(content):
-#     lines = content.split('\n')
-#     highest_level = float('inf')
-#     reg_string=[r"^(#{1,}) .+",r'\1']
-#     for line in lines:
-#         match=line.search(reg_string[0])
-#         if match:
-#             line.count("#")
-
-#     return highest_level
-
 
 def downgrade_heads(content, downgrade_level):
+    lines = content.split('\n')
+    new_lines = []
+
+    for line in lines:
+        if Is_head_line(line):
+            head_level = 0
+            for char in line:
+                if char == '#':
+                    head_level += 1
+                else:
+                    break
+            if head_level > 0:
+                new_head_level = head_level + downgrade_level
+                if new_head_level > 6:
+                    new_head_level = 6
+                new_line = '#' * new_head_level + line[head_level:]
+                new_lines.append(new_line)
+        else:
+            new_lines.append(line)
+    return '\n'.join(new_lines)
+
+
+def upgrade_heads(content, upgrade_level):
     lines = content.split('\n')
     new_lines = []
     for line in lines:
@@ -141,9 +162,9 @@ def downgrade_heads(content, downgrade_level):
             else:
                 break
         if head_level > 0:
-            new_head_level = head_level + downgrade_level
-            if new_head_level > 6:
-                new_head_level = 6
+            new_head_level = head_level - upgrade_level
+            if new_head_level < 1:
+                new_head_level = 1
             new_line = '#' * new_head_level + line[head_level:]
             new_lines.append(new_line)
         else:
@@ -162,8 +183,70 @@ def degrade_markdown_by_head_number(head_number):
         print("head_number: ", head_number)
     if highest_head_level < head_number:
         content = downgrade_heads(
-            content, head_number+1-highest_head_level)
+            content, head_number-highest_head_level)
         pyperclip.copy(content)
+
+
+def upgrade_markdown_by_head_number(head_number):
+    content = pyperclip.paste()
+    TR_MODE = 1
+    highest_head_level = get_highest_head_level(content)
+
+    if TR_MODE:
+        print("highest_head_level: ", highest_head_level)
+        print("head_number: ", head_number)
+
+    if highest_head_level > head_number:
+        content = upgrade_heads(
+            content, highest_head_level-head_number)
+        pyperclip.copy(content)
+
+
+def process_md_head_to_hn(head_number, content=None):
+    if content is None:
+        content = pyperclip.paste()
+    TR_MODE = 1
+    highest_head_level = get_highest_head_level(content)
+
+    if TR_MODE:
+        print("highest_head_level: ", highest_head_level)
+        print("head_number: ", head_number)
+
+    if highest_head_level > head_number:
+        content = upgrade_heads(
+            content, highest_head_level-head_number)
+        pyperclip.copy(content)
+    elif highest_head_level < head_number:
+        content = downgrade_heads(
+            content, head_number-highest_head_level)
+        pyperclip.copy(content)
+
+
+def format_2_gpt_input(content=None):
+    """
+    This function formats the input content by replacing one or more newline characters with a single newline character.
+    If no content is provided, it fetches the content from the clipboard, formats it, and then copies the formatted content back to the clipboard.
+
+    :param content: The input content to format. If None, the content will be taken from the clipboard.
+    """
+    if content is None:
+        content = pyperclip.paste()
+
+    print(repr(content))
+    content = content.replace("\r\n", "\n")
+
+    match = re.search(r"\n{2,}", content)
+    if match:
+        print("Match found: ", match.group())
+        newline_pattern = re.compile(r"\n{2,}")
+        # Replacing multiple newlines with a single newline
+        content = newline_pattern.sub("\n", content)
+
+    # Printing the formatted content
+    print(repr(content))
+
+    # Copying the formatted content back to the clipboard
+    pyperclip.copy(content)
 
 
 def retrieve_document_summary_info(content=None):
@@ -233,9 +316,6 @@ def create_file_based_on_content(content=None, path=None):
 
     with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:
         file.write("")
-
-
-
 
 
 def main():
