@@ -11,8 +11,12 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["-vid", "-ii", "2"],
-            "cwd": "C:\\Users\\shade\\OneDrive\\KG\\002Work\\009_other\\Science of Energy\\assets\\003_How to Use Ultrasonic Energy"
+            //"env": {"PYTHONPATH": "C:\\Users\\shade\\anaconda3"},
+            //"args": ["-vid", "-ii", "2"],
+            "args": ["-md", "-i", "6"],
+            //"cwd": "C:\\Users\\shade\\OneDrive\\KG\\002Work\\009_other\\Science of Energy\\assets\\003_How to Use Ultrasonic Energy"
+
+            //"cwd": "C:\\Users\\shade\\OneDrive\\KG\\002Work\\009_other\\Science of Energy\\assets\\003_How to Use Ultrasonic Energy"
         }
     ]
 }

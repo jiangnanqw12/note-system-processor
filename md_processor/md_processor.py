@@ -18,6 +18,7 @@ def md_note_process(num=0, head_num=1):
         4: md_helper.format_ocr_text,
         5: md_helper.create_file_based_on_content,
         6: md_helper.format_2_gpt_input,
+        7: md_helper.mermaid_format,
 
 
     }
@@ -110,7 +111,7 @@ def os_file_processor(num=0):
         1: file_operations_utils.initialize_notes_files_structure,
         2: file_operations_utils.add_timestamp_to_filenames,
         3: file_operations_utils.get_current_timestamp,
-
+        4: file_operations_utils.open_b_assets_folder,
         5: file_operations_utils.rename_folders_4_mooc_b,
         6: file_operations_utils.create_drawio_file_based_on_content,
         7: file_operations_utils.create_excalidraw_file_based_on_content,

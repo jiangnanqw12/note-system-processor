@@ -231,20 +231,38 @@ def format_2_gpt_input(content=None):
     """
     if content is None:
         content = pyperclip.paste()
-
+    # content = repr(content)
     print(repr(content))
     content = content.replace("\r\n", "\n")
-
-    match = re.search(r"\n{2,}", content)
-    if match:
-        print("Match found: ", match.group())
-        newline_pattern = re.compile(r"\n{2,}")
-        # Replacing multiple newlines with a single newline
-        content = newline_pattern.sub("\n", content)
+    content = content.replace("\\n", "\n")
+    reg_repalce_list = []
+    reg_repalce_list.append([r"\n{2,}", r"\n"])
+    reg_repalce_list.append([r"[ ]{2,}", " "])
+    for reg_replace in reg_repalce_list:
+        content = re.sub(reg_replace[0], reg_replace[1], content)
 
     # Printing the formatted content
     print(repr(content))
 
+    # Copying the formatted content back to the clipboard
+    pyperclip.copy(repr(content))
+
+
+def mermaid_format(content=None):
+
+    if content is None:
+        content = pyperclip.paste()
+    # content = repr(content)
+    print(repr(content))
+    # content = content.replace(" \w{1,3}", "\n")
+    num_str = r"22"
+    reg_repalce_list = []
+    reg_repalce_list.append(
+        [r" (\w{1,3})( |\n|\(|\{|\[)", r" \1_"+num_str+r"\2"])
+    # reg_repalce_list.append([r" \w{1,3}\n", r" \1\n"+num_str])
+    for reg_replace in reg_repalce_list:
+        content = re.sub(reg_replace[0], reg_replace[1], content)
+    print(repr(content))
     # Copying the formatted content back to the clipboard
     pyperclip.copy(content)
 
