@@ -1,5 +1,6 @@
 
 import pyperclip
+import re
 
 
 def get_prompt_explain_c_cpp(content=None):
@@ -110,3 +111,42 @@ def draw_flowchart():
   "tone": "formal documentation"
 }
 """
+
+
+def dot2mermaid():
+    prompt_string1 = """{ "instruction": "Dear ChatGPT, I need your assistance in converting the following Graphviz code into Mermaid syntax. I'm trying to create a more visually appealing diagram while retaining the structure and relationships depicted in the original Graphviz diagram. Your expertise in this transformation would be highly valued. Here's the Graphviz code:",
+ "graphviz_code": "["""
+    prompt_string2 = """ ]",
+}"""
+    content = format_2_gpt_input(flag_copy_to_pyperclip=False)
+
+    final_string = prompt_string1 + content + prompt_string2
+    pyperclip.copy(final_string)
+
+
+def format_2_gpt_input(content=None, flag_copy_to_pyperclip=True):
+    """
+    This function formats the input content by replacing one or more newline characters with a single newline character.
+    If no content is provided, it fetches the content from the clipboard, formats it, and then copies the formatted content back to the clipboard.
+
+    :param content: The input content to format. If None, the content will be taken from the clipboard.
+    """
+    if content is None:
+        content = pyperclip.paste()
+    # content = repr(content)
+    print(repr(content))
+    content = content.replace("\r\n", "\n")
+    content = content.replace("\\n", "\n")
+    reg_repalce_list = []
+    reg_repalce_list.append([r"\n{2,}", r"\n"])
+    reg_repalce_list.append([r"[ ]{2,}", " "])
+    for reg_replace in reg_repalce_list:
+        content = re.sub(reg_replace[0], reg_replace[1], content)
+
+    # Printing the formatted content
+    print(repr(content))
+
+    if flag_copy_to_pyperclip:
+        # Copying the formatted content back to the clipboard
+        pyperclip.copy(repr(content))
+    return repr(content)

@@ -138,6 +138,7 @@ def get_prompts(num=0):
         3: prompts.chatbot_prompt_expert,
         4: prompts.Translate_Chinese_sentence_into_function_name,
         5: prompts.Expert_Prompt_Creator,
+        6: prompts.dot2mermaid,
 
 
     }
