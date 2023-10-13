@@ -15,30 +15,6 @@ concepts is :
         prompt_string1, prompt_string2, content)
 
 
-def video_summarization_expert_one(content=None):
-
-    prompt_string1 = '''## video summarization expert one
-Hello ChatGPT,
-I have an extensive video subtitle data that needs your expertise. My aim is to break down this data into as many thematic segments as possible, where each segment represents a unique topic or theme discussed in the video.
-For each segment, I expect you to craft a detailed summary that includes:
-- Title: A descriptive title that encapsulates the main point of the segment.
-- Start Timestamp: The starting time of the segment within the video.
-- Summary: A brief summary text showing the main points or topics discussed in that segment.
-Here is the format I expect for each segment:
-Title:
-Start Timestamp:
-Summary:
-Kindly start analyzing the following subtitle data:
-[
-'''
-    prompt_string2 = '''
-]
-I appreciate your assistance. Thank you!
-'''
-    combine_strings_with_clipboard(
-        prompt_string1, prompt_string2, content)
-
-
 def chatbot_prompt_expert(content=None):
     prompt_string1 = '''## chatbot prompt expert
 
@@ -118,35 +94,83 @@ def dot2mermaid():
  "graphviz_code": "["""
     prompt_string2 = """ ]",
 }"""
-    content = format_2_gpt_input(flag_copy_to_pyperclip=False)
+    content = format_code_2_gpt_input(copy_to_clipboard=False)
 
     final_string = prompt_string1 + content + prompt_string2
     pyperclip.copy(final_string)
 
 
-def format_2_gpt_input(content=None, flag_copy_to_pyperclip=True):
+def format_code_2_gpt_input(content=None, copy_to_clipboard=True):
     """
-    This function formats the input content by replacing one or more newline characters with a single newline character.
-    If no content is provided, it fetches the content from the clipboard, formats it, and then copies the formatted content back to the clipboard.
+    Formats the input content by replacing multiple newline characters with a single newline character and
+    multiple spaces with a single space. If no content is provided, it fetches the content from the clipboard,
+    formats it, and then copies the formatted content back to the clipboard if copy_to_clipboard is True.
 
     :param content: The input content to format. If None, the content will be taken from the clipboard.
+    :param copy_to_clipboard: A flag indicating whether to copy the formatted content back to the clipboard.
+    :return: The formatted content as a string.
     """
     if content is None:
-        content = pyperclip.paste()
-    # content = repr(content)
-    print(repr(content))
-    content = content.replace("\r\n", "\n")
-    content = content.replace("\\n", "\n")
-    reg_repalce_list = []
-    reg_repalce_list.append([r"\n{2,}", r"\n"])
-    reg_repalce_list.append([r"[ ]{2,}", " "])
-    for reg_replace in reg_repalce_list:
-        content = re.sub(reg_replace[0], reg_replace[1], content)
+        try:
+            content = pyperclip.paste()
+        except pyperclip.PyperclipException:
+            print("Unable to access the clipboard.")
+            return None
 
-    # Printing the formatted content
-    print(repr(content))
+    content = content.replace("\r\n", "\n").replace("\\n", "\n")
 
-    if flag_copy_to_pyperclip:
-        # Copying the formatted content back to the clipboard
-        pyperclip.copy(repr(content))
+    replacements = [
+        (r"\n{2,}", "\n"),
+        (r"[ ]{2,}", " ")
+    ]
+
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content)
+
+    if copy_to_clipboard:
+        try:
+            pyperclip.copy(repr(content))
+        except pyperclip.PyperclipException:
+            print("Unable to copy content to the clipboard.")
+
     return repr(content)
+
+
+def code_improve():
+    prompt_string1 = """{
+"language": "Python",
+"application_type": "desktop",
+"code_snippet": "[ """
+    prompt_string2 = """ ]",
+"request": "I am developing a desktop application in Python and I need insights on how to improve my code. Here's a snippet of my code. Can you provide feedback on its efficiency, readability, and suggestions for enhancement?"
+}"""
+    content = format_code_2_gpt_input(copy_to_clipboard=False)
+
+    final_string = prompt_string1 + content + prompt_string2
+    pyperclip.copy(final_string)
+
+
+def video_summarization_expert_one(content=None):
+
+    prompt_string1 = '''## video summarization expert one
+Hello ChatGPT,
+I have an extensive video subtitle data that needs your expertise. My aim is to break down this data into as many thematic segments as possible, where each segment represents a unique topic or theme discussed in the video.
+For each segment, I expect you to craft a detailed summary that includes:
+- Title: A descriptive title that encapsulates the main point of the segment.
+- Start Timestamp: The starting time of the segment within the video.
+- Summary: A brief summary text showing the main points or topics discussed in that segment.
+Here is the format I expect for each segment:
+Title:
+Start Timestamp:
+Summary:
+Kindly start analyzing the following subtitle data:
+[
+'''
+    prompt_string2 = '''
+]
+I appreciate your assistance. Thank you!
+'''
+    content = format_code_2_gpt_input(copy_to_clipboard=False)
+
+    final_string = prompt_string1 + content + prompt_string2
+    pyperclip.copy(final_string)

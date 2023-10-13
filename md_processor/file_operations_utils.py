@@ -357,7 +357,7 @@ def initialize_notes_files_structure():
     if not os.path.exists(file_git_ignore):
         with open(file_git_ignore, 'w') as f:
 
-            f.write('*.flv\n*.mp4\n*.srt\n*.vtt\n')
+            f.write('*.flv\n*.mp4\n*.srt\n*.vtt\n*.pdf\n.*epub\n')
     file_readme = os.path.join(b_assets_directory, "readme.md")
     if not os.path.exists(file_readme):
         with open(file_readme, 'w') as f:

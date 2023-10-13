@@ -139,6 +139,7 @@ def get_prompts(num=0):
         4: prompts.Translate_Chinese_sentence_into_function_name,
         5: prompts.Expert_Prompt_Creator,
         6: prompts.dot2mermaid,
+        7: prompts.code_improve,
 
 
     }

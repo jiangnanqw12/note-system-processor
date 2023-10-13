@@ -404,7 +404,7 @@ def convert_chatgpt_summary_text_to_one_line_summary(directory_path=None):
 
     reg_string_list = []
     reg_string1 = [
-        r'(Section \d{1,2}: |Title: )(.+)\n{1,2}(Start|Start Timestamp): (|\()(\d{1,2}:\d{1,2})(|\))\n{1,2}Summary(: |:\n)(.+)', r"- \2 (\5) \8"]
+        r'(Section \d{1,2}: |Title: |Title:\n)(.+)\n{1,2}(Start: |Start Timestamp: |Start Timestamp:\n)(|\()(\d{1,2}:\d{1,2})(|\))\n{1,2}Summary(: |:\n)(.+)', r"- \2 (\5) \8"]
     reg_string_list.append(reg_string1)
     file_operations_utils.perform_regex_replacement_on_files(
         reg_string_list, directory_path, files_md)

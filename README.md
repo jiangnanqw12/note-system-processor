@@ -2,6 +2,7 @@
 
 ```mermaid
 graph LR
-A-->B
+A[video]
+b[subtiltle]
 ```
 ## obsidian
