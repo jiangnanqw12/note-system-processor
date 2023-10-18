@@ -107,6 +107,7 @@ def vid_note_process(num=0):
 
 def os_file_processor(num=0):
     import file_operations_utils
+    import markmind
     operations = {
         1: file_operations_utils.initialize_notes_files_structure,
         2: file_operations_utils.add_timestamp_to_filenames,
@@ -115,6 +116,9 @@ def os_file_processor(num=0):
         5: file_operations_utils.rename_folders_4_mooc_b,
         6: file_operations_utils.create_drawio_file_based_on_content,
         7: file_operations_utils.create_excalidraw_file_based_on_content,
+        8: file_operations_utils.rename_index_folder_files,
+        9: file_operations_utils.rename_bilibili_subs,
+        10: markmind.create_annotator,
 
 
 

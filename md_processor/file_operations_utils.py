@@ -2,6 +2,7 @@ import os
 import re
 import time
 import pyperclip
+import glob
 
 
 def back_up_dir_tree(path):
@@ -671,3 +672,46 @@ def create_file_based_on_content(write_string="", ext="", content=None, path=Non
     with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:
 
         file.write(write_string)
+
+
+def rename_index_folder_files(base_dir=None):
+    if base_dir is None:
+        base_dir = os.getcwd()
+    # Ensure the path is absolute
+    base_dir = os.path.abspath(base_dir)
+
+    # Iterate through the subdirectories under the base directory
+    for subdir in os.listdir(base_dir):
+        subdir_path = os.path.join(base_dir, subdir)
+        if os.path.isdir(subdir_path):
+            # Ensure the subdirectory name is numeric before proceeding
+            if subdir.isnumeric():
+                # Format the subdirectory name with leading zeros
+                formatted_subdir = f"{int(subdir):04d}"
+
+                # Use glob to find all .mp4 files in the subdirectory
+                mp4_files = glob.glob(os.path.join(subdir_path, "*.mp4"))
+
+                # Rename each .mp4 file
+                for mp4_file in mp4_files:
+                    basename = os.path.basename(mp4_file)
+                    new_name = f"{formatted_subdir}_{basename}"
+                    new_path = os.path.join(base_dir, new_name)
+                    os.rename(mp4_file, new_path)
+
+
+def rename_bilibili_subs(path=None):
+    ''' 重命名下载的字幕，改成视频名'''
+    if path is None:
+        path = os.getcwd()
+    files_mp4 = glob.glob(os.path.join(path, "*.mp4"))
+    files_srt = glob.glob(os.path.join(path, "*.srt"))
+    for file_mp4 in files_mp4:
+        basename = os.path.basename(file_mp4)
+
+        new_name = f"{basename.split('.')[0]}.srt"
+        new_path = os.path.join(path, new_name)
+        for file_srt in files_srt:
+            mp4 = (basename.split('.')[0]).split('_')[1]
+            if mp4 in file_srt:
+                os.rename(file_srt, new_path)
