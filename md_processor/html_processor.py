@@ -2,7 +2,77 @@ import os
 import re
 import time
 import urllib.parse
-import aspose.words as aw
+# import aspose.words as aw
+import subprocess
+from typing import Optional
+import glob
+
+
+def convert_html_to_md(input_directory=None, output_directory=None):
+    if input_directory is None:
+        input_directory = os.getcwd()
+    if output_directory is None:
+        output_directory = os.path.join(input_directory, "md")
+    try:
+        # Create the output directory if it does not exist
+        os.makedirs(output_directory, exist_ok=True)
+
+        # List all files in the input directory
+        files = [f for f in os.listdir(input_directory) if f.endswith('.html')]
+
+        for file in files:
+            input_file = os.path.join(input_directory, file)
+            output_file = os.path.join(
+                output_directory, file.replace('.html', '.md'))
+
+            # Convert HTML to Markdown and extract images
+            subprocess.run(['pandoc', '--extract-media=' + output_directory,
+                           input_file, '-o', output_file], check=True)
+
+        print(
+            f'Successfully converted HTML files to Markdown in {output_directory}')
+
+    except subprocess.CalledProcessError as e:
+        print(f'Failed to convert HTML to Markdown: {e}')
+    except Exception as e:
+        print(f'An error occurred: {e}')
+
+
+def change_html_title(path: Optional[str] = None) -> None:
+    """
+    Change the title of all HTML files in the specified directory to match their filenames.
+
+    Parameters:
+    path (str): The directory to search for HTML files. Defaults to the current working directory.
+
+    Returns:
+    None
+    """
+    if path is None:
+        path = os.getcwd()
+
+    files = glob.glob(os.path.join(path, '*.html'))
+
+    for file in files:
+        input_file = os.path.join(path, file)
+        input_file = input_file.replace('\\', '/')
+
+        if os.path.exists(input_file) and os.path.isfile(input_file):
+            try:
+                with open(input_file, 'r', encoding="utf-8") as f:
+                    content = f.read()
+
+                reg_string = r'<title>.*?</title>'
+                content = re.sub(
+                    reg_string, f'<title>{os.path.splitext(os.path.basename(file))[0]}</title>', content)
+
+                with open(input_file, 'w', encoding="utf-8") as f:
+                    f.write(content)
+            except Exception as e:
+                print(f"An error occurred while processing {input_file}: {e}")
+        else:
+            print(f"File {input_file} does not exist or is not accessible.")
+
 
 def html2md(path=None, output_root="C://Output//", output_folder_name=None):
     if path is None:

@@ -1,7 +1,9 @@
+from typing import Optional
+import glob
 import pyperclip
 import os
 import re
-
+import subprocess
 import time
 import file_operations_utils
 
@@ -334,6 +336,14 @@ def create_file_based_on_content(content=None, path=None):
 
     with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:
         file.write("")
+
+
+def create_node_for_mermaid(num=30):
+    content = ""
+    for i in range(num):
+        content += f"Node{i+1}[\"\"]\n"
+
+    pyperclip.copy(content)
 
 
 def main():

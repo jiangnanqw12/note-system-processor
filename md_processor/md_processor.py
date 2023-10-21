@@ -11,6 +11,7 @@ def test():
 
 def md_note_process(num=0, head_num=1):
     import md_helper
+    import html_processor
     operations = {
         1: md_helper.remove_back_matter_and_copy_code,
         2: md_helper.process_md_head_to_hn,
@@ -19,6 +20,9 @@ def md_note_process(num=0, head_num=1):
         5: md_helper.create_file_based_on_content,
         6: md_helper.format_2_gpt_input,
         7: md_helper.mermaid_format,
+        8: html_processor.convert_html_to_md,
+        9: html_processor.change_html_title,
+        10: md_helper.create_node_for_mermaid,
 
 
     }
@@ -55,20 +59,20 @@ def wiki_note_process(num=0):
         raise ValueError("Invalid operation number.")
 
 
-def zhi_book_processor(num=0):
-    import zhi_book_processor
+def book_processor(num=0):
+    import book_processor
     operations = {
-        1: zhi_book_processor.perform_regex_replacement_on_index_file,
+        1: book_processor.perform_regex_replacement_on_index_file,
 
-        2: zhi_book_processor.perform_regex_replacement_on_zhi_book_mds_name,
-        3: zhi_book_processor.rename_files_base_on_index_markdown,
-        4: zhi_book_processor.prepend_filename_as_header_if_chapter_present,
-        5: zhi_book_processor.lower_header_level_in_md_files,
+        2: book_processor.perform_regex_replacement_on_zhi_book_mds_name,
+        3: book_processor.rename_files_base_on_index_markdown,
+        4: book_processor.prepend_filename_as_header_if_chapter_present,
+        5: book_processor.lower_header_level_in_md_files,
 
-        6: zhi_book_processor.remove_md_copy_code,
-        7: zhi_book_processor.perform_regex_replacement_on_zhi_mds,
-        8: zhi_book_processor.convert_zhi_footnote_to_obsidian,
-        10: zhi_book_processor.merge_all_md_files_into_one,
+        6: book_processor.remove_md_copy_code,
+        7: book_processor.perform_regex_replacement_on_zhi_mds,
+        8: book_processor.convert_zhi_footnote_to_obsidian,
+        10: book_processor.merge_all_md_files_into_one,
     }
 
     if num in operations:
@@ -186,8 +190,8 @@ def main():
 
     parser.add_argument('-test', '--test',
                         action='store_true', help='call test')
-    parser.add_argument('-zbp', '--zhi_book_processor',
-                        action='store_true', help='call zhi_book_processor')
+    parser.add_argument('-bp', '--book_processor',
+                        action='store_true', help='call book_processor')
     parser.add_argument('-ofp', '--os_file_processor',
                         action='store_true', help='call os_file_processor')
 
@@ -207,8 +211,8 @@ def main():
     elif args.test:
         test(args.input_int)
 
-    elif args.zhi_book_processor:
-        zhi_book_processor(args.input_int)
+    elif args.book_processor:
+        book_processor(args.input_int)
     elif args.os_file_processor:
         os_file_processor(args.input_int)
     elif args.get_prompts:

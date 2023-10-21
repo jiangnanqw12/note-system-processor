@@ -2,6 +2,23 @@ import os
 import re
 import file_operations_utils
 
+# epub
+
+
+def base_on_mulu_rename_mds(path=None):
+    if path is None:
+        path = os.getcwd()
+
+    mulu_name = "part0001.md"
+    mulu_path = os.path.join(path, mulu_name)
+    if not os.path.exists(mulu_path):
+        raise ValueError("no mulu file")
+    with open(mulu_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    reg_string1 = r"\[(.+?)\]\(.+?(part)\)"
+
+
+# zhi
 
 def lower_header_level_in_md_files(path=None):
     if path is None:
@@ -211,7 +228,7 @@ def merge_files(filenames, output_filename):
 
 def merge_all_md_files_into_one():
     """Merge all markdown files in the current directory into one file."""
-    root_path, root_dir = get_assets_root_path()
+    root_path, root_dir = file_operations_utils.get_assets_root_path()
     output_file = os.path.join(root_path, root_dir+".md")
     md_files = get_md_files()
     check_md_files(md_files)
@@ -222,7 +239,7 @@ def Merge_all_md_files_into_one_file_base_on_num_index():
     files = [f for f in os.listdir() if f.endswith('.md')]
     files.sort()
     print(files)
-    root_path, root_dir = get_assets_root_path()
+    root_path, root_dir = file_operations_utils.get_assets_root_path()
     with open(os.path.join(root_path, root_dir+".md"), 'w', encoding='utf-8') as f:
         for file in files:
             with open(file, 'r', encoding='utf-8') as f2:

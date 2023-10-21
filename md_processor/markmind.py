@@ -2,7 +2,7 @@ import os
 import logging
 import file_operations_utils
 import time
-
+import urllib.parse
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -48,6 +48,9 @@ def create_annotator(path=None):
                     logging.debug("annotator_id: %s", annotator_id)
 
                 annotate_target_path = os.path.join(root, file)
+                # annotate_target_path = urllib.parse.quote(
+                #     os.path.abspath(annotate_target_path))
+
                 annotate_image_target_full_path = os.path.join(path, "imgs")
                 annotate_image_target_path = get_annotate_image_target_path(
                     annotate_image_target_full_path)
@@ -58,6 +61,7 @@ id: {annotator_id}
 annotate-type: pdf
 annotate-target: file://{annotate_target_path}
 annotate-image-target: {annotate_image_target_path}
+
 ---
 
 """
