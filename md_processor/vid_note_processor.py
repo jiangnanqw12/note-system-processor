@@ -70,31 +70,6 @@ def subtitles_format_for_gpt_input(directory_path=None):
         directory_path = os.getcwd()
     vtt_format_4_gpt(directory_path)
     srt_format_4_gpt(directory_path)
-    # files_md = [f for f in os.listdir(directory_path) if f.endswith('.md')]
-
-    # reg_string_list = []
-
-    # reg_srt_time = [
-    #     r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n']
-    # for file in files_md:
-    #     with open(os.path.join(directory_path, file), "r", encoding="utf-8") as f1:
-    #         lines = f1.readlines()
-    #     for i, line in enumerate(lines):
-    #         line = line.strip()
-    # r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)\n(.+)\n\n'
-    # reg_string1 = [
-    #     r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)\n(.+)\n\n', r"[[\1],[\2],[\3]]"]
-    # reg_string_list.extend([reg_string1])
-    # reg_string2 = [
-    #     r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)\n(.+)', r"[[\1],[\2],[\3]]"]
-    # reg_string_list.extend([reg_string2])
-    # reg_string2 = [
-    #     r'\d{1,3}\n(\d{1,2}:\d{1,2}:\d{1,2},\d{1,3} --> \d{1,2}:\d{1,2}:\d{1,2},\d{1,3})\n(.+)', r"[[\1],[\2]]"]
-    # reg_string_list.extend([reg_string2])
-    # reg_string3 = [r'\n\n', r"\n"]
-    # reg_string_list.extend([reg_string3])
-    # file_operations_utils.perform_regex_replacement_on_files(
-    #     reg_string_list, directory_path, files_md)
 
 
 def initialize_vid_note_file_structure(current_dir=None):
@@ -284,9 +259,7 @@ def move_origin_vid_to_destination(TR_MODE=0):
     current_bvid_destination_file_path = os.path.join(
         bvids_destination_directory_path, current_bvid_name)
     if flag_one_by_one:
-        r"001_投篮弧线低、不柔和？3个丝滑作弊码 ｜ 1 1.5 motion 上肢篇 [BV1fU4y137JF]"
-        r"001_投篮弧线低、不柔和？3个丝滑作弊码 ｜ 1 1.5 motion 上肢篇 [BV1fU4y137JF].srt"
-        r"001_投篮弧线低、不柔和？3个丝滑作弊码 ｜ 1 1.5 motion 上肢篇 [BV1fU4y137JF].srt"
+
         if not os.path.exists(current_bvid_destination_file_path):
             vid_name_origin = files[0]
         # origin_current_vid_file_name = "\n"+re.sub(bvid_reg_string, r'\1', vid_name_origin)
@@ -308,82 +281,6 @@ def move_origin_vid_to_destination(TR_MODE=0):
                     os.rename(os.path.join(
                         bvids_origin_topic_path, file_sub), os.path.join(bvids_destination_directory_path, current_bsrt_name))
 
-        # current_bsrt_name = current_bvid_name[:-4]+".srt"
-        # if TR_MODE:
-        #     print("current_bsrt_name:", current_bsrt_name)
-        # current_bsrt_name_en = current_bvid_name[:-4]+".en.srt"
-        # if TR_MODE:
-        #     print("current_bsrt_name_en:", current_bsrt_name_en)
-        # current_bsrt_file_path = os.path.join(
-        #     bvids_destination_directory_path, current_bsrt_name)
-        # current_bsrt_file_path_en = os.path.join(
-        #     bvids_destination_directory_path, current_bsrt_name_en)
-        # if (not os.path.exists(current_bsrt_file_path)) and (not os.path.exists(current_bsrt_file_path_en)):
-
-        #     srt_name_front = vid_name_origin[:-4]
-
-        #     reg_string_srt = r"^"+srt_name_front+r"(.+)\.srt$"
-
-        #     for file_srt in files_sub:
-        #         match = re.search(reg_string_srt, file_srt)
-        #         if match:
-        #             srt_name_origin = file_srt
-
-        #             new_srt_name = current_bvid_name[:-4]+match.group(1)+".srt"
-        #             if TR_MODE:
-        #                 print("srt_name_origin:", srt_name_origin)
-        #                 print("new_srt_name:", new_srt_name)
-        #             new_srt_file_path = os.path.join(
-        #                 bvids_destination_directory_path, new_srt_name)
-        #             os.rename(os.path.join(
-        #                 bvids_origin_topic_path, srt_name_origin), new_srt_file_path)
-        #         else:
-        #             reg_string_srt2 = r"^"+srt_name_front+r"\.srt$"
-        #             match = re.search(reg_string_srt2, file_srt)
-        #             if match:
-        #                 srt_name_origin = file_srt
-
-        #                 new_srt_name = current_bvid_name[:-4]+".srt"
-        #                 if TR_MODE:
-        #                     print("srt_name_origin:", srt_name_origin)
-        #                     print("new_srt_name:", new_srt_name)
-        #                 new_srt_file_path = os.path.join(
-        #                     bvids_destination_directory_path, new_srt_name)
-        #                 os.rename(os.path.join(
-        #                     bvids_origin_topic_path, srt_name_origin), new_srt_file_path)
-
-    # else:
-    #     bvid_reg_string, bvid_srt_reg_string = get_bvid_reg_string(
-    #         sub_topic1_to_sub_topicn_folder_list, TR_MODE)
-    #     flag_match = 0
-    #     for file in files:
-    #         match = re.search(bvid_reg_string, file)
-    #         if match:
-    #             flag_match = 1
-    #             vid_name_origin = file
-    #             if TR_MODE:
-    #                 print("vid_name_origin:", vid_name_origin)
-    #                 print(match.group(0))
-    #             break
-
-    #     if flag_match == 0 and (not os.path.exists(current_bvid_destination_file_path)):
-    #         raise ValueError("No match found.")
-    #     if not os.path.exists(current_bvid_destination_file_path):
-
-    #         os.rename(os.path.join(bvids_origin_topic_path,
-    #                   vid_name_origin), current_bvid_destination_file_path)
-
-    #     files_srt = [f for f in os.listdir(bvids_origin_topic_path) if os.path.isfile(
-    #         os.path.join(bvids_origin_topic_path, f)) and f.endswith(".srt")]
-    #     for file_srt in files_srt:
-    #         match = re.search(bvid_srt_reg_string, file_srt)
-    #         if match:
-    #             new_srt_name = current_bvid_name[:-4]+".srt"
-    #             new_srt_path = os.path.join(
-    #                 bvids_destination_directory_path, new_srt_name)
-    #             if not os.path.exists(new_srt_path):
-    #                 os.rename(os.path.join(
-    #                     bvids_origin_topic_path, file_srt), new_srt_path)
     return origin_current_vid_file_name, current_bvid_destination_file_path, OneDrive_KG_current_note_directory_path
 
 
@@ -425,7 +322,7 @@ def check_video_file_path_conforms_to_pattern(str_url):
 
 def convert_min_sec_to_seconds(time_str):
     time_line_pattern_str = r'\((\d{1,2}:\d{1,2})-(\d{1,2}:\d{1,2})\)[ ]{1,}'
-    time_stamp_pattern_str = r'(\d{1,2}):(\d{1,2})'
+    time_stamp_pattern_str = r'((\d{1,2}):|)(\d{1,2}):(\d{1,2})'
     match = re.search(time_line_pattern_str, time_str)
     if match:
         time_line_start = match.group(1)
@@ -436,7 +333,15 @@ def convert_min_sec_to_seconds(time_str):
     else:
         match = re.search(time_stamp_pattern_str, time_str)
         if match:
-            time_seconds = int(match.group(1)) * 60 + int(match.group(2))
+            if match.group(1) != None:
+                # print(match.group(2))
+                hour = int(match.group(2))
+            else:
+                hour = 0
+
+            time_seconds = hour * 60*60 + \
+                int(match.group(3))*60 + int(match.group(4))
+
             return time_seconds
         else:
             return None
