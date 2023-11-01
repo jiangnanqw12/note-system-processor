@@ -266,8 +266,19 @@ def move_origin_vid_to_destination(TR_MODE=0):
             origin_current_vid_file_name = vid_name_origin
             os.rename(os.path.join(bvids_origin_topic_path,
                       vid_name_origin), current_bvid_destination_file_path)
-            reg_string_sub = r"^" + \
-                vid_name_origin[:4]+".+"+r"(\.[\w-]|)(\.srt|\.vtt)$"
+            reg_vid_name_origin_serial = r"(\d{2,6})_.+(\.mp4|\.flv|\.whem)"
+            match = re.search(reg_vid_name_origin_serial,
+                              origin_current_vid_file_name)
+            serial_number_origin = match.group(1)
+            if match:
+                reg_string_sub = r"^" + \
+                    serial_number_origin+"_"+".+?" + \
+                    r"(\.ch\.cn|\.en)(\.srt|\.vtt)$"
+                reg_string_sub2 = r"^" + \
+                    serial_number_origin+"_"+".+?" + \
+                    r"(\.srt|\.vtt)$"
+            else:
+                raise Exception("Error: regex not match")
             files_sub = [f for f in os.listdir(bvids_origin_topic_path) if os.path.isfile(
                 os.path.join(bvids_origin_topic_path, f)) and (f.endswith(".srt") or f.endswith(".vtt"))]
 
@@ -275,13 +286,19 @@ def move_origin_vid_to_destination(TR_MODE=0):
                 match = re.search(reg_string_sub, file_sub)
 
                 if match:
-                    print(match)
+                    # print(match)
                     current_bsrt_name = current_bvid_name[:-4] + \
                         match.group(1)+match.group(2)
                     os.rename(os.path.join(
                         bvids_origin_topic_path, file_sub), os.path.join(bvids_destination_directory_path, current_bsrt_name))
-
-    return origin_current_vid_file_name, current_bvid_destination_file_path, OneDrive_KG_current_note_directory_path
+                else:
+                    match = re.search(reg_string_sub2, file_sub)
+                    if match:
+                        current_bsrt_name = current_bvid_name[:-4] + \
+                            match.group(1)
+                        os.rename(os.path.join(
+                            bvids_origin_topic_path, file_sub), os.path.join(bvids_destination_directory_path, current_bsrt_name))
+                    return origin_current_vid_file_name, current_bvid_destination_file_path, OneDrive_KG_current_note_directory_path
 
 
 def vid_path_2_md_vid_link(vid_path, current_bvid_name):
@@ -500,7 +517,8 @@ def convert_md_vid_link_to_html_tree(directory_path=None):
                    r'<video src="\2" controls></video>']
     reg_string_list.extend([reg_string2])
 
-    perform_regex_replacement_on_files_tree(reg_string_list, directory_path)
+    file_operations_utils.perform_regex_replacement_on_files_tree(
+        reg_string_list, directory_path)
 
 
 def convert_gpt_summary_to_markdown_vid_timeline(str_url, TR_MODE, path=None):
@@ -637,26 +655,6 @@ def generate_vid_note_with_timeline_from_timestamps():
     convert_md_vid_link_to_html(OneDrive_KG_current_note_directory_path)
 
 
-def convert_subtitle_chatgpt_summary_to_markdown_vid_timeline(str_url):
-
-    # str_url=r'![009_area-and-slope.mp4](file:///C:%5CBaiduSyncdisk%5Cassets%5CO%5CO1%5CO17%5CO172%5CCalculus%203Blue1Brown%5Cassets%5Cbvids%5C009_area-and-slope.mp4)'
-
-    match1 = check_video_file_path_conforms_to_pattern(str_url)
-    cwd = os.getcwd()
-    file_list = os.listdir(cwd)
-    assets_root_path, assets_root_dir = get_assets_root_path()
-    create_output_directory(assets_root_path)
-
-    for file in file_list:
-        if file.endswith(".md"):
-            if file.find("summary_gpt") != -1:
-                key_word = "summary_gpt"
-                list_time_head_textshort_text = get_list_time_head_textshort_text_4_file(
-                    file, key_word)
-                list_time_head_textshort_text_to_vid_timeline_md(
-                    list_time_head_textshort_text, file, match1)
-
-
 def merge_list_time_head_textshort_text(list_time_text, list_time_head_textshort):
     # print("list_time_head_textshort is :")
     # print(list_time_head_textshort)
@@ -707,42 +705,6 @@ def merge_list_time_head_textshort_text(list_time_text, list_time_head_textshort
         print("remain:", list_time_text)
 
     return list_time_head_textshort_text
-
-
-def convert_subtitle_and_summary_to_markdown_vid_timeline(str_url):
-
-    # str_url=r'![009_area-and-slope.mp4](file:///C:%5CBaiduSyncdisk%5Cassets%5CO%5CO1%5CO17%5CO172%5CCalculus%203Blue1Brown%5Cassets%5Cbvids%5C009_area-and-slope.mp4)'
-
-    match1 = check_video_file_path_conforms_to_pattern(str_url)
-    cwd = os.getcwd()
-    file_list = os.listdir(cwd)
-    assets_root_path, assets_root_dir = get_assets_root_path()
-    output_dir = create_output_directory(assets_root_path)
-
-    for file in file_list:
-        if file.endswith(".md"):
-            if file.find("subtitle") != -1:
-                key_word = "subtitle"
-                list_time_text = get_list_time_head_textshort_text_4_file(
-                    file, key_word)
-                # list_time_head_textshort_text_to_vid_timeline_md(list_time_head_textshort_text,file,match1)
-
-            if file.find("summary_gpt") != -1:
-                cwd_floder_name = os.path.basename(cwd)
-                file_summary = file
-                key_word = "summary_gpt"
-                list_time_head_textshort = get_list_time_head_textshort_text_4_file(
-                    file, key_word)
-                # list_time_head_textshort_text_to_vid_timeline_md(list_time_head_textshort_text,file,match1)
-
-    list_time_head_textshort_text = merge_list_time_head_textshort_text(
-        list_time_text, list_time_head_textshort)
-    print("final is:")
-    print(list_time_head_textshort_text)
-    list_time_head_textshort_text_to_vid_timeline_md(
-        list_time_head_textshort_text, file_summary, match1)
-    convert_md_vid_link_to_html(output_dir)
-    return output_dir, file_summary
 
 
 def get_bvid_reg_string(sub_topic1_to_sub_topicn_folder_list, TR_MODE=0):
@@ -829,3 +791,59 @@ def copy_timestamps_and_index_2_root(directory=None):
 
                 if not os.path.exists(dest_path):
                     shutil.copy(file, dest_path)
+
+
+def convert_subtitle_and_summary_to_markdown_vid_timeline(str_url):
+
+    # str_url=r'![009_area-and-slope.mp4](file:///C:%5CBaiduSyncdisk%5Cassets%5CO%5CO1%5CO17%5CO172%5CCalculus%203Blue1Brown%5Cassets%5Cbvids%5C009_area-and-slope.mp4)'
+
+    match1 = check_video_file_path_conforms_to_pattern(str_url)
+    cwd = os.getcwd()
+    file_list = os.listdir(cwd)
+    assets_root_path, assets_root_dir = get_assets_root_path()
+    output_dir = create_output_directory(assets_root_path)
+
+    for file in file_list:
+        if file.endswith(".md"):
+            if file.find("subtitle") != -1:
+                key_word = "subtitle"
+                list_time_text = get_list_time_head_textshort_text_4_file(
+                    file, key_word)
+                # list_time_head_textshort_text_to_vid_timeline_md(list_time_head_textshort_text,file,match1)
+
+            if file.find("summary_gpt") != -1:
+                cwd_floder_name = os.path.basename(cwd)
+                file_summary = file
+                key_word = "summary_gpt"
+                list_time_head_textshort = get_list_time_head_textshort_text_4_file(
+                    file, key_word)
+                # list_time_head_textshort_text_to_vid_timeline_md(list_time_head_textshort_text,file,match1)
+
+    list_time_head_textshort_text = merge_list_time_head_textshort_text(
+        list_time_text, list_time_head_textshort)
+    print("final is:")
+    print(list_time_head_textshort_text)
+    list_time_head_textshort_text_to_vid_timeline_md(
+        list_time_head_textshort_text, file_summary, match1)
+    convert_md_vid_link_to_html(output_dir)
+    return output_dir, file_summary
+
+
+def convert_subtitle_chatgpt_summary_to_markdown_vid_timeline(str_url):
+
+    # str_url=r'![009_area-and-slope.mp4](file:///C:%5CBaiduSyncdisk%5Cassets%5CO%5CO1%5CO17%5CO172%5CCalculus%203Blue1Brown%5Cassets%5Cbvids%5C009_area-and-slope.mp4)'
+
+    match1 = check_video_file_path_conforms_to_pattern(str_url)
+    cwd = os.getcwd()
+    file_list = os.listdir(cwd)
+    assets_root_path, assets_root_dir = get_assets_root_path()
+    create_output_directory(assets_root_path)
+
+    for file in file_list:
+        if file.endswith(".md"):
+            if file.find("summary_gpt") != -1:
+                key_word = "summary_gpt"
+                list_time_head_textshort_text = get_list_time_head_textshort_text_4_file(
+                    file, key_word)
+                list_time_head_textshort_text_to_vid_timeline_md(
+                    list_time_head_textshort_text, file, match1)
