@@ -12,11 +12,12 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             //"env": {"PYTHONPATH": "C:\\Users\\shade\\anaconda3"},
-            "args": ["-ofp", "-i", "10"],
+            //"args": ["-ofp", "-i", "10"],
+            "args": ["-vid", "-i", "3"],
             //"args": ["-md", "-i", "6"],
             //"cwd": "C:\\Users\\shade\\OneDrive\\KG\\002Work\\009_other\\Science of Energy\\assets\\003_How to Use Ultrasonic Energy"
 
-            "cwd": "C:\\Users\\shade\\OneDrive\\KG\\TP\\TP3\\CS50\\assets",
+            "cwd": "C:\\Users\\shade\\OneDrive\\KG\\TP\\TP3\\CS50\\assets\\001_section\\001_C",
         }
     ]
 }

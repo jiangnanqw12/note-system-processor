@@ -298,7 +298,7 @@ def move_origin_vid_to_destination(TR_MODE=0):
                             match.group(1)
                         os.rename(os.path.join(
                             bvids_origin_topic_path, file_sub), os.path.join(bvids_destination_directory_path, current_bsrt_name))
-                    return origin_current_vid_file_name, current_bvid_destination_file_path, OneDrive_KG_current_note_directory_path
+    return origin_current_vid_file_name, current_bvid_destination_file_path, OneDrive_KG_current_note_directory_path
 
 
 def vid_path_2_md_vid_link(vid_path, current_bvid_name):
@@ -350,8 +350,8 @@ def convert_min_sec_to_seconds(time_str):
     else:
         match = re.search(time_stamp_pattern_str, time_str)
         if match:
-            if match.group(1) != None:
-                # print(match.group(2))
+            if match.group(2) != None:
+                # print(match.group(1))
                 hour = int(match.group(2))
             else:
                 hour = 0
