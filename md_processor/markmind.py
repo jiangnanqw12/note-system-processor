@@ -3,6 +3,7 @@ import logging
 import file_operations_utils
 import time
 import urllib.parse
+import re
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -13,7 +14,7 @@ ASSETS_FOLDER_NAME = "assets"
 
 def get_annotator_id(file_name):
     file_name_temp = file_name.replace(" ", "_")
-    return file_name_temp + "_" + str(int(time.time()))
+    return file_name_temp + "_" + str(int(time.time())), file_name_temp
 
 
 def get_annotate_image_target_path(path):
@@ -27,7 +28,8 @@ def get_annotate_image_target_path(path):
 def create_annotator(path=None):
     if path is None:
         path = os.getcwd()
-
+    files_annotator = [f for f in os.listdir(
+        path) if f.endswith('_annotator.md')]
     # get bassets folder path
     big_assets_path = file_operations_utils.get_b_KG_directory_path(path)
 
@@ -42,7 +44,7 @@ def create_annotator(path=None):
         for file in files:
             if file.endswith(".pdf"):
                 file_name = os.path.splitext(file)[0]
-                annotator_id = get_annotator_id(file_name)
+                annotator_id, file_name_temp = get_annotator_id(file_name)
 
                 if TR_MODE:
                     logging.debug("annotator_id: %s", annotator_id)
@@ -68,9 +70,15 @@ annotate-image-target: {annotate_image_target_path}
 
                 annotator_file_name = f"{annotator_id}_annotator.md"
                 annotator_path = os.path.join(path, annotator_file_name)
-
-                with open(annotator_path, "w", encoding="utf-8") as f:
-                    f.write(content_annotator)
+                reg_anno = file_name_temp+"_"+r"\d{10}"+"_annotator.md"
+                flag = False
+                for file_annotator in files_annotator:
+                    match = re.search(reg_anno, file_annotator)
+                    if match:
+                        flag = True
+                if not flag:
+                    with open(annotator_path, "w", encoding="utf-8") as f:
+                        f.write(content_annotator)
 
 
 # def create_annotator(path=None):
