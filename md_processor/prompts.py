@@ -158,7 +158,7 @@ I have an extensive video subtitle data that needs your expertise. My aim is to 
 For each segment, I expect you to craft a detailed summary that includes:
 - Title: A descriptive title that encapsulates the main point of the segment.
 - Start Timestamp: The starting time of the segment within the video.
-- Summary: A brief summary text showing the main points or topics discussed in that segment.
+- Summary: A brief and short summary text showing the main points or topics discussed in that segment.
 Here is the format I expect for each segment:
 Title:
 Start Timestamp:
