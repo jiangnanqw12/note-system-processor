@@ -130,6 +130,77 @@ def perform_regex_rename_on_files(reg_string_list, path=None, files=None):
                     print(f"Error renaming '{file}' to '{new_file}': {e}")
 
 
+def rename_files_in_directories(base_path=None):
+    rename_files_in_directories_2()
+
+
+def rename_files_in_directories_2(base_path=None):
+    """
+    /index/*.mp4
+    to
+    /index_*.mp4
+    Rename all files in numbered directories within the base path.
+    Each file is prefixed with the directory number, zero-padded to three digits.
+    """
+    # Use the current working directory if no path is provided
+    base_path = base_path or os.getcwd()
+    files = os.listdir(base_path)
+    files_mp4 = []
+
+    for f in files:
+        if f.endswith(".mp4"):
+            files_mp4.append(f)
+
+    # Validate the base path
+    if not os.path.isdir(base_path):
+        print(f"The provided path '{base_path}' is not a valid directory.")
+        return
+
+    for index in range(16):
+        start_str = f"{16 - index:03d}_"
+        for file_mp4 in files_mp4:
+            if file_mp4.startswith(start_str):
+                new_file = f"{1+index:03d}{file_mp4[3:]}"
+                os.rename(os.path.join(base_path, file_mp4),
+                          os.path.join(base_path, new_file))
+
+
+def rename_files_in_directories_1(base_path=None):
+    """
+    /index/*.mp4
+    to
+    /index_*.mp4
+    Rename all files in numbered directories within the base path.
+    Each file is prefixed with the directory number, zero-padded to three digits.
+    """
+    # Use the current working directory if no path is provided
+    base_path = base_path or os.getcwd()
+
+    # Validate the base path
+    if not os.path.isdir(base_path):
+        print(f"The provided path '{base_path}' is not a valid directory.")
+        return
+
+    for index in range(16):
+        dir_path = os.path.join(base_path, f"{16 - index}")
+
+        # Check if the directory exists
+        if not os.path.isdir(dir_path):
+            print(f"Directory '{dir_path}' does not exist. Skipping.")
+            continue
+
+        try:
+            for file in os.listdir(dir_path):
+                old_file_path = os.path.join(dir_path, file)
+                # Zero-padded prefix
+                new_file_name = f"{16 - index:03d}_{file}"
+                new_file_path = os.path.join(base_path, new_file_name)
+                os.rename(old_file_path, new_file_path)
+                print(f"Renamed '{old_file_path}' to '{new_file_path}'")
+        except OSError as e:
+            print(f"Error renaming files in '{dir_path}': {e}")
+
+
 def get_current_timestamp():
     timestamp = int(time.time())
     print(timestamp)

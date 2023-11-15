@@ -123,6 +123,7 @@ def os_file_processor(num=0):
         8: file_operations_utils.rename_index_folder_files,
         9: file_operations_utils.rename_bilibili_subs,
         10: markmind.create_annotator,
+        11: file_operations_utils.rename_files_in_directories,
 
 
 
