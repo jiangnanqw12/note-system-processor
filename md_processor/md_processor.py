@@ -150,6 +150,7 @@ def get_prompts(num=0):
         5: prompts.Expert_Prompt_Creator,
         6: prompts.dot2mermaid,
         7: prompts.code_improve,
+        8: prompts.format_code_current_dir,
 
 
     }

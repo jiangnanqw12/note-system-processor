@@ -174,3 +174,20 @@ I appreciate your assistance. Thank you!
 
     final_string = prompt_string1 + content + prompt_string2
     pyperclip.copy(final_string)
+
+
+def format_code_current_dir(current_dir=None):
+    import os
+    if current_dir is None:
+        current_dir = os.getcwd()
+    files_py = [f for f in os.listdir(current_dir) if f.endswith('.py')]
+    output_dir = f'{current_dir}/output'
+    os.makedirs(output_dir, exist_ok=True)
+    with open(f'{output_dir}/output.md', 'w', encoding="utf-8") as f1:
+        for file in files_py:
+            with open(f'{current_dir}/{file}', 'r', encoding="utf-8") as f:
+                content = f.read()
+            content = format_code_2_gpt_input(
+                content=content, copy_to_clipboard=False)
+            f1.write(content)
+    return current_dir
