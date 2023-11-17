@@ -95,6 +95,7 @@ def vid_note_process(num=0):
         4: vid_note_processor.convert_md_vid_link_to_html,
         5: vid_note_processor.convert_md_vid_link_to_html_tree,
         6: vid_note_processor.vtt_format_4_gpt,
+        7: vid_note_processor.mul_initialize_vid_note_file_structure,
 
 
     }

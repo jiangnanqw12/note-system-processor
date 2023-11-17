@@ -23,7 +23,7 @@ def srt_format_4_gpt(directory_path=None):
             content += line_temp
 
         reg_srt_2_gpt1 = [
-            r'\d{1,3}\d{2}:(\d{2}:\d{2}),\d{3} --> \d{1,2}:\d{2}:\d{2},\d{3}', r'\n(\1) ']
+            r'\d{1,3}(\d{2}:\d{2}:\d{2}),\d{3} --> \d{1,2}:\d{2}:\d{2},\d{3}', r'\n(\1) ']
         reg_srt_2_gpt = reg_srt_2_gpt1
         content = re.sub(reg_srt_2_gpt[0], reg_srt_2_gpt[1], content)
         with open(os.path.join(directory_path, file), "w", encoding="utf-8") as f1:
@@ -49,7 +49,7 @@ def vtt_format_4_gpt(directory_path=None):
         reg_vtt_2_gpt_list = []
 
         reg_vtt_2_gpt_list.append([
-            r'\d{2}:(\d{2}:\d{2}).\d{3} --> \d{1,2}:\d{2}:\d{2}.\d{3}', r'\n(\1)'])
+            r'(\d{2}:\d{2}:\d{2}).\d{3} --> \d{1,2}:\d{2}:\d{2}.\d{3}', r'\n(\1)'])
         reg_vtt_2_gpt_list.append([
             r'WEBVTT Kind:.+ Language:.+\n', r''])
         reg_vtt_2_gpt_list.append([r'&nbsp;', r' '])
@@ -72,11 +72,47 @@ def subtitles_format_for_gpt_input(directory_path=None):
     srt_format_4_gpt(directory_path)
 
 
-def initialize_vid_note_file_structure(current_dir=None):
+def get_list_key_word_vid(current_dir=None):
+    if current_dir is None:
+        current_dir = os.getcwd()
+    list_key_word_vid = []
+    files_mp4 = [file for file in os.listdir(
+        current_dir) if file.endswith(".mp4")]
+    for file in files_mp4:
+        reg = r".*? - Lecture \d{1,2} - (.*?)-.*?\.mp4"
+        match = re.search(reg, file)
+        if match:
+            list_key_word_vid.append(match[1])
+        else:
+            print("not matching")
+
+    return list_key_word_vid
+
+
+def mul_initialize_vid_note_file_structure(current_dir=None, list_content=None):
+    TR_MODE = 1
+    if current_dir is None:
+        current_dir = os.getcwd()
+    Topic, sub_topic1 = file_operations_utils.get_Topic_in_kg(TR_MODE)
+
+    if Topic is None:
+        raise ValueError("Topic is None")
+    bvids_origin_topic_path = file_operations_utils.get_bvids_origin_topic_path(
+        Topic, TR_MODE)
+    if list_content is None:
+        list_content = get_list_key_word_vid(
+            current_dir=bvids_origin_topic_path)
+    for content in list_content:
+        initialize_vid_note_file_structure(current_dir, content)
+
+
+def initialize_vid_note_file_structure(current_dir=None, content=None):
 
     TR_MODE = 1
     # Get content from clipboard
-    content = pyperclip.paste()
+    if content is None:
+        content = pyperclip.paste()
+    content = content.strip()
     reg_content_to_current_topic = [r"\d{1,3}_(.+)\.mp4", r"\1"]
     match = re.search(reg_content_to_current_topic[0], content)
     if match:
