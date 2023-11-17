@@ -78,6 +78,7 @@ def get_list_key_word_vid(current_dir=None):
     list_key_word_vid = []
     files_mp4 = [file for file in os.listdir(
         current_dir) if file.endswith(".mp4")]
+    files_mp4.sort()
     for file in files_mp4:
         reg = r".*? - Lecture \d{1,2} - (.*?)-.*?\.mp4"
         match = re.search(reg, file)
