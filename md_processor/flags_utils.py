@@ -4,7 +4,8 @@ class GlobalFlags:
             'flag_one_by_one': False,
             'verbose': False,
             'debug': True,
-            'TR_MODE': False,
+            'TR_MODE': True,
+            'TR_MODE_debug': True,
         }
 
     def set_flag(self, name, value):

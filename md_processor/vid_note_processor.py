@@ -91,7 +91,12 @@ def get_list_key_word_vid(current_dir=None):
 
 
 def mul_initialize_vid_note_file_structure(current_dir=None, list_content=None):
-    TR_MODE = 1
+    import flags_utils
+
+    flags = flags_utils.GlobalFlags()
+    flags.set_flag('TR_MODE', True)
+    TR_MODE = flags.get_flag('TR_MODE')
+
     if current_dir is None:
         current_dir = os.getcwd()
     Topic, sub_topic1 = file_operations_utils.get_Topic_in_kg(TR_MODE)
@@ -109,7 +114,11 @@ def mul_initialize_vid_note_file_structure(current_dir=None, list_content=None):
 
 def initialize_vid_note_file_structure(current_dir=None, content=None):
 
-    TR_MODE = 1
+    import flags_utils
+
+    flags = flags_utils.GlobalFlags()
+    flags.set_flag('TR_MODE', True)
+    TR_MODE = flags.get_flag('TR_MODE')
     # Get content from clipboard
     if content is None:
         content = pyperclip.paste()
