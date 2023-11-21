@@ -1,6 +1,7 @@
 
 import pyperclip
 import re
+import os
 
 
 def get_prompt_explain_c_cpp(content=None):
@@ -177,7 +178,7 @@ I appreciate your assistance. Thank you!
 
 
 def format_code_current_dir(current_dir=None):
-    import os
+
     if current_dir is None:
         current_dir = os.getcwd()
     files_py = [f for f in os.listdir(current_dir) if f.endswith('.py')]
