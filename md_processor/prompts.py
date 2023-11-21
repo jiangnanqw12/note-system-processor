@@ -137,6 +137,42 @@ def format_code_2_gpt_input(content=None, copy_to_clipboard=True):
     return repr(content)
 
 
+def format_c_cpp_2_gpt_input(content=None, copy_to_clipboard=True):
+    """
+    Formats the input content by replacing multiple newline characters with a single newline character and
+    multiple spaces with a single space. If no content is provided, it fetches the content from the clipboard,
+    formats it, and then copies the formatted content back to the clipboard if copy_to_clipboard is True.
+
+    :param content: The input content to format. If None, the content will be taken from the clipboard.
+    :param copy_to_clipboard: A flag indicating whether to copy the formatted content back to the clipboard.
+    :return: The formatted content as a string.
+    """
+    if content is None:
+        try:
+            content = pyperclip.paste()
+        except pyperclip.PyperclipException:
+            print("Unable to access the clipboard.")
+            return None
+
+    content = content.replace("\r\n", "\n").replace("\\n", "\n")
+
+    replacements = [
+        (r"\n{2,}", "\n"),
+        (r"[ ]{2,}", " ")
+    ]
+
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content)
+
+    if copy_to_clipboard:
+        try:
+            pyperclip.copy(repr(content))
+        except pyperclip.PyperclipException:
+            print("Unable to copy content to the clipboard.")
+
+    return repr(content)
+
+
 def code_improve():
     prompt_string1 = """{
 "language": "Python",
@@ -191,4 +227,34 @@ def format_code_current_dir(current_dir=None):
             content = format_code_2_gpt_input(
                 content=content, copy_to_clipboard=False)
             f1.write(content)
+    return current_dir
+
+
+def format_c_cpp_current_dir(current_dir=None):
+
+    if current_dir is None:
+        current_dir = os.getcwd()
+    files_c_cpp = [f for f in os.listdir(current_dir) if (
+        f.endswith('.c') or f.endswith('.cpp') or f.endswith('.h') or f.endswith('.hpp'))]
+    output_dir = f'{current_dir}/output'
+    os.makedirs(output_dir, exist_ok=True)
+    for root, dirs, files in os.walk(current_dir):
+        for file in files:
+            if file.endswith('.c') or file.endswith('.cpp') or file.endswith('.h') or file.endswith('.hpp'):
+                with open(f'{root}/{file}', 'r', encoding="utf-8") as f:
+                    content = f.read()
+                content = format_c_cpp_2_gpt_input(
+                    content=content, copy_to_clipboard=False)
+                # get file name
+                file_name = file.split('.')[0]
+                # get dir name
+                dir_name = root.split('/')[-1]
+
+                with open(f'{output_dir}/{dir_name}/{file_name}.md', 'w', encoding="utf-8") as f1:
+                    f1.write(content)
+                with open(f'{output_dir}/{dir_name}.md', 'r', encoding="utf-8") as f1:
+                    content1 = f1.read()
+                with open(f'{output_dir}/{dir_name}.md', 'w', encoding="utf-8") as f1:
+                    content = f1.write(content1+content)
+
     return current_dir
