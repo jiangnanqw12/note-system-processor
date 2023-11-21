@@ -320,6 +320,8 @@ def format_code_current_dir(current_dir=None):
         f.endswith('.c') or f.endswith('.cpp') or f.endswith('.h') or f.endswith('.hpp'))]
     output_dir = os.path.join(current_dir, 'output')
     os.makedirs(output_dir, exist_ok=True)
+    with open(os.path.join(output_dir, '.gitignore'), 'w', encoding="utf-8") as f:
+        f.write("*.md\n")
     for root, dirs, files in os.walk(current_dir):
         for file in files:
             if file.endswith('.c') or file.endswith('.cpp') or file.endswith('.h') or file.endswith('.hpp'):
@@ -369,6 +371,7 @@ def format_code_current_dir(current_dir=None):
                     content=content, copy_to_clipboard=False)
                 floder_sep = os.path.join(output_dir, dir_name)
                 os.makedirs(floder_sep, exist_ok=True)
+
                 file_dir = os.path.join(floder_sep, f'{file_name}.md')
                 total_dir = os.path.join(
                     output_dir, f'{dir_name}.md')
