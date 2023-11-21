@@ -91,7 +91,6 @@ def get_list_key_word_vid(current_dir=None):
 
 
 def mul_initialize_vid_note_file_structure(current_dir=None, list_content=None):
-    import flags_utils
 
     flags = flags_utils.GlobalFlags()
     flags.set_flag('TR_MODE', True)
@@ -113,8 +112,6 @@ def mul_initialize_vid_note_file_structure(current_dir=None, list_content=None):
 
 
 def initialize_vid_note_file_structure(current_dir=None, content=None):
-
-    import flags_utils
 
     flags = flags_utils.GlobalFlags()
     flags.set_flag('TR_MODE', True)
@@ -145,15 +142,19 @@ def initialize_vid_note_file_structure(current_dir=None, content=None):
     serial_numbers = [f[:3] for f in os.listdir(current_dir) if os.path.isfile(
         os.path.join(current_dir, f)) and f[:3].isdigit()]
 
-    # Generate filename
-    if serial_numbers:
-        max_serial_number = max(serial_numbers)
+    # # Generate filename
+    # if serial_numbers:
+    #     max_serial_number = max(serial_numbers)
 
-        note_file = str(int(max_serial_number) + 1).zfill(3) + \
-            "_"+current_topic+".md"
+    #     note_file = str(int(max_serial_number) + 1).zfill(3) + \
+    #         "_"+current_topic+".md"
 
-    else:
-        note_file = "001"+"_"+current_topic+".md"
+    # else:
+    #     note_file = "001"+"_"+current_topic+".md"
+
+    max_serial_number = max(serial_numbers) if serial_numbers else "000"
+    note_file = f"{int(max_serial_number) + 1:03d}_{current_topic}.md"
+
     if TR_MODE == 1:
         print("note_file: ", note_file)
 
@@ -164,8 +165,8 @@ def initialize_vid_note_file_structure(current_dir=None, content=None):
         with open(note_file_path, 'w') as f:
             f.write("")
 
-    sub_topic1_to_sub_topicn_folder_list = []
-    sub_topic1_to_sub_topicn_folder_list.append(note_file[:-3])
+    sub_topic1_to_sub_topicn_folder_list = [note_file[:-3]]
+
     # sub_topic1_to_sub_topicn_folder_list.append(os.path.basename(current_dir))
 
     note_assets_dir_path = file_operations_utils.get_note_assets_dir_path(
