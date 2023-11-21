@@ -241,20 +241,25 @@ def format_c_cpp_current_dir(current_dir=None):
     for root, dirs, files in os.walk(current_dir):
         for file in files:
             if file.endswith('.c') or file.endswith('.cpp') or file.endswith('.h') or file.endswith('.hpp'):
-                with open(f'{root}/{file}', 'r', encoding="utf-8") as f:
-                    content = f.read()
-                content = format_c_cpp_2_gpt_input(
-                    content=content, copy_to_clipboard=False)
                 # get file name
                 file_name = file.split('.')[0]
                 # get dir name
                 dir_name = root.split('/')[-1]
-
-                with open(f'{output_dir}/{dir_name}/{file_name}.md', 'w', encoding="utf-8") as f1:
+                if dir_name.startswith('.'):
+                    continue
+                with open(f'{root}/{file}', 'r', encoding="utf-8") as f:
+                    content = f.read()
+                content = format_c_cpp_2_gpt_input(
+                    content=content, copy_to_clipboard=False)
+                file_dir = os.path.join(
+                    output_dir, dir_name, f'{file_name}.md')
+                total_dir = os.path.join(
+                    output_dir, f'{dir_name}.md')
+                with open(file_dir, 'w', encoding="utf-8") as f1:
                     f1.write(content)
-                with open(f'{output_dir}/{dir_name}.md', 'r', encoding="utf-8") as f1:
+                with open(total_dir, 'r', encoding="utf-8") as f1:
                     content1 = f1.read()
-                with open(f'{output_dir}/{dir_name}.md', 'w', encoding="utf-8") as f1:
+                with open(total_dir, 'w', encoding="utf-8") as f1:
                     content = f1.write(content1+content)
 
     return current_dir
