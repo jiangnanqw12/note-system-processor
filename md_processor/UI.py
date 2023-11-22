@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTabWidget, QPushButton, QTextEdit
-import prompts
+import prompt_generator
 import pyperclip
 
 # Your functions here (e.g., get_prompt_explain_c_cpp, video_summarization_expert_one, Translate_Chinese_sentence_into_function_name)

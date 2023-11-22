@@ -141,7 +141,7 @@ def os_file_processor(num=0):
 
 
 def get_prompts(num=0):
-    import prompts
+    import prompt_generator
     operations = {
         1: prompts.video_summarization_expert_one,
         2: prompts.get_prompt_explain_c_cpp,

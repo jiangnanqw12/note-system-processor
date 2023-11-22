@@ -20,5 +20,49 @@ Node1-->Node7
 Node1-->Node8
 
 ```
+
+```mermaid
+classDiagram
+    class EbookProcessingTasks {
+        +renameMarkdownFiles()
+        +adjustMarkdownHeaderLevels()
+        +prependFilenameAsChapterHeader()
+    }
+    class FileOperations {
+        +backupDirectory()
+        +renameFilesInDirectory()
+        +performRegexOnFiles()
+    }
+    class FlagManager {
+        +setFlag()
+        +getFlag()
+        +toggleFlag()
+    }
+    class HtmlToMarkdownConverter {
+        +convertHtmlFiles()
+        +changeHtmlTitles()
+    }
+    class main {
+        +executeMainFunctions()
+    }
+    class MarkdownCreator {
+        +createMarkdownFilesFromPDF()
+    }
+    class MarkdownHelpers {
+        +formatTextForMarkdown()
+        +upgradeMarkdownHeadings()
+    }
+    class PromptGenerator {
+        +generatePromptsForChatGPT()
+    }
+    class ApplicationUI {
+        +createUserInterface()
+    }
+    class VideoNoteProcessor {
+        +processVideoSubtitles()
+        +createVideoNotes()
+    }
+
+```
 ## video
 利用字幕生成总结视频内容,根据视频内容时间戳分段视频
