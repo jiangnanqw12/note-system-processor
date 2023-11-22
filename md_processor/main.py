@@ -143,14 +143,14 @@ def os_file_processor(num=0):
 def get_prompts(num=0):
     import prompt_generator
     operations = {
-        1: prompts.video_summarization_expert_one,
-        2: prompts.get_prompt_explain_c_cpp,
-        3: prompts.chatbot_prompt_expert,
-        4: prompts.Translate_Chinese_sentence_into_function_name,
-        5: prompts.Expert_Prompt_Creator,
-        6: prompts.dot2mermaid,
-        7: prompts.code_improve,
-        8: prompts.format_code_current_dir,
+        1: prompt_generator.video_summarization_expert_one,
+        2: prompt_generator.get_prompt_explain_c_cpp,
+        3: prompt_generator.chatbot_prompt_expert,
+        4: prompt_generator.Translate_Chinese_sentence_into_function_name,
+        5: prompt_generator.Expert_Prompt_Creator,
+        6: prompt_generator.dot2mermaid,
+        7: prompt_generator.code_improve,
+        8: prompt_generator.format_code_current_dir,
 
 
     }

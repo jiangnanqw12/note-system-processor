@@ -30,7 +30,7 @@ def srt_format_4_gpt(directory_path=None):
             f1.write(content)
     if files_srt != []:
         print(files_srt)
-        prompts.video_summarization_expert_one(content)
+        prompt_generator.video_summarization_expert_one(content)
 
 
 def vtt_format_4_gpt(directory_path=None):
@@ -62,7 +62,7 @@ def vtt_format_4_gpt(directory_path=None):
             f1.write(content)
     if files_srt != []:
         print(files_srt)
-        prompts.video_summarization_expert_one(content)
+        prompt_generator.video_summarization_expert_one(content)
 
 
 def subtitles_format_for_gpt_input(directory_path=None):
