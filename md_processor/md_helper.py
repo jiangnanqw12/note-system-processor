@@ -6,6 +6,7 @@ import re
 import subprocess
 import time
 import file_operations_utils
+import flags_utils
 
 
 def text_replace(root_dir: str, replace_list: list):
@@ -302,6 +303,34 @@ def format_ocr_text(content=None):
     if TR_mode:
         print(repr(content))
     pyperclip.copy(content)
+
+
+def format_text_for_markdown(path=None):
+
+    flags = flags_utils.get_flags_default()
+    TR_MODE = flags.get_flag("TR_MODE")
+    path = path or os.getcwd()
+    files_md = glob.glob(os.path.join(path, "*.md"))
+
+    pattern_filename = re.compile(r"\d{1,5}_.+?\.md")
+    pattern_table_link_remove = re.compile(r"-   \[.*?\]\(https.*?\)")
+    pattern_head_link_to_head = re.compile(r"(#{1,6}) \[(.*?)\]\(https.*?\)")
+    pattern_back_matter_remove = re.compile(
+        r"---\n\n- created:.+\n- source: .+")
+    pattern_multilpy_new_line_remove = re.compile(
+        r"\n{3,}")
+    for file in files_md:
+        basename = os.path.basename(file)
+        match = pattern_filename.match(basename)
+        if match:
+            with open(os.path.join(path, file), "r", encoding="utf-8") as f:
+                content = f.read()
+            content = pattern_table_link_remove.sub("", content)
+            content = pattern_head_link_to_head.sub(r"\1 \2", content)
+            content = pattern_back_matter_remove.sub("", content)
+            content = pattern_multilpy_new_line_remove.sub("\n\n", content)
+            with open(os.path.join(path, file), "w", encoding="utf-8") as f:
+                f.write(content)
 
 
 def create_file_based_on_content(content=None, path=None):

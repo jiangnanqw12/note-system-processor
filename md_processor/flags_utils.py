@@ -15,9 +15,10 @@ class GlobalFlags:
             raise KeyError(f"Flag '{name}' not found.")
 
     def get_flag(self, name):
-        print(f"Getting flag '{name}'")
-        print(f"Flags: {self.flags}")
-        return self.flags.get(name, None)
+        flag = self.flags.get(name, None)
+        print(f"Getting flag '{name}': {flag}")
+
+        return flag
 
     def toggle_flag(self, name):
         if name in self.flags:
@@ -26,7 +27,7 @@ class GlobalFlags:
             raise KeyError(f"Flag '{name}' not found.")
 
 
-def get_flag_default():
+def get_flags_default():
     flags = GlobalFlags()
     flags.set_flag('TR_MODE', True)
     return flags

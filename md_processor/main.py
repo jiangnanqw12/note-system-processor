@@ -16,7 +16,7 @@ def md_note_process(num=0, head_num=1):
         1: md_helper.remove_back_matter_and_copy_code,
         2: md_helper.process_md_head_to_hn,
         3: md_helper.retrieve_document_summary_info,
-        4: md_helper.format_ocr_text,
+        4: md_helper.format_text_for_markdown,
         5: md_helper.create_file_based_on_content,
         6: md_helper.format_2_gpt_input,
         7: md_helper.mermaid_format,
