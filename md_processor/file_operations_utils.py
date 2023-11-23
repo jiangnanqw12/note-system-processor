@@ -6,43 +6,8 @@ import glob
 import subprocess
 
 
-def back_up_dir_tree(path):
-
-    time_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    # get the father path
-    father_path = os.path.abspath(os.path.dirname(path) + os.path.sep + ".")
-    # get current dir name
-    dir_name = os.path.basename(path)
-    back_path = os.path.join(father_path, dir_name+"_"+time_str)
-    # os.mkdir(back_path)
-    # copy all files in the current path to the back_path
-    shutil.copytree(path, back_path)
-
-
-def back_up_dir(src_dir):
-
-    time_str = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    # get the father path
-    father_path = os.path.abspath(os.path.dirname(src_dir) + os.path.sep + ".")
-    # get current dir name
-    dir_name = os.path.basename(src_dir)
-    back_path = os.path.join(src_dir, dir_name+"_"+time_str)
-    # os.mkdir(back_path)
-    if not os.path.exists(back_path):
-        os.makedirs(back_path)
-    # copy all files in the current path to the back_path
-    for filename in os.listdir(src_dir):
-        src_path = os.path.join(src_dir, filename)
-        dst_path = os.path.join(back_path, filename)
-        if os.path.isfile(src_path):
-            shutil.copy2(src_path, dst_path)
-
-
 def get_father_path(path):
     return os.path.dirname(path)
-
-
-# 0
 
 
 def create_directory_assets_imgs():
@@ -131,55 +96,110 @@ def perform_regex_rename_on_files(reg_string_list, path=None, files=None):
 
 
 def rename_files_in_directories(base_path=None):
-    rename_files_in_directories_2()
+    rename_files_in_directories_orders(order=2)
 
 
-def rename_files_in_directories_2(base_path=None):
+def rename_files_in_directories_orders(base_path=None, order=0):
+    import flags_utils
+    flags = flags_utils.get_flag_default()
+    TR_MODE = flags.get_flag("TR_MODE")
     """
-    /index/*.mp4
-    to
-    /index_*.mp4
+
     Rename all files in numbered directories within the base path.
     Each file is prefixed with the directory number, zero-padded to three digits.
     """
     # Use the current working directory if no path is provided
     base_path = base_path or os.getcwd()
-    files = os.listdir(base_path)
-    files_mp4 = []
-
-    for f in files:
-        if f.endswith(".mp4"):
-            files_mp4.append(f)
 
     # Validate the base path
     if not os.path.isdir(base_path):
         print(f"The provided path '{base_path}' is not a valid directory.")
         return
 
-    for index in range(16):
-        start_str = f"{16 - index:03d}_"
-        for file_mp4 in files_mp4:
-            if file_mp4.startswith(start_str):
-                new_file = f"{1+index:03d}{file_mp4[3:]}"
-                os.rename(os.path.join(base_path, file_mp4),
-                          os.path.join(base_path, new_file))
+    if order == 0:
+        """
+        /index/*.mp4
+            to
+            /index_*.mp4
+        """
+        files = os.listdir(base_path)
+        files_mp4 = []
+
+        for f in files:
+            if f.endswith(".mp4"):
+                files_mp4.append(f)
+
+        for index in range(16):
+            start_str = f"{16 - index:03d}_"
+            for file_mp4 in files_mp4:
+                if file_mp4.startswith(start_str):
+                    new_file = f"{1+index:03d}{file_mp4[3:]}"
+                    os.rename(os.path.join(base_path, file_mp4),
+                              os.path.join(base_path, new_file))
+    elif order == 1:
+        """
+    /index/*.mp4
+    to
+    /16-index_*.mp4
+    """
+        for index in range(16):
+            dir_path = os.path.join(base_path, f"{16 - index}")
+
+            # Check if the directory exists
+            if not os.path.isdir(dir_path):
+                print(f"Directory '{dir_path}' does not exist. Skipping.")
+                continue
+
+            try:
+                for file in os.listdir(dir_path):
+                    old_file_path = os.path.join(dir_path, file)
+                    # Zero-padded prefix
+                    new_file_name = f"{16 - index:03d}_{file}"
+                    new_file_path = os.path.join(base_path, new_file_name)
+                    os.rename(old_file_path, new_file_path)
+                    print(f"Renamed '{old_file_path}' to '{new_file_path}'")
+            except OSError as e:
+                print(f"Error renaming files in '{dir_path}': {e}")
+
+    elif order == 2:
+        """
+        cs50 note
+        999_index
+        Week (\d{1,3}) (.+)
+        +
+        Lecture (\d{1,3}) - CS50x 2023\.md
+        -->
+        f"{lecture_number+1:03d}_{lecture[lecture_number]}.md"
+        """
+        with open(os.path.join(base_path, "999_index.md"), "r") as f:
+            index_list = f.read().splitlines()
+        lecture = dict()
+        for index in index_list:
+            reg = r"Week (\d{1,3}) (.+)"
+            match = re.match(reg, index)
+            if match:
+                week_number = int(match.group(1))
+
+                week_name = match.group(2).strip()
+                lecture[week_number] = week_name
+                if TR_MODE:
+                    print(f"Week {week_number} - {week_name}")
+        files_md = [f for f in os.listdir(base_path) if f.endswith(".md")]
+        for file in files_md:
+            reg = r"Lecture (\d{1,3}) - CS50x 2023\.md"
+            match = re.match(reg, file)
+            if match:
+                lecture_number = int(match.group(1))
+                if TR_MODE:
+                    print(f"Lecture {lecture_number}")
+                new_file_name = f"{lecture_number+1:03d}_{lecture[lecture_number]}.md"
+                if TR_MODE:
+                    print(f"Renaming {file} to {new_file_name}")
+                os.rename(os.path.join(base_path, file),
+                          os.path.join(base_path, new_file_name))
 
 
 def rename_files_in_directories_1(base_path=None):
-    """
-    /index/*.mp4
-    to
-    /index_*.mp4
-    Rename all files in numbered directories within the base path.
-    Each file is prefixed with the directory number, zero-padded to three digits.
-    """
-    # Use the current working directory if no path is provided
-    base_path = base_path or os.getcwd()
-
-    # Validate the base path
-    if not os.path.isdir(base_path):
-        print(f"The provided path '{base_path}' is not a valid directory.")
-        return
 
     for index in range(16):
         dir_path = os.path.join(base_path, f"{16 - index}")

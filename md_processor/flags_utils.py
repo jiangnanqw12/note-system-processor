@@ -26,6 +26,12 @@ class GlobalFlags:
             raise KeyError(f"Flag '{name}' not found.")
 
 
+def get_flag_default():
+    flags = GlobalFlags()
+    flags.set_flag('TR_MODE', True)
+    return flags
+
+
 def get_flag_one_by_one(TR_MODE=0):
     flag_one_by_one = True
     return flag_one_by_one
@@ -36,10 +42,15 @@ def get_flag_search_sub_topic1_in_bvids_origin_topic_path(TR_MODE=0):
     return flag_search_sub_topic1
 
 
-if __name__ == '__main__':
+def main():
     # Usage
     flags = GlobalFlags()
     flags.set_flag('debug', True)
     print(flags.get_flag('debug'))  # Output: True
     flags.toggle_flag('debug')
     print(flags.get_flag('debug'))  # Output: False
+
+
+if __name__ == '__main__':
+
+    main()

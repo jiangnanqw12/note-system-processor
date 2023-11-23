@@ -9,8 +9,9 @@ import file_operations_utils
 
 
 def text_replace(root_dir: str, replace_list: list):
-    assets_root_path, assets_root_dir = get_assets_root_path()
-    output_dir = create_output_directory(assets_root_path)
+    assets_root_path, assets_root_dir = file_operations_utils.get_assets_root_path()
+    output_dir = file_operations_utils.create_output_directory(
+        assets_root_path)
     for filename_with_ext in os.listdir(root_dir):
         if filename_with_ext.endswith('.md'):
             src_path = os.path.join(root_dir, filename_with_ext)
@@ -24,8 +25,9 @@ def text_replace(root_dir: str, replace_list: list):
 
 
 def mdx2md(timestamp: int = 1676880280):
-    assets_root_path, assets_root_dir = get_assets_root_path()
-    output_dir = create_output_directory(assets_root_path)
+    assets_root_path, assets_root_dir = file_operations_utils.get_assets_root_path()
+    output_dir = file_operations_utils.create_output_directory(
+        assets_root_path)
     cwd = os.getcwd()
     # text_replace_list_mdx2md3 = [
     #                              ]
