@@ -305,18 +305,19 @@ def format_ocr_text(content=None):
     pyperclip.copy(content)
 
 
-def format_text_for_markdown(path=None):
-
+def format_text_for_html_cs50(path=None):
     flags = flags_utils.get_flags_default()
     TR_MODE = flags.get_flag("TR_MODE")
     path = path or os.getcwd()
     files_md = glob.glob(os.path.join(path, "*.md"))
 
     pattern_filename = re.compile(r"\d{1,5}_.+?\.md")
-    pattern_table_link_remove = re.compile(r"-   \[.*?\]\(https.*?\)")
-    pattern_head_link_to_head = re.compile(r"(#{1,6}) \[(.*?)\]\(https.*?\)")
+    pattern_table_link_remove = re.compile(
+        r"\n-[ ]{1,}\[.*?\]\((https|#{1,6}).*?\)")
+    pattern_head_link_to_head1 = re.compile(r"\n# \[(.*?)\]\(.*?\)")
+    pattern_head_link_to_head = re.compile(r"\n(#{2,6}) \[(.*?)\]\(.*?\)")
     pattern_back_matter_remove = re.compile(
-        r"---\n\n- created:.+\n- source: .+")
+        r"\n---\n\n- created:.+\n- source: .+")
     pattern_multilpy_new_line_remove = re.compile(
         r"\n{3,}")
     for file in files_md:
@@ -325,12 +326,19 @@ def format_text_for_markdown(path=None):
         if match:
             with open(os.path.join(path, file), "r", encoding="utf-8") as f:
                 content = f.read()
-            content = pattern_table_link_remove.sub("", content)
-            content = pattern_head_link_to_head.sub(r"\1 \2", content)
-            content = pattern_back_matter_remove.sub("", content)
+            content = pattern_table_link_remove.sub(r"\n", content)
+            content = pattern_head_link_to_head1.sub(r"\n", content)
+            # print(content)
+            content = pattern_head_link_to_head.sub(r"\n\1 \2", content)
+            # print(content)
+            content = pattern_back_matter_remove.sub(r"\n", content)
             content = pattern_multilpy_new_line_remove.sub("\n\n", content)
             with open(os.path.join(path, file), "w", encoding="utf-8") as f:
                 f.write(content)
+
+
+def format_text_for_markdown(path=None):
+    format_text_for_html_cs50(path)
 
 
 def create_file_based_on_content(content=None, path=None):

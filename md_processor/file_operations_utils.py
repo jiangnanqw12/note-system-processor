@@ -121,45 +121,21 @@ def test_find_files_with_multiple_extensions():
 
 def rename_order0(base_path):
     """
-    /index/*.mp4
-        to
-        /index_*.mp4
+    .*_{timestamp before}.svg
+    ->
+    .*_{timestamp}.svg
     """
-    # files_mp4 = [f for f in os.listdir(base_path) if f.endswith(".mp4")]
-    files_mp4 = glob.glob(os.path.join(base_path, "*.mp4"))
-    for index in range(16):
-        start_str = f"{16 - index:03d}_"
-        for file_mp4 in files_mp4:
-            if file_mp4.startswith(start_str):
-                new_file = f"{1+index:03d}{file_mp4[3:]}"
-                os.rename(os.path.join(base_path, file_mp4),
-                          os.path.join(base_path, new_file))
+    # files_svg = [f for f in os.listdir(base_path) if f.endswith(".svg")]
+    files_svg = glob.glob(os.path.join(base_path, "*.svg"))
+    pattern_timestamp_svg = re.compile(r"(.*)_(\d{10})\.svg")
 
-
-def rename_order1(base_path):
-    """
-/index/*.mp4
-to
-/16-index_*.mp4
-"""
-    for index in range(16):
-        dir_path = os.path.join(base_path, f"{16 - index}")
-
-        # Check if the directory exists
-        if not os.path.isdir(dir_path):
-            print(f"Directory '{dir_path}' does not exist. Skipping.")
-            continue
-
-        try:
-            for file in os.listdir(dir_path):
-                old_file_path = os.path.join(dir_path, file)
-                # Zero-padded prefix
-                new_file_name = f"{16 - index:03d}_{file}"
-                new_file_path = os.path.join(base_path, new_file_name)
-                os.rename(old_file_path, new_file_path)
-                print(f"Renamed '{old_file_path}' to '{new_file_path}'")
-        except OSError as e:
-            print(f"Error renaming files in '{dir_path}': {e}")
+    timestamp = get_current_timestamp()
+    for file in files_svg:
+        match = pattern_timestamp_svg.match(file)
+        if match:
+            print("timestamp before: ", match.group(2))
+            new_name = f"{match.group(1)}_{timestamp}.svg"
+            os.rename(file, os.path.join(base_path, new_name))
 
 
 def rename_order2(base_path):
@@ -206,9 +182,52 @@ def rename_order2(base_path):
                       os.path.join(base_path, new_file_name))
 
 
+def rename_order3(base_path):
+    """
+    /index/*.mp4
+        to
+        /index_*.mp4
+    """
+    # files_mp4 = [f for f in os.listdir(base_path) if f.endswith(".mp4")]
+    files_mp4 = glob.glob(os.path.join(base_path, "*.mp4"))
+    for index in range(16):
+        start_str = f"{16 - index:03d}_"
+        for file_mp4 in files_mp4:
+            if file_mp4.startswith(start_str):
+                new_file = f"{1+index:03d}{file_mp4[3:]}"
+                os.rename(os.path.join(base_path, file_mp4),
+                          os.path.join(base_path, new_file))
+
+
+def rename_order4(base_path):
+    """
+/index/*.mp4
+to
+/16-index_*.mp4
+"""
+    for index in range(16):
+        dir_path = os.path.join(base_path, f"{16 - index}")
+
+        # Check if the directory exists
+        if not os.path.isdir(dir_path):
+            print(f"Directory '{dir_path}' does not exist. Skipping.")
+            continue
+
+        try:
+            for file in os.listdir(dir_path):
+                old_file_path = os.path.join(dir_path, file)
+                # Zero-padded prefix
+                new_file_name = f"{16 - index:03d}_{file}"
+                new_file_path = os.path.join(base_path, new_file_name)
+                os.rename(old_file_path, new_file_path)
+                print(f"Renamed '{old_file_path}' to '{new_file_path}'")
+        except OSError as e:
+            print(f"Error renaming files in '{dir_path}': {e}")
+
+
 def rename_files_in_directories_orders(base_path=None, order=0):
     import flags_utils
-    flags = flags_utils.get_flag_default()
+    flags = flags_utils.get_flags_default()
     TR_MODE = flags.get_flag("TR_MODE")
     """
 
@@ -230,6 +249,24 @@ def rename_files_in_directories_orders(base_path=None, order=0):
 
         elif order == 2:
             rename_order2(base_path)
+        elif order == 3:
+            rename_order3(base_path)
+        elif order == 4:
+            rename_order4(base_path)
+        elif order == 5:
+            pass
+        elif order == 6:
+            pass
+        elif order == 7:
+            pass
+        elif order == 8:
+            pass
+        elif order == 9:
+            pass
+        elif order == 10:
+            pass
+        elif order == 11:
+            pass
         else:
             raise ValueError(f"Unrecognized order: {order}")
         if TR_MODE:
@@ -240,7 +277,7 @@ def rename_files_in_directories_orders(base_path=None, order=0):
 
 
 def rename_files_in_directories(base_path=None):
-    rename_files_in_directories_orders(order=2)
+    rename_files_in_directories_orders(order=0)
 
 
 def get_current_timestamp():
