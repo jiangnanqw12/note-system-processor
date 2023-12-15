@@ -5,6 +5,8 @@ import pyperclip
 import glob
 import subprocess
 
+# 需求1 rename files
+
 
 def get_father_path(path):
     return os.path.dirname(path)

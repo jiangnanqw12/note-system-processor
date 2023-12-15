@@ -140,29 +140,29 @@ def os_file_processor(num=0):
         raise ValueError("Invalid operation number.")
 
 
-def get_prompts(num=0):
-    import prompt_generator
-    operations = {
-        1: prompt_generator.video_summarization_expert_one,
-        2: prompt_generator.get_prompt_explain_c_cpp,
-        3: prompt_generator.chatbot_prompt_expert,
-        4: prompt_generator.Translate_Chinese_sentence_into_function_name,
-        5: prompt_generator.Expert_Prompt_Creator,
-        6: prompt_generator.dot2mermaid,
-        7: prompt_generator.code_improve,
-        8: prompt_generator.format_code_current_dir,
+# def get_prompts(num=0):
+#     import md_processor.abandoned.prompt_generator as prompt_generator
+#     operations = {
+#         1: prompt_generator.video_summarization_expert_one,
+#         2: prompt_generator.get_prompt_explain_c_cpp,
+#         3: prompt_generator.chatbot_prompt_expert,
+#         4: prompt_generator.Translate_Chinese_sentence_into_function_name,
+#         5: prompt_generator.Expert_Prompt_Creator,
+#         6: prompt_generator.dot2mermaid,
+#         7: prompt_generator.code_improve,
+#         8: prompt_generator.format_code_current_dir,
 
 
-    }
+#     }
 
-    if num in operations:
-        operations[num]()
-    elif num == 0:
-        print("Available operations:")
-        for num, func in operations.items():
-            print(f"{num}: {func.__name__}")
-    else:
-        raise ValueError("Invalid operation number.")
+#     if num in operations:
+#         operations[num]()
+#     elif num == 0:
+#         print("Available operations:")
+#         for num, func in operations.items():
+#             print(f"{num}: {func.__name__}")
+#     else:
+#         raise ValueError("Invalid operation number.")
 
 
 def main():

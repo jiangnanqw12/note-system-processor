@@ -4,7 +4,7 @@ import file_operations_utils
 import pyperclip
 import flags_utils
 import shutil
-import prompt_generator
+import md_processor.abandoned.prompt_generator as prompt_generator
 import urllib.parse
 
 

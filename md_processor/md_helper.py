@@ -242,7 +242,7 @@ def format_2_gpt_input(content=None):
     content = content.replace("\\n", "\n")
     reg_repalce_list = []
     reg_repalce_list.append([r"\n{2,}", r"\n"])
-    reg_repalce_list.append([r"[ ]{2,}", " "])
+    reg_repalce_list.append([r"[ ]{4}", "\t"])
     for reg_replace in reg_repalce_list:
         content = re.sub(reg_replace[0], reg_replace[1], content)
 
