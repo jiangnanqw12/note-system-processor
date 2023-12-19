@@ -140,6 +140,26 @@ def os_file_processor(num=0):
         raise ValueError("Invalid operation number.")
 
 
+def chatgpt_input_data(num=0):
+    import chatgpt_input_data
+
+    operations = {
+        1: chatgpt_input_data.format_code_current_dir,
+
+
+
+
+    }
+
+    if num in operations:
+        operations[num]()
+    elif num == 0:
+        print("Available operations:")
+        for num, func in operations.items():
+            print(f"{num}: {func.__name__}")
+    else:
+        raise ValueError("Invalid operation number.")
+
 # def get_prompts(num=0):
 #     import md_processor.abandoned.prompt_generator as prompt_generator
 #     operations = {
@@ -200,6 +220,8 @@ def main():
 
     parser.add_argument('-gp', '--get_prompts',
                         action='store_true', help='call get_prompts')
+    parser.add_argument('-cid', '--chatgpt_input_data',
+                        action='store_true', help='call chatgpt_input_data')
     # parse the command-line arguments
     args = parser.parse_args()
 
@@ -218,8 +240,8 @@ def main():
         book_processor(args.input_int)
     elif args.os_file_processor:
         os_file_processor(args.input_int)
-    elif args.get_prompts:
-        get_prompts(args.input_int)
+    elif args.chatgpt_input_data:
+        chatgpt_input_data(args.input_int)
     else:
         print("Invalid argument")
 

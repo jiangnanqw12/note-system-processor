@@ -3,6 +3,114 @@ import re
 import os
 
 
+def format_code_2_gpt_input(content=None, copy_to_clipboard=True):
+    """
+    Formats the input content by replacing multiple newline characters with a single newline character and
+    multiple spaces with a single space. If no content is provided, it fetches the content from the clipboard,
+    formats it, and then copies the formatted content back to the clipboard if copy_to_clipboard is True.
+
+    :param content: The input content to format. If None, the content will be taken from the clipboard.
+    :param copy_to_clipboard: A flag indicating whether to copy the formatted content back to the clipboard.
+    :return: The formatted content as a string.
+    """
+    if content is None:
+        try:
+            content = pyperclip.paste()
+        except pyperclip.PyperclipException:
+            print("Unable to access the clipboard.")
+            return None
+
+    content = content.replace("\r\n", "\n").replace("\\\\n", "\n")
+
+    replacements = [
+        (r"\n{2,}", "\n"),
+        (r"[ ]{2,}", " ")
+    ]
+
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content)
+
+    if copy_to_clipboard:
+        try:
+            pyperclip.copy(repr(content))
+        except pyperclip.PyperclipException:
+            print("Unable to copy content to the clipboard.")
+
+    return repr(content)
+
+
+def format_python_2_gpt_input(content=None, copy_to_clipboard=True):
+    """
+    Formats the input content by replacing multiple newline characters with a single newline character and
+    multiple spaces with a single space. If no content is provided, it fetches the content from the clipboard,
+    formats it, and then copies the formatted content back to the clipboard if copy_to_clipboard is True.
+
+    :param content: The input content to format. If None, the content will be taken from the clipboard.
+    :param copy_to_clipboard: A flag indicating whether to copy the formatted content back to the clipboard.
+    :return: The formatted content as a string.
+    """
+    if content is None:
+        try:
+            content = pyperclip.paste()
+        except pyperclip.PyperclipException:
+            print("Unable to access the clipboard.")
+            return None
+
+    content = content.replace("\r\n", "\n").replace("\\\\n", "\n")
+
+    replacements = [
+        (r"\n{2,}", "\n"),
+        (r"[ ]{4}", "\t")
+    ]
+
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content)
+
+    if copy_to_clipboard:
+        try:
+            pyperclip.copy(repr(content))
+        except pyperclip.PyperclipException:
+            print("Unable to copy content to the clipboard.")
+
+    return repr(content)
+
+
+def format_c_cpp_2_gpt_input(content=None, copy_to_clipboard=True):
+    """
+    Formats the input content by replacing multiple newline characters with a single newline character and
+    multiple spaces with a single space. If no content is provided, it fetches the content from the clipboard,
+    formats it, and then copies the formatted content back to the clipboard if copy_to_clipboard is True.
+
+    :param content: The input content to format. If None, the content will be taken from the clipboard.
+    :param copy_to_clipboard: A flag indicating whether to copy the formatted content back to the clipboard.
+    :return: The formatted content as a string.
+    """
+    if content is None:
+        try:
+            content = pyperclip.paste()
+        except pyperclip.PyperclipException:
+            print("Unable to access the clipboard.")
+            return None
+
+    content = content.replace("\r\n", "\n").replace("\\\\n", "\n")
+
+    replacements = [
+        (r"\n{2,}", "\n"),
+        (r"[ ]{2,}", " ")
+    ]
+
+    for pattern, replacement in replacements:
+        content = re.sub(pattern, replacement, content)
+
+    if copy_to_clipboard:
+        try:
+            pyperclip.copy(repr(content))
+        except pyperclip.PyperclipException:
+            print("Unable to copy content to the clipboard.")
+
+    return repr(content)
+
+
 def read_file_skip_non_utf8_parts(file_path):
     import logging
     """
@@ -28,11 +136,11 @@ def format_code_current_dir(current_dir=None):
 
     output_dir = os.path.join(current_dir, 'gpt_ready_code')
     os.makedirs(output_dir, exist_ok=True)
-    # with open(os.path.join(output_dir, '.gitignore'), 'w', encoding="utf-8") as f:
-    #     f.write("*.md\n")
+    with open(os.path.join(output_dir, '.gitignore'), 'w', encoding="utf-8") as f:
+        f.write("*_gpt.md\n")
     for root, dirs, files in os.walk(current_dir):
         for file in files:
-            if file.endswith('.c') or file.endswith('.cpp') or file.endswith('.h') or file.endswith('.hpp') or file.endswith('.py'):
+            if file.endswith('.c') or file.endswith('.cpp') or file.endswith('.h') or file.endswith('.hpp') or file.endswith('.ahk') or file.endswith('.ini') or file.endswith('.py'):
                 # Get file name
                 file_name = os.path.basename(file)
 
@@ -50,9 +158,9 @@ def format_code_current_dir(current_dir=None):
                     content=content, copy_to_clipboard=False) if file.endswith('.py') else format_c_cpp_2_gpt_input(content, copy_to_clipboard=False)
                 floder_sep = os.path.join(output_dir, dir_name)
                 os.makedirs(floder_sep, exist_ok=True)
-                file_dir = os.path.join(floder_sep, f'{file_name}.md')
+                file_dir = os.path.join(floder_sep, f'{file_name}_gpt.md')
                 total_dir = os.path.join(
-                    output_dir, f'{dir_name}.md')
+                    output_dir, f'{dir_name}_gpt.md')
 
                 with open(file_dir, 'w', encoding="utf-8") as f1:
                     f1.write(f"\"{file_name}\": \"{content}\",\n")
