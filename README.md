@@ -8,23 +8,6 @@
 然后根据总结的时间戳生成拆分的视频笔记
 
 
-## book 工作流
-从 zlib下载书籍
-根据书籍ISBN或者文件名,纳入CLC分类系统
-确定书籍文件名,最好用英文名
-根据书籍的文件名,创建书籍笔记的根目录
-并初始化笔记文件夹结构
-pdf文件放到assets文件夹的下的big assets文件夹下
-对pdf进行添加书签,对内容分段
-annotate pdf 进行内容key points 标注
-将pdf转成plain text
-将plain text 转成 markdown
-为markdown添加head标题
-并用chatgpt校对单词拼写和语法
-根据head结构编写每个章节的总结
-为markdown补全图片及表格,脚注,endnotes等
-将key points 纳入到自己的知识体系中
-
 ## Book Workflow
 - Download books from zlib.
 - Categorize books using the CLC classification system based on their ISBN or filename.
@@ -81,5 +64,26 @@ subgraph output ["Output"]
   Node_8_1702953694 --> Node_9_1702953694[Feedback and Reflection]
   Node_9_1702953694 --> Node_10_1702953694["Integrate Knowledge into Personal Framework"]
 end
+
+```
+
+## mermaid Workflow
+
+- Change Node_\d{1,3}_timestamp1 to Node__\d{1,3}_timestamp1.
+  - This step to prevent the modification of already standardized node names:
+- Change Node\d{1,3} to Node_\d{1,3}.
+- Change Node_\d{1,3} to Node_\d{1,3}_timestamp2.
+- Change Node__\d{1,3}_timestamp1 to Node_\d{1,3}_timestamp1.
+
+```mermaid
+graph TD
+    subgraph sub_1["Prevention"]
+    Node_1["Node_\d{1,3}_timestamp1"]-->Node_1_1["Node__\d{1,3}_timestamp1"]
+    Node_2["Node__\d{1,3}_timestamp1"]-->Node_2_2["Node_\d{1,3}_timestamp1"]
+    end
+    subgraph sub_2["Convertion"]
+    Node_1_1-->Node_3["Node\d{1,3}"]-->Node_4["Node_\d{1,3}"]
+    Node_4-->Node_5["Node_\d{1,3}_timestamp2"]-->Node_2
+    end
 
 ```
