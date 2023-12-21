@@ -125,6 +125,7 @@ def os_file_processor(num=0):
         9: file_operations_utils.rename_bilibili_subs,
         10: markmind.create_annotator,
         11: file_operations_utils.rename_files_in_directories,
+        12: file_operations_utils.convert_to_utf8,
 
 
 
@@ -168,6 +169,7 @@ def mermaid_processor(num=0):
         1: mermaid_processor.create_node_for_mermaid,
         2: mermaid_processor.convert_array_to_mermaid_nodes,
         3: mermaid_processor.mermaid_format,
+        4: mermaid_processor.test1,
 
 
 
@@ -245,6 +247,8 @@ def main():
                         action='store_true', help='call get_prompts')
     parser.add_argument('-cid', '--chatgpt_input_data',
                         action='store_true', help='call chatgpt_input_data')
+    parser.add_argument('-mp', '--mermaid_processor',
+                        action='store_true', help='call mermaid_processor')
     # parse the command-line arguments
     args = parser.parse_args()
 
@@ -265,6 +269,8 @@ def main():
         os_file_processor(args.input_int)
     elif args.chatgpt_input_data:
         chatgpt_input_data(args.input_int)
+    elif args.mermaid_processor:
+        mermaid_processor(args.input_int)
     else:
         print("Invalid argument")
 

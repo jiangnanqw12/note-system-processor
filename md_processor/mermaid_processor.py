@@ -27,6 +27,36 @@ def convert_array_to_mermaid_nodes():
     pyperclip.copy(mermaid_output)
 
 
+def test1():
+    nodes = [
+        "Node_0[\"error_desc\"]",
+        "Node_1[\"无错误\"]",
+        "Node_2[\"换能器未连接\"]",
+        "Node_3[\"换能器不兼容\"]",
+        "Node_4[\"换能器无剩余使用次数\"]",
+        "Node_5[\"换能器未拧紧\"]",
+        "Node_6[\"检测到刀头错误\"]",
+        "Node_7[\"减轻刀头压力\"]",
+        "Node_8[\"换能器损坏\"]",
+        "Node_9[\"风扇错误\"]",
+        "Node_10[\"手控或脚踏开关可能被卡住\"]",
+        "Node_11[\"过压错误\"]",
+        "Node_12[\"过流错误\"]",
+        "Node_13[\"电源错误\"]",
+        "Node_14[\"场效应管错误\"]",
+        "Node_15[\"主机过热\"]",
+        "Node_16[\"主机错误\"]"
+    ]
+
+    # Generate links
+    links = [f'Node_0-->{i}-->Node_{i + 1}' for i in range(len(nodes) - 1)]
+
+    # Combine nodes and links for Mermaid output
+    mermaid_output = '\n'.join(["graph TD"] + nodes + links)
+
+    pyperclip.copy(mermaid_output)
+
+
 def mermaid_format(content=None):
 
     if content is None:

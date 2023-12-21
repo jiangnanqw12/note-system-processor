@@ -1,3 +1,4 @@
+import chardet
 import os
 import re
 import time
@@ -868,3 +869,29 @@ def rename_bilibili_subs(path=None):
             mp4 = (basename.split('.')[0]).split('_')[1]
             if mp4 in file_srt:
                 os.rename(file_srt, new_path)
+
+
+def convert_to_utf8(directory=None):
+
+    if directory == None:
+        directory = os.getcwd()
+
+    files = os.listdir(directory)
+    for file in files:
+        if file.endswith('.c') or file.endswith('.cpp') or file.endswith('.h') or file.endswith('.hpp'):
+            filepath = os.path.join(directory, file)
+            if os.path.isfile(filepath):
+                # Detect file encoding
+                with open(filepath, 'rb') as file:
+                    raw_data = file.read()
+                    result = chardet.detect(raw_data)
+                    file_encoding = result['encoding']
+
+                if file_encoding != 'utf-8':
+                    # Read file content
+                    with open(filepath, 'r', encoding=file_encoding) as file:
+                        content = file.read()
+
+                    # Convert content to UTF-8 and save
+                    with open(filepath, 'w', encoding='utf-8') as file:
+                        file.write(content)

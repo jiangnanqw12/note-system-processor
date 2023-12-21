@@ -151,8 +151,9 @@ def format_code_current_dir(current_dir=None):
                     continue
                 origin_dir = os.path.join(root, file)
                 # read file skip none utf-8
-
-                content = read_file_skip_non_utf8_parts(origin_dir)
+                with open(origin_dir, 'r', encoding="utf-8") as f:
+                    content = f.read()
+                # content = read_file_skip_non_utf8_parts(origin_dir)
 
                 content = format_python_2_gpt_input(
                     content=content, copy_to_clipboard=False) if file.endswith('.py') else format_c_cpp_2_gpt_input(content, copy_to_clipboard=False)
