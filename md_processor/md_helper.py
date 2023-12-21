@@ -253,25 +253,6 @@ def format_2_gpt_input(content=None):
     pyperclip.copy(repr(content))
 
 
-def mermaid_format(content=None):
-
-    if content is None:
-        content = pyperclip.paste()
-    # content = repr(content)
-    print(repr(content))
-    # content = content.replace(" \w{1,3}", "\n")
-    num_str = r"22"
-    reg_repalce_list = []
-    reg_repalce_list.append(
-        [r" (\w{1,3})( |\n|\(|\{|\[)", r" \1_"+num_str+r"\2"])
-    # reg_repalce_list.append([r" \w{1,3}\n", r" \1\n"+num_str])
-    for reg_replace in reg_repalce_list:
-        content = re.sub(reg_replace[0], reg_replace[1], content)
-    print(repr(content))
-    # Copying the formatted content back to the clipboard
-    pyperclip.copy(content)
-
-
 def retrieve_document_summary_info(content=None):
     if content is None:
 
@@ -375,14 +356,6 @@ def create_file_based_on_content(content=None, path=None):
 
     with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:
         file.write("")
-
-
-def create_node_for_mermaid(num=30):
-    content = ""
-    for i in range(num):
-        content += f"Node{i+1}[\"\"]\n"
-
-    pyperclip.copy(content)
 
 
 def main():

@@ -19,10 +19,10 @@ def md_note_process(num=0, head_num=1):
         4: md_helper.format_text_for_markdown,
         5: md_helper.create_file_based_on_content,
         6: md_helper.format_2_gpt_input,
-        7: md_helper.mermaid_format,
+        7: md_helper.p,
         8: html_processor.convert_html_to_md,
         9: html_processor.change_html_title,
-        10: md_helper.create_node_for_mermaid,
+        10: md_helper.p,
 
 
     }
@@ -145,6 +145,29 @@ def chatgpt_input_data(num=0):
 
     operations = {
         1: chatgpt_input_data.format_code_current_dir,
+
+
+
+
+    }
+
+    if num in operations:
+        operations[num]()
+    elif num == 0:
+        print("Available operations:")
+        for num, func in operations.items():
+            print(f"{num}: {func.__name__}")
+    else:
+        raise ValueError("Invalid operation number.")
+
+
+def mermaid_processor(num=0):
+    import mermaid_processor
+
+    operations = {
+        1: mermaid_processor.create_node_for_mermaid,
+        2: mermaid_processor.convert_array_to_mermaid_nodes,
+        3: mermaid_processor.mermaid_format,
 
 
 
