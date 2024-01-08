@@ -139,8 +139,19 @@ def rename_order0(base_path):
             print("timestamp before: ", match.group(2))
             new_name = f"{match.group(1)}_{timestamp}.svg"
             os.rename(file, os.path.join(base_path, new_name))
-
-
+def rename_order1(base_path):
+    import pattern_replacement
+    for root, dirs, files in os.walk(base_path):
+        for file in files:
+            match = re.search(pattern_replacement.pattern_subtile_summary_gpt_timestamps_files, file)
+            if match:
+                print(f"Old file name: {file}")
+                new_file_name = f"{match.group(1)}_{match.group(2)}.txt"
+                print(f"New file name: {new_file_name}")
+                # Rename the file
+                old_file_path = os.path.join(root, file)
+                new_file_path = os.path.join(root, new_file_name)
+                os.rename(old_file_path, new_file_path)
 def rename_order2(base_path):
     """
         cs50 note
@@ -280,7 +291,7 @@ def rename_files_in_directories_orders(base_path=None, order=0):
 
 
 def rename_files_in_directories(base_path=None):
-    rename_files_in_directories_orders(order=0)
+    rename_files_in_directories_orders(order=1)
 
 
 def get_current_timestamp():
