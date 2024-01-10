@@ -25,9 +25,12 @@ replacement_mindmap_smart_quotation_marks_and_pdf_text = r'$1 $2 [📖]($4)'
 pattern_mindmap_and_hightlight_citation_comment = r'(^\s*-) “(.+?)” \((\[.+?\]\(zotero://select/.+\))\) \(\[(.+?)\]\((zotero://open-pdf/.+?)\)\)[ ]*(.*)'
 replacement_pattern_mindmap_and_hightlight_citation_comment = r'$1 $2 [📖]($5 "$6")'
 
-pattern_subtile_summary_gpt_timestamps_files=r"(subtitle|summary_gpt|timestamps)_(\d{10})\.md"
+pattern_subtile_summary_gpt_timestamps_files = r"(subtitle|summary_gpt|timestamps)_(\d{10})\.md"
 """
 subtitle_1698658249.md
 """
-replacement_subtile_summary_gpt_timestamps_files=r"\1_\2.text"
-replacement_subtile_summary_gpt_timestamps_files=r"$1_$2.text"
+replacement_subtile_summary_gpt_timestamps_files1 = r"\1_\2.text"
+replacement_subtile_summary_gpt_timestamps_files2 = r"$1_$2.text"
+
+pattern_clc_mmb_clc_index_node_old_to_new = r"^(\s*-) ([A-Z].*?)_(.+)"
+replacement_clc_mmb_clc_index_node_old_to_new = r"$1 $2 [📄]($2)"
