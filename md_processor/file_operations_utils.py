@@ -928,5 +928,28 @@ def print_tree(directory=None, prefix=''):
             print(prefix + file)
 
 
+def generate_mermaid_structure(path, parent_node=None, mermaid_code=None, level=0):
+    if mermaid_code is None:
+        mermaid_code = ["graph TD;"]
+
+    for item in os.listdir(path):
+        full_path = os.path.join(path, item)
+        node_name = f"{level}_{item}".replace(' ', '_').replace('.', '_')
+        if parent_node:
+            mermaid_code.append(f"    {parent_node} --> {node_name}")
+
+        if os.path.isdir(full_path):
+            generate_mermaid_structure(
+                full_path, node_name, mermaid_code, level + 1)
+        else:
+            mermaid_code.append(f"    class {node_name} File;")
+
+    return mermaid_code
+
+
 def main():
     print_tree()
+
+
+if __name__ == "__main__":
+    main()
