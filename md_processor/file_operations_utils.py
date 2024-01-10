@@ -139,11 +139,14 @@ def rename_order0(base_path):
             print("timestamp before: ", match.group(2))
             new_name = f"{match.group(1)}_{timestamp}.svg"
             os.rename(file, os.path.join(base_path, new_name))
+
+
 def rename_order1(base_path):
     import pattern_replacement
     for root, dirs, files in os.walk(base_path):
         for file in files:
-            match = re.search(pattern_replacement.pattern_subtile_summary_gpt_timestamps_files, file)
+            match = re.search(
+                pattern_replacement.pattern_subtile_summary_gpt_timestamps_files, file)
             if match:
                 print(f"Old file name: {file}")
                 new_file_name = f"{match.group(1)}_{match.group(2)}.txt"
@@ -152,6 +155,8 @@ def rename_order1(base_path):
                 old_file_path = os.path.join(root, file)
                 new_file_path = os.path.join(root, new_file_name)
                 os.rename(old_file_path, new_file_path)
+
+
 def rename_order2(base_path):
     """
         cs50 note
@@ -906,3 +911,22 @@ def convert_to_utf8(directory=None):
                     # Convert content to UTF-8 and save
                     with open(filepath, 'w', encoding='utf-8') as file:
                         file.write(content)
+
+
+def print_tree(directory=None, prefix=''):
+    if directory is None:
+        directory = os.getcwd()
+    files = os.listdir(directory)
+    print(prefix + os.path.basename(directory) + '/')
+    prefix = prefix + "|    "
+
+    for i, file in enumerate(files):
+        path = os.path.join(directory, file)
+        if os.path.isdir(path):
+            print_tree(path, prefix)
+        else:
+            print(prefix + file)
+
+
+def main():
+    print_tree()
