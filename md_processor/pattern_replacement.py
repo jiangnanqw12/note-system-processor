@@ -34,3 +34,6 @@ replacement_subtile_summary_gpt_timestamps_files2 = r"$1_$2.text"
 
 pattern_clc_mmb_clc_index_node_old_to_new = r"^(\s*-) ([A-Z].*?)_(.+)"
 replacement_clc_mmb_clc_index_node_old_to_new = r"$1 $2 [📄]($2)"
+
+pattern_mmb_bullet_list_wiki_link = r"^(\s*-)\s+\[\[(.+)\]\]"
+replacement_mmb_bullet_list_wiki_link = r"$1 $2 [📄]($2)"
