@@ -208,9 +208,7 @@ def mermaid_processor(num=0):
 #             print(f"{num}: {func.__name__}")
 #     else:
 #         raise ValueError("Invalid operation number.")
-
-
-def main():
+def create_argument_parser():
     # create a parser object
     parser = argparse.ArgumentParser()
 
@@ -249,6 +247,10 @@ def main():
                         action='store_true', help='call chatgpt_input_data')
     parser.add_argument('-mp', '--mermaid_processor',
                         action='store_true', help='call mermaid_processor')
+    return parser
+
+
+def extract_command_line_args(parser):
     # parse the command-line arguments
     args = parser.parse_args()
 
@@ -273,6 +275,11 @@ def main():
         mermaid_processor(args.input_int)
     else:
         print("Invalid argument")
+
+
+def main():
+    parser = create_argument_parser()
+    extract_command_line_args(parser)
 
 
 if __name__ == "__main__":
