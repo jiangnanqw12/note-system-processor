@@ -7,9 +7,16 @@
 ## 需求2--视频分段笔记
 然后根据总结的时间戳生成拆分的视频笔记
 
+### 视频显示格式转换
+
+html显示的视频转换为autohotkey的视频播放外链.
+html上方添加autohotkey的播放外链.
+autohotkey的外链转换成html显示的视频.
+autohotkey的视频播放外链下方添加html显示的视频.
 
 ## Book Workflow
 - Download books from zlib.
+- OCR if needed.
 - Categorize books using the CLC classification system based on their ISBN or filename.
 - Determine the book's filename, preferably in English.
 - Create a root directory for book notes based on the book's filename.
