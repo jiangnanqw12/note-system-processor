@@ -469,7 +469,8 @@ def get_note_assets_dir_path(sub_topic1_to_sub_topicn_folder_list, current_dir):
 
 def initialize_notes_files_structure():
     TR_mode = 1
-    timestamp = int(time.time())
+    import urllib.parse
+
     # Get the current directory
     current_directory = os.getcwd()
     if TR_mode:
@@ -489,15 +490,19 @@ def initialize_notes_files_structure():
     parent_directory_name = os.path.basename(parent_directory)
     if TR_mode:
         print(f"Parent directory name: {parent_directory_name}")
-
-    start_file = "000_"+current_directory_name+"_"+parent_directory_name+".md"
+    timestamp = int(time.time())
+    start_file = f"000_{parent_directory_name}_{current_directory_name}_{timestamp}.md"
+    url_start_file = urllib.parse.quote(start_file)
+    url_start_file = rf"{current_directory_name} [📄]({url_start_file})"
+    # start_file = "000_"+current_directory_name+"_"+parent_directory_name+".md"
     if TR_mode:
-        print(f"start_file: {start_file}")
+        print(f"start_file: {start_file}\n{url_start_file}")
     # Check if file exists, if not create it
     start_file__directory = os.path.join(current_directory, start_file)
     if not os.path.exists(start_file__directory):
         with open(start_file__directory, 'w') as f:
-            f.write('')  # creating an empty markdown file
+            # creating an empty markdown file
+            f.write(f'\n{current_directory_name}\n')
     string_list = current_directory_name.split("_")
     len_string_list = len(string_list)
     if len_string_list < 1:

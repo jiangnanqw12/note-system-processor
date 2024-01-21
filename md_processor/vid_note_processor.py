@@ -5,7 +5,7 @@ import pyperclip
 import flags_utils
 import shutil
 import md_processor.abandoned.prompt_generator as prompt_generator
-import urllib.parse
+# import urllib.parse
 
 
 def srt_format_4_gpt(directory_path=None):
