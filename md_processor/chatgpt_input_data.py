@@ -175,3 +175,35 @@ def format_code_current_dir(current_dir=None):
                         content1+f"\"{file_name}\": \"{content}\",\n")
 
     return current_dir
+
+# get all the code below the current dir
+
+
+def get_all_code(current_dir=None):
+
+    if current_dir is None:
+        current_dir = os.getcwd()
+    file_list = [".c", ".cpp", ".h", ".hpp", ".ahk", ".ini", ".py"]
+    output_dir = os.path.join(current_dir, '.database_code')
+    os.makedirs(output_dir, exist_ok=True)
+
+    for root, dirs, files in os.walk(current_dir):
+        for file in files:
+            if file.endswith(tuple(file_list)):
+                # Get file name
+                file_name = os.path.basename(file)
+
+                # Get directory name
+                dir_name = os.path.basename(root)
+                # print(dir_name)
+                if dir_name.startswith('.'):
+                    continue
+                origin_dir = os.path.join(root, file)
+                output_dir_temp = os.path.join(output_dir, dir_name)
+                os.makedirs(output_dir_temp, exist_ok=True)
+                output_dir_temp = os.path.join(output_dir_temp, file_name)
+                # copy file to new dir
+                import shutil
+                shutil.copy(origin_dir, output_dir_temp)
+
+    return current_dir

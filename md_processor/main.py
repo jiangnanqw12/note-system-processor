@@ -146,6 +146,7 @@ def chatgpt_input_data(num=0):
 
     operations = {
         1: chatgpt_input_data.format_code_current_dir,
+        2: chatgpt_input_data.get_all_code,
 
 
 
@@ -241,8 +242,8 @@ def create_argument_parser():
     parser.add_argument('-ofp', '--os_file_processor',
                         action='store_true', help='call os_file_processor')
 
-    parser.add_argument('-gp', '--get_prompts',
-                        action='store_true', help='call get_prompts')
+    # parser.add_argument('-gp', '--get_prompts',
+    #                     action='store_true', help='call get_prompts')
     parser.add_argument('-cid', '--chatgpt_input_data',
                         action='store_true', help='call chatgpt_input_data')
     parser.add_argument('-mp', '--mermaid_processor',
