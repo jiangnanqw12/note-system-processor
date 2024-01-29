@@ -184,9 +184,12 @@ def get_all_code(current_dir=None):
     if current_dir is None:
         current_dir = os.getcwd()
     file_list = [".c", ".cpp", ".h", ".hpp", ".ahk", ".ini", ".py"]
-    output_dir = os.path.join(current_dir, '.database_code')
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir = os.path.join(current_dir, '_database_code')
+    # add .gitignore file
 
+    os.makedirs(output_dir, exist_ok=True)
+    with open(os.path.join(output_dir, '.gitignore'), 'w', encoding="utf-8") as f:
+        f.write("*\n")
     for root, dirs, files in os.walk(current_dir):
         for file in files:
             if file.endswith(tuple(file_list)):
@@ -196,14 +199,20 @@ def get_all_code(current_dir=None):
                 # Get directory name
                 dir_name = os.path.basename(root)
                 # print(dir_name)
-                if dir_name.startswith('.'):
+                if dir_name.startswith('_') or dir_name.startswith('.'):
                     continue
                 origin_dir = os.path.join(root, file)
-                output_dir_temp = os.path.join(output_dir, dir_name)
+                output_dir_temp = os.path.join(output_dir, f"_{dir_name}")
                 os.makedirs(output_dir_temp, exist_ok=True)
                 output_dir_temp = os.path.join(output_dir_temp, file_name)
                 # copy file to new dir
                 import shutil
                 shutil.copy(origin_dir, output_dir_temp)
-
+    # zip_dir = os.path.join(current_dir, '_database_code.zip')
+    # import zipfile
+    # # zip output_dir to zip file
+    # zipf = zipfile.ZipFile(zip_dir, 'w', zipfile.ZIP_DEFLATED)
+    # for root, dirs, files in os.walk(output_dir):
+    #     for file in files:
+    #         zipf.write(os.path.join(root, file))
     return current_dir

@@ -22,8 +22,11 @@ replacement_zotero_annotation_with_citation_2_mindmap_2 = r'$1 [📖]($4 "$5")'
 
 pattern_mindmap_smart_quotation_marks_and_pdf_text = r'(^\s*-) “(.+?)” \(\[(pdf)\]\((zotero://open-pdf/.+?)\)\)'
 replacement_mindmap_smart_quotation_marks_and_pdf_text = r'$1 $2 [📖]($4)'
-pattern_mindmap_and_hightlight_citation_comment = r'(^\s*-) “(.+?)” \((\[.+?\]\(zotero://select/.+\))\) \(\[(.+?)\]\((zotero://open-pdf/.+?)\)\)[ ]*(.*)'
-replacement_pattern_mindmap_and_hightlight_citation_comment = r'$1 $2 [📖]($5 "$6")'
+pattern_mmb_with_hightlight_citation_comment = r'(^\s*-) “(.+?)” \((\[.+?\]\(zotero://select/.+\))\) \(\[(.+?)\]\((zotero://open-pdf/.+?)\)\)[ ]*(.*)'
+"""
+        - “taking action” ([Forte, 2023, p. 6](zotero://select/library/items/ZLT3U9AA)) ([pdf](zotero://open-pdf/library/items/J46CETWT?page=6&annotation=KTHHS3TM))
+"""
+replacement_mmb_with_hightlight_citation_comment = r'$1 $2 [📖]($5 "$6")'
 
 pattern_subtile_summary_gpt_timestamps_files = r"(subtitle|summary_gpt|timestamps)_(\d{10})\.md"
 """
