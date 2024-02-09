@@ -986,6 +986,16 @@ def leet_code_files_init(base_path=None):
             f.write(f"")
     create_drawio_file_based_on_content(
         file_name_content=current_dir_name, path=base_path)
+
+
+def remove_all_out_exe_files(path=None):
+    if path is None:
+        path = os.getcwd()
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.endswith(".exe") or file.endswith(".out"):
+                os.remove(os.path.join(root, file))
+
 def main():
     print_tree()
 

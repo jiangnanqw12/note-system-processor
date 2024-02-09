@@ -127,6 +127,7 @@ def os_file_processor(num=0):
         11: file_operations_utils.rename_files_in_directories,
         12: file_operations_utils.convert_to_utf8,
         13: file_operations_utils.leet_code_files_init,
+        14: file_operations_utils.remove_all_out_exe_files,
 
 
 
