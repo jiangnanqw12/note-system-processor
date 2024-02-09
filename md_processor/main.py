@@ -126,6 +126,7 @@ def os_file_processor(num=0):
         10: markmind.create_annotator,
         11: file_operations_utils.rename_files_in_directories,
         12: file_operations_utils.convert_to_utf8,
+        13: file_operations_utils.leet_code_files_init,
 
 
 
