@@ -1,3 +1,4 @@
+import urllib.parse
 import chardet
 import os
 import re
@@ -825,13 +826,14 @@ def create_drawio_file_based_on_content(file_name_content=None, path=None):
         path = os.getcwd()
     # get current script file path
     script_path = os.path.abspath(__file__)
-
-    svg_file = os.path.join(script_path, "assets", "1707460474.drawio.svg")
+    script_dir = os.path.dirname(script_path)
+    svg_file = os.path.join(script_dir, "assets", "1707460474.drawio.svg")
     with open(svg_file, "r", encoding="utf-8") as file:
         write_string = file.read()
 
-    create_file_based_on_content(
+    draio_file_name = create_file_based_on_content(
         write_string, ext, file_name_content, path)
+    return draio_file_name
 
 
 def create_file_based_on_content(write_string="", ext="", content=None, path=None):
@@ -857,7 +859,7 @@ def create_file_based_on_content(write_string="", ext="", content=None, path=Non
     with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:
 
         file.write(write_string)
-
+    return new_name
 
 def rename_index_folder_files(base_dir=None):
     if base_dir is None:
@@ -968,12 +970,16 @@ def leet_code_files_init(base_path=None):
         base_path = os.getcwd()
     # get current directory name
     current_dir_name = os.path.basename(base_path)
+    drawio_file = create_drawio_file_based_on_content(
+        file_name_content=current_dir_name, path=base_path)
+    url_encoded_drawio_file_name = urllib.parse.quote(drawio_file)
     md_file_name = current_dir_name + ".md"
     # create a new markdown file if it does not exist
     if not os.path.exists(os.path.join(base_path, md_file_name)):
         with open(os.path.join(base_path, md_file_name), "w") as f:
             f.write(f"## Question\n\n")
             f.write(f"## Solution\n\n")
+            f.write(f"![]({url_encoded_drawio_file_name})\n")
     master_solution_cpp_file_name = "master_solution1.cpp"
     # create a new cpp file if it does not exist
     if not os.path.exists(os.path.join(base_path, master_solution_cpp_file_name)):
@@ -984,8 +990,7 @@ def leet_code_files_init(base_path=None):
     if not os.path.exists(os.path.join(base_path, student_solution_cpp_file_name)):
         with open(os.path.join(base_path, student_solution_cpp_file_name), "w") as f:
             f.write(f"")
-    create_drawio_file_based_on_content(
-        file_name_content=current_dir_name, path=base_path)
+
 
 
 def remove_all_out_exe_files(path=None):
