@@ -245,7 +245,39 @@ to
             print(f"Error renaming files in '{dir_path}': {e}")
 
 
-def rename_files_in_directories_orders(base_path=None, order=0):
+def rename_order5(base_path):
+    """
+    (\d{1,4}\.)(.+)
+    -->
+    \1 \2
+    """
+    folders = [f for f in os.listdir(
+        base_path) if os.path.isdir(os.path.join(base_path, f))]
+    for folder in folders:
+        match = re.search(r"(\d{1,4}\.)(.+)", folder)
+        if match:
+            new_folder = f"{match.group(1)} {match.group(2)}"
+            os.rename(os.path.join(base_path, folder),
+                      os.path.join(base_path, new_folder))
+
+
+def rename_order6(base_path):
+    """
+    (\d{1,4}\.)(.+)(\.md|\.svg)
+    -->
+    \1 \2\3
+    """
+    for root, dirs, files in os.walk(base_path):
+        for file in files:
+            if file.endswith(".md") or file.endswith(".svg"):
+                match = re.search(r"(\d{1,4}\.)(.+)(\.md|\.svg)", file)
+                if match:
+                    new_file = f"{match.group(1)} {match.group(2)}{match.group(3)}"
+                    os.rename(os.path.join(root, file),
+                              os.path.join(root, new_file))
+
+
+def rename_files_in_directories_orders(base_path=None, order=5):
     import flags_utils
     flags = flags_utils.get_flags_default()
     TR_MODE = flags.get_flag("TR_MODE")
@@ -274,9 +306,9 @@ def rename_files_in_directories_orders(base_path=None, order=0):
         elif order == 4:
             rename_order4(base_path)
         elif order == 5:
-            pass
+            rename_order5(base_path)
         elif order == 6:
-            pass
+            rename_order6(base_path)
         elif order == 7:
             pass
         elif order == 8:
@@ -297,7 +329,7 @@ def rename_files_in_directories_orders(base_path=None, order=0):
 
 
 def rename_files_in_directories(base_path=None):
-    rename_files_in_directories_orders(order=1)
+    rename_files_in_directories_orders(order=6, base_path=base_path)
 
 
 def get_current_timestamp():
