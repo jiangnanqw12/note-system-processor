@@ -375,42 +375,59 @@ def get_Topic_in_kg(TR_MODE=0):
     return Topic, sub_topic1
 
 
-def perform_regex_replacement_on_files(reg_string_list, path=None, files=None):
-
+def perform_regex_replacement_on_files(reg_string_list, path=None, order="lines", files=None):
     if path is None:
         path = os.getcwd()
     if files is None:
         files = os.listdir(path)
-
     for file in files:
+        file_path = os.path.join(path, file)
+        with open(file_path, "r", encoding="utf-8") as f1:
+            if order == "lines":
+                content = f1.readlines()
+            else:
+                content = f1.read()
+        if order == "lines":
+            for i in range(len(content)):
+                for regex in reg_string_list:
+                    content[i] = re.sub(regex[0], regex[1], content[i])
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.writelines(content)
+        elif order == "all":
+            for regex in reg_string_list:
+                content = re.sub(regex[0], regex[1], content)
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
 
-        with open(os.path.join(path, file), "r", encoding="utf-8") as f1:
-            content = f1.read()
-        for regex in reg_string_list:
-            content = re.sub(regex[0], regex[1], content)
-        with open(os.path.join(path, file), "w", encoding="utf-8") as f:
-            f.write(content)
 
-
-def perform_regex_replacement_on_files_tree(reg_string_list, path=None):
+def perform_regex_replacement_on_files_tree(reg_string_list, path=None, order="lines"):
 
     if path is None:
         path = os.getcwd()
 
     for root, dirs, files in os.walk(path):
-        for file in files:
+        files_md = [f for f in files if f.endswith(".md")]
+        for file in files_md:
             file_path = os.path.join(root, file)
 
             with open(file_path, "r", encoding="utf-8") as f1:
-                content = f1.read()
-
-            new_content = content
-            for regex in reg_string_list:
-                new_content = re.sub(regex[0], regex[1], new_content)
-
-            if new_content != content:
+                if order == "lines":
+                    content = f1.readlines()
+                else:
+                    content = f1.read()
+            if order == "lines":
+                for i in range(len(content)):
+                    for regex in reg_string_list:
+                        content[i] = re.sub(regex[0], regex[1], content[i])
                 with open(file_path, "w", encoding="utf-8") as f:
-                    f.write(new_content)
+                    f.writelines(content)
+            elif order == "all":
+                for regex in reg_string_list:
+                    content = re.sub(regex[0], regex[1], content)
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(content)
+            else:
+                raise ValueError("Unrecognized order.")
 
 
 def get_bvids_origin_topic_path(Topic, TR_MODE=0):
@@ -1033,6 +1050,7 @@ def remove_all_out_exe_files(path=None):
         for file in files:
             if file.endswith(".exe") or file.endswith(".out"):
                 os.remove(os.path.join(root, file))
+
 
 def main():
     print_tree()

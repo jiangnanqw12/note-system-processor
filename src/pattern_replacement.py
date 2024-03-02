@@ -22,11 +22,25 @@ replacement_zotero_annotation_with_citation_2_mindmap_2 = r'$1 [📖]($4 "$5")'
 
 pattern_mindmap_smart_quotation_marks_and_pdf_text = r'(^\s*-) “(.+?)” \(\[(pdf)\]\((zotero://open-pdf/.+?)\)\)'
 replacement_mindmap_smart_quotation_marks_and_pdf_text = r'$1 $2 [📖]($4)'
-pattern_mmb_with_hightlight_citation_comment = r'(^\s*-) “(.+?)” \((\[.+?\]\(zotero://select/.+\))\) \(\[(.+?)\]\((zotero://open-pdf/.+?)\)\)[ ]*(.*)'
+
+pattern_mmb_hightlight_citation_comment = r'(^\s*-) “(.+?)” \((\[.+?\]\(zotero://select/.+\))\) \(\[(.+?)\]\((zotero://open-pdf/.+?)\)\)[ ]*(.*)'
 """
         - “taking action” ([Forte, 2023, p. 6](zotero://select/library/items/ZLT3U9AA)) ([pdf](zotero://open-pdf/library/items/J46CETWT?page=6&annotation=KTHHS3TM))
 """
-replacement_mmb_with_hightlight_citation_comment = r'$1 $2 [📖]($5 "$6")'
+replacement_mmb_hightlight_citation_comment = r'$1 $2 [📖]($5 "$6")'
+
+pattern_md_hightlight_citation_comment = r'^“(.+?)” \(\[(.+?)\]\((zotero://select/.+?)\)\)'
+"""
+“taking action” ([Forte, 2023, p. 6](zotero://select/library/items/ZLT3U9AA)) ([pdf](zotero://open-pdf/library/items/J46CETWT?page=6&annotation=KTHHS3TM))
+"""
+replacement_md_hightlight_citation_comment = r'$1 [📖]($3)'
+
+pattern_mmb_clc_index_node_old_to_new = r"^(\s*-) ([A-Z].*?)_(.+)"
+replacement_mmb_clc_index_node_old_to_new = r"$1 $2 [📄]($2)"
+
+pattern_mmb_bullet_list_wiki_link = r"^(\s*-)\s+\[\[(.+)\]\]"
+replacement_mmb_bullet_list_wiki_link = r"$1 $2 [📄]($2)"
+
 
 pattern_subtile_summary_gpt_timestamps_files = r"(subtitle|summary_gpt|timestamps)_(\d{10})\.md"
 """
@@ -34,9 +48,3 @@ subtitle_1698658249.md
 """
 replacement_subtile_summary_gpt_timestamps_files1 = r"\1_\2.text"
 replacement_subtile_summary_gpt_timestamps_files2 = r"$1_$2.text"
-
-pattern_clc_mmb_clc_index_node_old_to_new = r"^(\s*-) ([A-Z].*?)_(.+)"
-replacement_clc_mmb_clc_index_node_old_to_new = r"$1 $2 [📄]($2)"
-
-pattern_mmb_bullet_list_wiki_link = r"^(\s*-)\s+\[\[(.+)\]\]"
-replacement_mmb_bullet_list_wiki_link = r"$1 $2 [📄]($2)"
