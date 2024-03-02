@@ -859,7 +859,8 @@ def create_drawio_file_based_on_content(file_name_content=None, path=None):
     # get current script file path
     script_path = os.path.abspath(__file__)
     script_dir = os.path.dirname(script_path)
-    svg_file = os.path.join(script_dir, "assets", "1707460474.drawio.svg")
+    svg_file = os.path.join(script_dir, "..", "assets",
+                            "1707460474.drawio.svg")
     with open(svg_file, "r", encoding="utf-8") as file:
         write_string = file.read()
 
