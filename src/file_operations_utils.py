@@ -430,6 +430,15 @@ def perform_regex_replacement_on_files_tree(reg_string_list, path=None, order="l
                 raise ValueError("Unrecognized order.")
 
 
+def zotero_annotation_with_citation_2_md():
+    import pattern_replacement
+
+    list_reg_string = [[pattern_replacement.pattern_mmb_hightlight_citation_comment, pattern_replacement.replacement_mmb_hightlight_citation_comment2],
+                       [pattern_replacement.pattern_md_hightlight_citation_comment, pattern_replacement.replacement_md_hightlight_citation_comment2]]
+    perform_regex_replacement_on_files_tree(
+        list_reg_string)
+
+
 def get_bvids_origin_topic_path(Topic, TR_MODE=0):
     # bvids_origin_topic_path = get_bvids_origin_topic_path(BaiduSyncdisk_assets_root)
     # bvids_origin_topic_path = r"C:\BaiduSyncdisk\Multivariable_calculus_Khan_Academy_youtube"

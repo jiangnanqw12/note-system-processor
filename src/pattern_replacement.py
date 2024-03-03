@@ -28,13 +28,13 @@ pattern_mmb_hightlight_citation_comment = r'(^\s*-) “(.+?)” \((\[.+?\]\(zote
         - “taking action” ([Forte, 2023, p. 6](zotero://select/library/items/ZLT3U9AA)) ([pdf](zotero://open-pdf/library/items/J46CETWT?page=6&annotation=KTHHS3TM))
 """
 replacement_mmb_hightlight_citation_comment = r'$1 $2 [📖]($5 "$6")'
-
-pattern_md_hightlight_citation_comment = r'^“(.+?)” \(\[(.+?)\]\((zotero://select/.+?)\)\)'
+replacement_mmb_hightlight_citation_comment2 = r'\1 \2 [📖](\5 "\6")'
+pattern_md_hightlight_citation_comment = r'^“(.+?)” \((\[.+?\]\(zotero://select/.+\))\) \(\[(.+?)\]\((zotero://open-pdf/.+?)\)\)[ ]*(.*)'
 """
 “taking action” ([Forte, 2023, p. 6](zotero://select/library/items/ZLT3U9AA)) ([pdf](zotero://open-pdf/library/items/J46CETWT?page=6&annotation=KTHHS3TM))
 """
-replacement_md_hightlight_citation_comment = r'$1 [📖]($3)'
-
+replacement_md_hightlight_citation_comment = r'$1 [📖]($4 "$5")'
+replacement_md_hightlight_citation_comment2 = r'\1 [📖](\4 "\5")'
 pattern_mmb_clc_index_node_old_to_new = r"^(\s*-) ([A-Z].*?)_(.+)"
 replacement_mmb_clc_index_node_old_to_new = r"$1 $2 [📄]($2)"
 

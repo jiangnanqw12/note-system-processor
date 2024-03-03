@@ -128,6 +128,7 @@ def os_file_processor(num=0):
         12: file_operations_utils.convert_to_utf8,
         13: file_operations_utils.leet_code_files_init,
         14: file_operations_utils.remove_all_out_exe_files,
+        15: file_operations_utils.zotero_annotation_with_citation_2_md,
 
 
 
