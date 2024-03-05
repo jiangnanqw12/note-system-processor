@@ -338,16 +338,29 @@ def get_current_timestamp():
     return timestamp
 
 
-def add_timestamp_to_filenames():
-    current_dir = os.getcwd()
-    timestamp = int(time.time())
-    print("add_timestamp is : ", timestamp)
+def add_timestamp_to_filenames(current_dir=None):
+    if current_dir is None:
+        current_dir = os.getcwd()
+    # timestamp = int(time.time())
+    # print("add_timestamp is : ", timestamp)
     for filename in os.listdir(current_dir):
-        if os.path.isfile(os.path.join(current_dir, filename)) and not filename.endswith(".py"):
-            filename_without_ext, ext = os.path.splitext(filename)
-            new_filename = f"{filename_without_ext}_{timestamp}{ext}"
-            os.replace(os.path.join(current_dir, filename),
-                       os.path.join(current_dir, new_filename))
+        origin_file_dir = os.path.join(current_dir, filename)
+        if os.path.isfile(origin_file_dir):
+            if filename.endswith(".mp4"):
+                time.sleep(2)
+                timestamp = int(time.time())
+                filename_without_ext, ext = os.path.splitext(filename)
+                new_filename = f"{filename_without_ext}_{timestamp}{ext}"
+                os.replace(origin_file_dir,
+                           os.path.join(current_dir, new_filename))
+                origin_subtitles_dir = os.path.join(
+                    current_dir, filename.split(".")[0]+".srt")
+                if os.path.exists(origin_subtitles_dir):
+                    new_subtitles_dir = os.path.join(
+                        current_dir, new_filename.split(".")[0]+".srt")
+                    os.replace(origin_subtitles_dir, new_subtitles_dir)
+
+
 
 
 def get_Topic_in_kg(TR_MODE=0):
