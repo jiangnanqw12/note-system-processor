@@ -48,3 +48,6 @@ subtitle_1698658249.md
 """
 replacement_subtile_summary_gpt_timestamps_files1 = r"\1_\2.text"
 replacement_subtile_summary_gpt_timestamps_files2 = r"$1_$2.text"
+
+pattern_mp4_timestamps = r"(.*?)_\d{10}\.mp4"
+"""001_Fish soy sauce_1709638009.mp4"""

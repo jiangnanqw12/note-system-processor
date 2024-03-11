@@ -6,7 +6,7 @@ import time
 import pyperclip
 import glob
 import subprocess
-
+import pattern_replacement
 # 需求1 rename files
 
 
@@ -143,7 +143,7 @@ def rename_order0(base_path):
 
 
 def rename_order1(base_path):
-    import pattern_replacement
+
     for root, dirs, files in os.walk(base_path):
         for file in files:
             match = re.search(
@@ -338,27 +338,37 @@ def get_current_timestamp():
     return timestamp
 
 
-def add_timestamp_to_filenames(current_dir=None):
+def add_timestamp_to_filenames(current_dir=None, video_ext=".mp4", subtitle_ext=".srt"):
+
     if current_dir is None:
         current_dir = os.getcwd()
-    # timestamp = int(time.time())
-    # print("add_timestamp is : ", timestamp)
+    timestamp = int(time.time())
     for filename in os.listdir(current_dir):
         origin_file_dir = os.path.join(current_dir, filename)
-        if os.path.isfile(origin_file_dir):
-            if filename.endswith(".mp4"):
-                time.sleep(2)
-                timestamp = int(time.time())
-                filename_without_ext, ext = os.path.splitext(filename)
-                new_filename = f"{filename_without_ext}_{timestamp}{ext}"
-                os.replace(origin_file_dir,
-                           os.path.join(current_dir, new_filename))
-                origin_subtitles_dir = os.path.join(
-                    current_dir, filename.split(".")[0]+".srt")
-                if os.path.exists(origin_subtitles_dir):
-                    new_subtitles_dir = os.path.join(
-                        current_dir, new_filename.split(".")[0]+".srt")
-                    os.replace(origin_subtitles_dir, new_subtitles_dir)
+        try:
+            if os.path.isfile(origin_file_dir) and filename.endswith(video_ext):
+                pattern = re.compile(
+                    pattern_replacement.pattern_mp4_timestamps)
+                match = pattern.match(filename)
+                if not match:
+                    timestamp = timestamp+1
+
+                    filename_without_ext, ext = os.path.splitext(filename)
+                    new_filename = f"{filename_without_ext}_{timestamp}{ext}"
+                    new_file_dir = os.path.join(current_dir, new_filename)
+                    os.replace(origin_file_dir, new_file_dir)
+
+                    # Handle the subtitle file, if it exists
+                    origin_subtitles_dir = os.path.splitext(origin_file_dir)[
+                        0] + subtitle_ext
+                    if os.path.exists(origin_subtitles_dir):
+                        new_subtitles_dir = os.path.splitext(
+                            new_file_dir)[0] + subtitle_ext
+                        os.replace(origin_subtitles_dir, new_subtitles_dir)
+                else:
+                    print(f"File {filename} already has a timestamp.")
+        except Exception as e:
+            print(f"Error processing file {filename}: {e}")
 
 
 
@@ -444,7 +454,7 @@ def perform_regex_replacement_on_files_tree(reg_string_list, path=None, order="l
 
 
 def zotero_annotation_with_citation_2_md():
-    import pattern_replacement
+
 
     list_reg_string = [[pattern_replacement.pattern_mmb_hightlight_citation_comment, pattern_replacement.replacement_mmb_hightlight_citation_comment2],
                        [pattern_replacement.pattern_md_hightlight_citation_comment, pattern_replacement.replacement_md_hightlight_citation_comment2]]
