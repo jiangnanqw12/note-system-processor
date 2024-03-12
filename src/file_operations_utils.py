@@ -398,44 +398,55 @@ def get_Topic_in_kg(TR_MODE=0):
     return Topic, sub_topic1
 
 
-def perform_regex_replacement(app_order=0, tree_bool=False, path=None, order="lines"):
-    mode_string_dict = dict()
-    mode_string_dict[1] = "zotero_annotation_with_citation_2_md"
-    mode_string_dict[2] = "jump_to_video_mmb"
-    if app_order == 0:
-        for key in mode_string_dict:
-            print(f"{key}: {mode_string_dict[key]}")
-    elif app_order == 1:
-        print(mode_string_dict[app_order])
-        tree_bool = True
+# Assume pattern_replacement variables are defined somewhere above this code
 
-        list_reg_string = [[pattern_replacement.pattern_mmb_hightlight_citation_comment,
-                            pattern_replacement.replacement_mmb_hightlight_citation_comment2],
-                           [pattern_replacement.pattern_md_hightlight_citation_comment,
-                            pattern_replacement.replacement_md_hightlight_citation_comment2]]
-        perform_regex_replacement_on_files(
-            list_reg_string, tree_bool, path, order)
+
+def print_app_order_modes(mode_string_dict):
+    for key in mode_string_dict:
+        print(f"{key}: {mode_string_dict[key]}")
+
+
+def process_mode(app_order, mode_string_dict, tree_bool, path, order):
+    print(mode_string_dict[app_order])
+    # Assuming these are the only valid app_order values that modify tree_bool
+    if app_order in [1, 2]:
+        tree_bool = True
+    list_reg_string = get_regex_list_for_app_order(app_order)
+    perform_regex_replacement_on_files(list_reg_string, tree_bool, path, order)
+
+
+def get_regex_list_for_app_order(app_order):
+    if app_order == 1:
+        return [[pattern_replacement.pattern_mmb_hightlight_citation_comment,
+                 pattern_replacement.replacement_mmb_hightlight_citation_comment2],
+                [pattern_replacement.pattern_md_hightlight_citation_comment,
+                 pattern_replacement.replacement_md_hightlight_citation_comment2]]
     elif app_order == 2:
-        print(mode_string_dict[app_order])
-        tree_bool = True
-        list_reg_string = [[pattern_replacement.pattern_jump_to_video_mmb,
-                            pattern_replacement.replacement_jump_to_video_mmb_2]]
-        perform_regex_replacement_on_files(
-            list_reg_string, tree_bool, path, order)
-
+        return [[pattern_replacement.pattern_jump_to_video_mmb,
+                 pattern_replacement.replacement_jump_to_video_mmb_2]]
     else:
-        for key in mode_string_dict:
-            print(f"{key}: {mode_string_dict[key]}")
-        raise ValueError("Unrecognized app_order.")
+        return []
+
+
+def perform_regex_replacement(app_order=0, tree_bool=False, path=None, order="lines"):
+    mode_string_dict = {
+        1: "zotero_annotation_with_citation_2_md",
+        2: "jump_to_video_mmb"
+    }
+
+    if app_order == 0 or app_order not in mode_string_dict:
+        print_app_order_modes(mode_string_dict)
+        if app_order != 0:
+            raise ValueError("Unrecognized app_order.")
+    else:
+        process_mode(app_order, mode_string_dict, tree_bool, path, order)
 
 
 def apply_regex_to_content(content, reg_string_list, order):
-    if order == "lines":
-        for i, line in enumerate(content):
-            for regex in reg_string_list:
-                content[i] = re.sub(regex[0], regex[1], line)
-    elif order == "all":
-        for regex in reg_string_list:
+    for regex in reg_string_list:
+        if order == "lines":
+            content = [re.sub(regex[0], regex[1], line) for line in content]
+        elif order == "all":
             content = re.sub(regex[0], regex[1], content)
     return content
 
@@ -451,30 +462,100 @@ def perform_regex_replacement_on_files(reg_string_list, tree_bool=False, path=No
         try:
             with open(file_path, "r", encoding="utf-8") as f1:
                 content = f1.readlines() if order == "lines" else f1.read()
-        except Exception as e:
-            print(f"Error processing file {file_path}: {e}")
-            return
-
-        content = apply_regex_to_content(content, reg_string_list, order)
-
-        try:
+            content = apply_regex_to_content(content, reg_string_list, order)
             with open(file_path, "w", encoding="utf-8") as f:
                 f.writelines(content) if order == "lines" else f.write(content)
         except Exception as e:
-            print(f"Error writing to file {file_path}: {e}")
+            print(f"Error processing file {file_path}: {e}")
 
     if not tree_bool:
-        if files is None:
-            files = [f for f in os.listdir(path) if is_valid_file(f)]
-
-        for file in files:
-            file_path = os.path.join(path, file)
-            process_file(file_path)
+        files = [f for f in os.listdir(path) if is_valid_file(
+            f)] if files is None else files
     else:
-        for root, dirs, files in os.walk(path):
-            for file in filter(is_valid_file, files):
-                file_path = os.path.join(root, file)
-                process_file(file_path)
+        files = [os.path.join(root, f) for root, _, fs in os.walk(path)
+                 for f in fs if is_valid_file(f)]
+
+    for file_path in files:
+        process_file(file_path if tree_bool else os.path.join(path, file_path))
+
+
+# def perform_regex_replacement(app_order=0, tree_bool=False, path=None, order="lines"):
+#     mode_string_dict = dict()
+#     mode_string_dict[1] = "zotero_annotation_with_citation_2_md"
+#     mode_string_dict[2] = "jump_to_video_mmb"
+#     if app_order == 0:
+#         for key in mode_string_dict:
+#             print(f"{key}: {mode_string_dict[key]}")
+#     elif app_order == 1:
+#         print(mode_string_dict[app_order])
+#         tree_bool = True
+
+#         list_reg_string = [[pattern_replacement.pattern_mmb_hightlight_citation_comment,
+#                             pattern_replacement.replacement_mmb_hightlight_citation_comment2],
+#                            [pattern_replacement.pattern_md_hightlight_citation_comment,
+#                             pattern_replacement.replacement_md_hightlight_citation_comment2]]
+#         perform_regex_replacement_on_files(
+#             list_reg_string, tree_bool, path, order)
+#     elif app_order == 2:
+#         print(mode_string_dict[app_order])
+#         tree_bool = True
+#         list_reg_string = [[pattern_replacement.pattern_jump_to_video_mmb,
+#                             pattern_replacement.replacement_jump_to_video_mmb_2]]
+#         perform_regex_replacement_on_files(
+#             list_reg_string, tree_bool, path, order)
+
+#     else:
+#         for key in mode_string_dict:
+#             print(f"{key}: {mode_string_dict[key]}")
+#         raise ValueError("Unrecognized app_order.")
+
+
+# def apply_regex_to_content(content, reg_string_list, order):
+#     if order == "lines":
+#         for i, line in enumerate(content):
+#             for regex in reg_string_list:
+#                 content[i] = re.sub(regex[0], regex[1], line)
+#     elif order == "all":
+#         for regex in reg_string_list:
+#             content = re.sub(regex[0], regex[1], content)
+#     return content
+
+
+# def perform_regex_replacement_on_files(reg_string_list, tree_bool=False, path=None, order="lines", files=None, file_exts=[".md", ".txt"]):
+#     if path is None:
+#         path = os.getcwd()
+
+#     def is_valid_file(f):
+#         return any(f.endswith(ext) for ext in file_exts)
+
+#     def process_file(file_path):
+#         try:
+#             with open(file_path, "r", encoding="utf-8") as f1:
+#                 content = f1.readlines() if order == "lines" else f1.read()
+#         except Exception as e:
+#             print(f"Error processing file {file_path}: {e}")
+#             return
+
+#         content = apply_regex_to_content(content, reg_string_list, order)
+
+#         try:
+#             with open(file_path, "w", encoding="utf-8") as f:
+#                 f.writelines(content) if order == "lines" else f.write(content)
+#         except Exception as e:
+#             print(f"Error writing to file {file_path}: {e}")
+
+#     if not tree_bool:
+#         if files is None:
+#             files = [f for f in os.listdir(path) if is_valid_file(f)]
+
+#         for file in files:
+#             file_path = os.path.join(path, file)
+#             process_file(file_path)
+#     else:
+#         for root, dirs, files in os.walk(path):
+#             for file in filter(is_valid_file, files):
+#                 file_path = os.path.join(root, file)
+#                 process_file(file_path)
 # def perform_regex_replacement_on_files(reg_string_list, tree_bool=False, path=None, order="lines", files=None, file_exts=[".md",".txt"]):
 #     if path is None:
 #         path = os.getcwd()
