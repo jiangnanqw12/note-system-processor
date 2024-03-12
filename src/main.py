@@ -110,7 +110,7 @@ def vid_note_process(num=0):
         raise ValueError("Invalid operation number.")
 
 
-def os_file_processor(num=0):
+def os_file_processor(num=0, num2=0):
     import file_operations_utils
     import markmind
     operations = {
@@ -118,24 +118,25 @@ def os_file_processor(num=0):
         2: file_operations_utils.add_timestamp_to_filenames,
         3: file_operations_utils.get_current_timestamp,
         4: file_operations_utils.open_b_assets_folder,
-        5: file_operations_utils.rename_folders_4_mooc_b,
-        6: file_operations_utils.create_drawio_file_based_on_content,
-        7: file_operations_utils.create_excalidraw_file_based_on_content,
-        8: file_operations_utils.rename_index_folder_files,
-        9: file_operations_utils.rename_bilibili_subs,
+        5: file_operations_utils.rename_files_in_directories,
+        6: file_operations_utils.perform_regex_replacement,
+        8: file_operations_utils.create_drawio_file_based_on_content,
+        9: file_operations_utils.create_excalidraw_file_based_on_content,
         10: markmind.create_annotator,
-        11: file_operations_utils.rename_files_in_directories,
+
         12: file_operations_utils.convert_to_utf8,
         13: file_operations_utils.leet_code_files_init,
         14: file_operations_utils.remove_all_out_exe_files,
-        15: file_operations_utils.zotero_annotation_with_citation_2_md,
 
 
 
     }
 
     if num in operations:
-        operations[num]()
+        if num == 6:
+            operations[num](num2)
+        else:
+            operations[num]()
     elif num == 0:
         print("Available operations:")
         for num, func in operations.items():
@@ -223,6 +224,8 @@ def create_argument_parser():
                         help='input str_url to pass to the function')
     parser.add_argument('-i', '--input_int', type=int, default=r'0',
                         help='input input_int to pass to the function')
+    parser.add_argument('-i2', '--input_int_2', type=int, default=r'0',
+                        help='input input_int to pass to the function')
     parser.add_argument('-hn', '--head_num', type=int, default=r'1',
                         help='input head_num to pass to the function')
 
@@ -272,7 +275,7 @@ def extract_command_line_args(parser):
     elif args.book_processor:
         book_processor(args.input_int)
     elif args.os_file_processor:
-        os_file_processor(args.input_int)
+        os_file_processor(args.input_int, args.input_int_2)
     elif args.chatgpt_input_data:
         chatgpt_input_data(args.input_int)
     elif args.mermaid_processor:
