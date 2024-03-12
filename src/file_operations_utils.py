@@ -398,7 +398,6 @@ def get_Topic_in_kg(TR_MODE=0):
     return Topic, sub_topic1
 
 
-# Assume pattern_replacement variables are defined somewhere above this code
 
 
 def print_app_order_modes(mode_string_dict):
@@ -442,13 +441,32 @@ def perform_regex_replacement(app_order=0, tree_bool=False, path=None, order="li
         process_mode(app_order, mode_string_dict, tree_bool, path, order)
 
 
-def apply_regex_to_content(content, reg_string_list, order):
-    for regex in reg_string_list:
-        if order == "lines":
-            content = [re.sub(regex[0], regex[1], line) for line in content]
-        elif order == "all":
-            content = re.sub(regex[0], regex[1], content)
-    return content
+def apply_regex_to_content_and_check_matches(content, reg_string_list, order):
+    found_match = False
+
+    if order == "lines":
+        modified_content = []
+        for line in content:
+            line_modified = line
+            for regex in reg_string_list:
+                if re.search(regex[0], line):
+                    found_match = True
+                    line_modified = re.sub(regex[0], regex[1], line_modified)
+            modified_content.append(line_modified)
+    else:  # order == "all"
+        content_str = ''.join(content) if isinstance(
+            content, list) else content
+        modified_content = content_str
+        for regex in reg_string_list:
+            if re.search(regex[0], modified_content):
+                found_match = True
+                modified_content = re.sub(regex[0], regex[1], modified_content)
+        if isinstance(content, list):  # If the original input was lines, split back to lines
+            modified_content = modified_content.splitlines(keepends=True)
+
+    return modified_content, found_match
+
+
 
 
 def perform_regex_replacement_on_files(reg_string_list, tree_bool=False, path=None, order="lines", files=None, file_exts=[".md", ".txt"]):
@@ -458,15 +476,37 @@ def perform_regex_replacement_on_files(reg_string_list, tree_bool=False, path=No
     def is_valid_file(f):
         return any(f.endswith(ext) for ext in file_exts)
 
-    def process_file(file_path):
+    def process_file(file_path, reg_string_list, order):
         try:
             with open(file_path, "r", encoding="utf-8") as f1:
-                content = f1.readlines() if order == "lines" else f1.read()
-            content = apply_regex_to_content(content, reg_string_list, order)
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.writelines(content) if order == "lines" else f.write(content)
+                original_content = f1.readlines() if order == "lines" else f1.read()
         except Exception as e:
-            print(f"Error processing file {file_path}: {e}")
+            print(f"Error reading file {file_path}: {e}")
+            return
+
+        # Initialize a flag to track if any matches were found
+        found_match = False
+
+        # Prepare the modified content based on regex patterns and track if any matches are found
+        if order == "lines":
+            modified_content, found_match = apply_regex_to_content_and_check_matches(
+                original_content, reg_string_list, order)
+        else:
+            modified_content, found_match = apply_regex_to_content_and_check_matches(
+                [original_content], reg_string_list, order)
+            modified_content = modified_content[0] if modified_content else original_content
+
+        # Write back to file only if a match was found
+        if found_match:
+            try:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    if order == "lines":
+                        f.writelines(modified_content)
+                    else:
+                        f.write(modified_content)
+            except Exception as e:
+                print(f"Error writing to file {file_path}: {e}")
+
 
     if not tree_bool:
         files = [f for f in os.listdir(path) if is_valid_file(
@@ -476,7 +516,8 @@ def perform_regex_replacement_on_files(reg_string_list, tree_bool=False, path=No
                  for f in fs if is_valid_file(f)]
 
     for file_path in files:
-        process_file(file_path if tree_bool else os.path.join(path, file_path))
+        process_file(file_path if tree_bool else os.path.join(
+            path, file_path), reg_string_list,order)
 
 
 # def perform_regex_replacement(app_order=0, tree_bool=False, path=None, order="lines"):
