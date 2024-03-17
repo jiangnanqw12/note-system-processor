@@ -398,6 +398,38 @@ def get_Topic_in_kg(TR_MODE=0):
     return Topic, sub_topic1
 
 
+def update_mp4_file_paths_in_md(start_path=None, TR_MODE=0):
+    pattern = pattern_replacement.pattern_jump_to_video_mmb
+    if start_path is None:
+        start_path = os.getcwd()
+
+    for root, dirs, files in os.walk(start_path):
+        for file in files:
+            if file.endswith(".md"):
+                file_path = os.path.join(root, file)
+                with open(file_path, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+
+                modified = False
+                for i, line in enumerate(lines):
+                    match = re.search(pattern, line)
+                    if match:
+                        temp = match.group(3)
+                        decoded_path = urllib.parse.unquote(temp)
+                        basefile_name = decoded_path.split('\\')[-1]
+
+                        base_KG_path = get_b_KG_directory_path(start_path)
+                        for root2, dirs2, files2 in os.walk(base_KG_path):
+                            if basefile_name in files2:
+                                mp4_path = os.path.join(root2, basefile_name)
+                                mp4_path_quote = urllib.parse.quote(mp4_path)
+                                lines[i] = line.replace(temp, mp4_path_quote)
+                                modified = True
+                                break  # No need to continue once the file is found
+
+                if modified:
+                    with open(file_path, "w", encoding="utf-8") as f:
+                        f.writelines(lines)
 
 
 def print_app_order_modes(mode_string_dict):
@@ -408,11 +440,18 @@ def print_app_order_modes(mode_string_dict):
 def process_mode(app_order, mode_string_dict, tree_bool, path, order):
     print(mode_string_dict[app_order])
     # Assuming these are the only valid app_order values that modify tree_bool
-    if app_order in [1, 2]:
+    if app_order == 1:
         tree_bool = True
-    list_reg_string = get_regex_list_for_app_order(app_order)
-    perform_regex_replacement_on_files(list_reg_string, tree_bool, path, order)
-
+        list_reg_string = get_regex_list_for_app_order(app_order)
+        perform_regex_replacement_on_files(
+            list_reg_string, tree_bool, path, order)
+    elif app_order == 2:
+        tree_bool = True
+        list_reg_string = get_regex_list_for_app_order(app_order)
+        perform_regex_replacement_on_files(
+            list_reg_string, tree_bool, path, order)
+    elif app_order == 3:
+        update_mp4_file_paths_in_md()
 
 def get_regex_list_for_app_order(app_order):
     if app_order == 1:
@@ -421,8 +460,8 @@ def get_regex_list_for_app_order(app_order):
                 [pattern_replacement.pattern_md_hightlight_citation_comment,
                  pattern_replacement.replacement_md_hightlight_citation_comment2]]
     elif app_order == 2:
-        return [[pattern_replacement.pattern_jump_to_video_mmb,
-                 pattern_replacement.replacement_jump_to_video_mmb_2]]
+        return [[pattern_replacement.pattern_jump_to_video_raw_mmb,
+                 pattern_replacement.replacement_jump_to_video_raw_mmb_2]]
     else:
         return []
 
@@ -430,7 +469,8 @@ def get_regex_list_for_app_order(app_order):
 def perform_regex_replacement(app_order=0, tree_bool=False, path=None, order="lines"):
     mode_string_dict = {
         1: "zotero_annotation_with_citation_2_md",
-        2: "jump_to_video_mmb"
+        2: "jump_to_video_raw_mmb",
+        3: "update_mp4_file_paths_in_md"
     }
 
     if app_order == 0 or app_order not in mode_string_dict:
@@ -612,7 +652,7 @@ def get_note_assets_dir_path(sub_topic1_to_sub_topicn_folder_list, current_dir):
 
 def initialize_notes_files_structure():
     TR_mode = 1
-    import urllib.parse
+
 
     # Get the current directory
     current_directory = os.getcwd()
