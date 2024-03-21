@@ -8,10 +8,12 @@ def generate_id():
     return str(uuid.uuid4())[:8]
 
 
-def record_data(new_id, file_type, description, filename='data.json'):
+def record_data(new_id, file_type="md", areas_type="CS", name='zzz', description="This is a markdown file", filename='data.json'):
     new_record = {
         'id': new_id,
         'file_type': file_type,
+        'areas_type': areas_type,
+        'name': name,
         'description': description
     }
 
@@ -30,14 +32,14 @@ def record_data(new_id, file_type, description, filename='data.json'):
     return False
 
 
-def add_id(path=None, file_type="md", description="This is a markdown file"):
+def add_id(path=None, file_type="md", areas_type="CS", description="This is a markdown file"):
     new_id = generate_id()
     # new_id = "0c8d77ba"
     if path is None:
         path = os.getcwd()
     id_path = os.path.join(
         global_config.KG_system_pre_file_path, global_config.IDS_path)
-    if record_data(new_id, file_type, description, id_path):
+    if record_data(new_id, file_type, areas_type, description, id_path):
         print(f"New record with ID '{new_id}' has been recorded.")
     else:
         print(f"Record with ID '{new_id}' already exists.")
