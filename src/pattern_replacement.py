@@ -59,7 +59,7 @@ pattern_jump_to_video_raw_mmb = r"^(\s*-) (.*?) 视频：\[.*? \| (.*?)\]\((jv:/
 replacement_jump_to_video_raw_mmb_1 = r'$1 $2 [📺](jv://open?path=$4 "$3")'
 replacement_jump_to_video_raw_mmb_2 = r'\1 \2 [📺](jv://open?path=\4 "\3")'
 
-pattern_jump_to_video_mmb = r"^(\s*-) (.*?) \[📺\]\(jv://open\?path=(.+?)(&time=.+?)\)$"
+pattern_jump_to_video_mmb = r"^(\s*-) (.*?) \[📺\]\(jv://open\?path=(.+?)&time=(.+?) \"(.*?)\"\)$"
 """- 主料 [📺](jv://open?path=C%3A%5CBaiduSyncdisk%5Cassets%5C004_Archives%5C20240302%5C003Life%5C002Food%20and%20Nutrition%5Crecipe%5Cassets%5Cre_1689760233%5C001_Fish%20soy%20sauce_1709639118.mp4&time=04-43)"""
 replacement_jump_to_video_mmb_1 = r'$1 $2 视频：[$3 | $4]'
 

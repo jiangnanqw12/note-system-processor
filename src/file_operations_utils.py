@@ -415,6 +415,9 @@ def update_mp4_file_paths_in_md(start_path=None, TR_MODE=0):
                     match = re.search(pattern, line)
                     if match:
                         temp = match.group(3)
+                        timeline = match.group(4)
+                        timeline_title = match.group(5)
+                        print(timeline)
                         decoded_path = urllib.parse.unquote(temp)
                         basefile_name = decoded_path.split('\\')[-1]
 
@@ -423,10 +426,16 @@ def update_mp4_file_paths_in_md(start_path=None, TR_MODE=0):
                             if basefile_name in files2:
                                 mp4_path = os.path.join(root2, basefile_name)
                                 mp4_path_quote = urllib.parse.quote(mp4_path)
-                                lines[i] = line.replace(temp, mp4_path_quote)
-                                modified = True
-                                break  # No need to continue once the file is found
-
+                                if temp != mp4_path_quote:
+                                    lines[i] = line.replace(
+                                        temp, mp4_path_quote)
+                                    modified = True
+                                    # No need to continue once the file is found
+                                if timeline_title != timeline:
+                                    lines[i] = line.replace(
+                                        timeline_title, timeline)
+                                    modified = True
+                                break
                 if modified:
                     with open(file_path, "w", encoding="utf-8") as f:
                         f.writelines(lines)
