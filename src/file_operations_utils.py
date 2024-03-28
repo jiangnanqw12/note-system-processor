@@ -417,7 +417,7 @@ def update_mp4_file_paths_in_md(start_path=None, TR_MODE=0):
                         temp = match.group(3)
                         timeline = match.group(4)
                         timeline_title = match.group(5)
-                        print(timeline)
+                        # print(timeline)
                         decoded_path = urllib.parse.unquote(temp)
                         basefile_name = decoded_path.split('\\')[-1]
 
@@ -526,12 +526,22 @@ def perform_regex_replacement_on_files(reg_string_list, tree_bool=False, path=No
         return any(f.endswith(ext) for ext in file_exts)
 
     def process_file(file_path, reg_string_list, order):
+        encoding_order = "utf-8"
         try:
-            with open(file_path, "r", encoding="utf-8") as f1:
+            with open(file_path, "r", encoding=encoding_order) as f1:
                 original_content = f1.readlines() if order == "lines" else f1.read()
         except Exception as e:
             print(f"Error reading file {file_path}: {e}")
-            return
+            try:
+                encoding_order = chardet.detect(
+                    open(file_path, "rb").read())['encoding']
+                print(f"Detected encoding: {encoding_order}")
+                with open(file_path, "r", encoding=encoding_order) as f1:
+                    original_content = f1.readlines() if order == "lines" else f1.read()
+            except Exception as e:
+                print(f"Error reading file {file_path}: {e}")
+                return
+
 
         # Initialize a flag to track if any matches were found
         found_match = False
@@ -548,7 +558,7 @@ def perform_regex_replacement_on_files(reg_string_list, tree_bool=False, path=No
         # Write back to file only if a match was found
         if found_match:
             try:
-                with open(file_path, "w", encoding="utf-8") as f:
+                with open(file_path, "w", encoding=encoding_order) as f:
                     if order == "lines":
                         f.writelines(modified_content)
                     else:
