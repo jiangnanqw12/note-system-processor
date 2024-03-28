@@ -16,23 +16,24 @@ def record_data(new_id, file_type="md", areas_type="CS", name="zzz", description
         'name': name,
         'description': description
     }
-
+    data = []
     try:
-        with open(filename, 'r') as file:
+        with open(filename, 'r', encoding="utf-8") as file:
             data = json.load(file)
 
+
     except FileNotFoundError:
-        data = []
+        pass
 
     if new_record not in data:
         data.append(new_record)
-        with open(filename, 'w') as file:
-            json.dump(data, file, indent=4)
+        with open(filename, 'w', encoding="utf-8") as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)
         return True
     return False
 
 
-def add_id(path=None, file_type="md", areas_type="CS", name="zzz", description="This is a markdown file"):
+def add_id(path=None, file_type="md", areas_type="zzz", name="zzz", description="This is a markdown file"):
     new_id = generate_id()
     # new_id = "0c8d77ba"
     if path is None:
