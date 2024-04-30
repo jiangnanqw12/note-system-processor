@@ -77,7 +77,7 @@ def change_html_title(path: Optional[str] = None) -> None:
 def html2md(path=None, output_root="C://Output//", output_folder_name=None):
     if path is None:
         path = os.getcwd()
-    timestamp = int(time.time())
+    timestamp = file_operations_utils.get_current_timestamp()
     intput_path = path
     input_floder_name = os.path.basename(intput_path)
     # replace_list_regex2=[[r'Part \d{2}-Module \d{2}-Lesson (\d{2})_(.+)',r'0\1_\2'],]

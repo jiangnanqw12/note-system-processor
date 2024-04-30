@@ -69,7 +69,7 @@ def remove_chinese_characters(text):
 def create_annotator_4pdf_file(file_name_with_endswith_pdf,f_annotate,cwd_after_obsidian_workspace):
     # get the file name without the .pdf
     file_name_without_pdf = file_name_with_endswith_pdf[:-4]
-    timestamp = int(time.time())
+    timestamp = file_operations_utils.get_current_timestamp()
     # replace the space in the file name with underscore
     file_name_without_space = file_name_without_pdf.replace(' ', '_')
     file_name_without_space = remove_chinese_characters(file_name_without_space)

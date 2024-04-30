@@ -14,7 +14,7 @@ ASSETS_FOLDER_NAME = "assets"
 
 def get_annotator_id(file_name):
     file_name_temp = file_name.replace(" ", "_")
-    return file_name_temp + "_" + str(int(time.time())), file_name_temp
+    return file_name_temp + "_" + str(file_operations_utils.get_current_timestamp()), file_name_temp
 
 
 def get_annotate_image_target_path(path):
@@ -98,7 +98,7 @@ annotate-image-target: {annotate_image_target_path}
 #             if file.endswith(".pdf"):
 #                 file_name = file.split(".")[0]
 #                 file_name_temp = file_name.replace(" ", "_")
-#                 annotator_id = file_name_temp+"_"+str(int(time.time()))
+#                 annotator_id = file_name_temp+"_"+str(file_operations_utils.get_current_timestamp())
 #                 if TR_MODE:
 #                     print("annotator_id:", annotator_id)
 #                 annotate_target_path = os.path.join(root, file)

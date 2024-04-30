@@ -351,7 +351,7 @@ def create_file_based_on_content(content=None, path=None):
     content = content.replace('\r', ' ')
     reg = [r"\s{2,}", r' ']
     content = re.sub(reg[0], reg[1], content)
-    timestamp = str(int(time.time()))
+    timestamp = str(file_operations_utils.get_current_timestamp())
     new_name = content.strip() + "_" + timestamp + ".md"
 
     with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:

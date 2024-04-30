@@ -333,7 +333,7 @@ def rename_files_in_directories(base_path=None):
 
 
 def get_current_timestamp():
-    # timestamp = int(time.time())
+    # timestamp = get_current_timestamp()
     from datetime import datetime
     now = datetime.now()
     timestamp = now.strftime('%Y-%m-%d %H.%M.%S')
@@ -345,7 +345,7 @@ def add_timestamp_to_filenames(current_dir=None, video_ext=".mp4", subtitle_ext=
 
     if current_dir is None:
         current_dir = os.getcwd()
-    timestamp = int(time.time())
+    timestamp = get_current_timestamp()
     for filename in os.listdir(current_dir):
         origin_file_dir = os.path.join(current_dir, filename)
         try:
@@ -634,7 +634,7 @@ def create_file_subtitle_summary_gpt_md(path=None):
     print("create_file_subtitle_summary_gpt_md")
     if path is None:
         path = os.getcwd()
-    time_stamp = int(time.time())
+    time_stamp = get_current_timestamp()
     with open(os.path.join(path, "subtitle_"+str(time_stamp)+".md"), "w") as f:
         pass
     with open(os.path.join(path, "summary_gpt_"+str(time_stamp)+".md"), "w") as f:
@@ -695,7 +695,7 @@ def initialize_notes_files_structure():
     parent_directory_name = os.path.basename(parent_directory)
     if TR_mode:
         print(f"Parent directory name: {parent_directory_name}")
-    timestamp = int(time.time())
+    timestamp = get_current_timestamp()
     start_file = f"000_{parent_directory_name}_{current_directory_name}_{timestamp}.md"
     url_start_file = urllib.parse.quote(start_file)
     url_start_file = rf"{current_directory_name} [📄]({url_start_file})"
@@ -1058,7 +1058,7 @@ def create_file_based_on_content(write_string="", ext="", content=None, path=Non
     content = content.replace('\r', ' ')
     reg = [r"\s{2,}", r' ']
     content = re.sub(reg[0], reg[1], content)
-    timestamp = str(int(time.time()))
+    timestamp = str(get_current_timestamp())
     new_name = content.strip() + "_" + timestamp+ext
 
     with open(os.path.join(path, new_name), "w", encoding="utf-8") as file:
