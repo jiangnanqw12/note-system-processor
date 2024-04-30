@@ -21,7 +21,6 @@ def record_data(new_id, file_type="md", areas_type="CS", name="zzz", description
         with open(filename, 'r', encoding="utf-8") as file:
             data = json.load(file)
 
-
     except FileNotFoundError:
         pass
 
@@ -33,7 +32,7 @@ def record_data(new_id, file_type="md", areas_type="CS", name="zzz", description
     return False
 
 
-def add_id(path=None, file_type="md", areas_type="zzz", name="zzz", description="This is a markdown file"):
+def add_default_id(path=None, file_type="zzz", areas_type="zzz", name="zzz", description="This is a zzz file", TR_MODE=False):
     new_id = generate_id()
     # new_id = "0c8d77ba"
     if path is None:
@@ -41,15 +40,31 @@ def add_id(path=None, file_type="md", areas_type="zzz", name="zzz", description=
     id_path = os.path.join(
         global_config.KG_system_pre_file_path, global_config.IDS_path)
     if record_data(new_id, file_type, areas_type, name, description, id_path):
-        print(f"New record with ID '{new_id}' has been recorded.")
+        if TR_MODE:
+            print(f"New record with ID '{new_id}' has been recorded.")
     else:
         print(f"Record with ID '{new_id}' already exists.")
+        raise Exception("Record with ID already exists")
 
     return new_id
 
 
+def rename_files_with_id():
+    TR_MODE = True
+    path = os.getcwd()
+    # all the mp3 files in the current directory
+    files_mp3 = [f for f in os.listdir(path) if f.endswith('.mp3')]
+    for file in files_mp3:
+        id = add_default_id(path, "mp3", "English",
+                            file, "This is a audio file", TR_MODE=TR_MODE)
+        if TR_MODE:
+            print(f"File '{file}' has been assigned ID '{id}'.")
+        new_name = f"{file[:-4]}_{id}.mp3"
+        os.rename(file, new_name)
+
+
 def main():
-    print(add_id(path=None, file_type="md", areas_type="CS",
+    print(add_default_id(path=None, file_type="zzz", areas_type="zzz",
           name="zzz", description="This is a markdown file"))
 
 
