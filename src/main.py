@@ -127,6 +127,7 @@ def os_file_processor(num=0, num2=0):
         12: file_operations_utils.convert_to_utf8,
         13: file_operations_utils.leet_code_files_init,
         14: file_operations_utils.remove_all_out_exe_files,
+        15: file_operations_utils.generate_html_link_files_in_directory,
 
 
 
@@ -190,6 +191,30 @@ def mermaid_processor(num=0):
     else:
         raise ValueError("Invalid operation number.")
 
+
+def ids_processor(num=0, str_input="zzz"):
+    import ids_processor
+    operations = {
+        1: ids_processor.add_default_id,
+        2: ids_processor.rename_files_with_id,
+
+
+
+
+
+    }
+
+    if num in operations:
+        if num == 6:
+            operations[num](str_input)
+        else:
+            operations[num]()
+    elif num == 0:
+        print("Available operations:")
+        for num, func in operations.items():
+            print(f"{num}: {func.__name__}")
+    else:
+        raise ValueError("Invalid operation number.")
 # def get_prompts(num=0):
 #     import md_processor.abandoned.prompt_generator as prompt_generator
 #     operations = {
@@ -222,6 +247,8 @@ def create_argument_parser():
                         help='input timestamp to pass to the function')
     parser.add_argument('-u', '--str_url', type=str, default=r'test',
                         help='input str_url to pass to the function')
+    parser.add_argument('-s', '--str_input', type=str, default=r'test',
+                        help='input srt to pass to the function')
     parser.add_argument('-i', '--input_int', type=int, default=r'0',
                         help='input input_int to pass to the function')
     parser.add_argument('-i2', '--input_int_2', type=int, default=r'0',
@@ -236,6 +263,8 @@ def create_argument_parser():
 
     parser.add_argument('-md', '--md_note_process',
                         action='store_true', help='call md_note_process')
+    parser.add_argument('-id', '--ids_processor',
+                        action='store_true', help='call id_processor')
     parser.add_argument('-wiki', '--wiki_note_process',
                         action='store_true', help='call wiki_note_process')
     parser.add_argument('-vid', '--vid_note_process',
@@ -280,6 +309,8 @@ def extract_command_line_args(parser):
         chatgpt_input_data(args.input_int)
     elif args.mermaid_processor:
         mermaid_processor(args.input_int)
+    elif args.ids_processor:
+        ids_processor(args.input_int, args.str_input)
     else:
         print("Invalid argument")
 

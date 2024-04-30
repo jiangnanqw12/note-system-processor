@@ -8,3 +8,5 @@ unicode_video = "📺"
 output_file_path = r"C:\output"
 ligatures_pair_list = {"Й", "fi"}
 IDS_path = "008_Setting\\files ID\\IDS_0c8d77ba.json"
+html_video_front = r'<video src="file:///'
+html_video_back = r'" controls></video>'
