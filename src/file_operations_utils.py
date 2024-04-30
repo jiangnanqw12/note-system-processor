@@ -277,6 +277,31 @@ def rename_order6(base_path):
                               os.path.join(root, new_file))
 
 
+def rename_order7(base_path):
+    """
+    (.+?)(_\d{1,2}th)(_cn|_en|)(_\d{10}|)(\.pdf|\.epub)
+    -->
+    \1 \2\3
+    """
+    import flags_utils
+    flags = flags_utils.get_flags_default()
+    TR_MODE = flags.get_flag("TR_MODE")
+    for root, dirs, files in os.walk(base_path):
+        for file in files:
+            if file.endswith(".pdf") or file.endswith(".epub"):
+                match = re.search(
+                    r"(.+?)_(\d{1,2})th(_cn|_en|)(_\d{10}|)(\.pdf|\.epub)", file)
+                if match:
+                    # for i in range(len(match.groups())):
+                    #     print(f"Group {i}: {match.group(i)}")
+                    if TR_MODE:
+                        print(match.groups())
+                    new_file = f"{match.group(1)}_{match.group(2)}e{match.group(3)}{match.group(4)}{match.group(5)}"
+                    if TR_MODE:
+                        print(f"New file name: {new_file}")
+                    os.rename(os.path.join(root, file),
+                              os.path.join(root, new_file))
+
 def rename_files_in_directories_orders(base_path=None, order=5):
     import flags_utils
     flags = flags_utils.get_flags_default()
@@ -310,7 +335,7 @@ def rename_files_in_directories_orders(base_path=None, order=5):
         elif order == 6:
             rename_order6(base_path)
         elif order == 7:
-            pass
+            rename_order7(base_path)
         elif order == 8:
             pass
         elif order == 9:
@@ -329,7 +354,7 @@ def rename_files_in_directories_orders(base_path=None, order=5):
 
 
 def rename_files_in_directories(base_path=None):
-    rename_files_in_directories_orders(order=6, base_path=base_path)
+    rename_files_in_directories_orders(order=7, base_path=base_path)
 
 
 def get_current_timestamp():
