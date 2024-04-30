@@ -333,7 +333,10 @@ def rename_files_in_directories(base_path=None):
 
 
 def get_current_timestamp():
-    timestamp = int(time.time())
+    # timestamp = int(time.time())
+    from datetime import datetime
+    now = datetime.now()
+    timestamp = now.strftime('%Y-%m-%d %H.%M.%S')
     print(timestamp)
     return timestamp
 
@@ -1194,6 +1197,35 @@ def leet_code_files_init(base_path=None):
             f.write(f"")
 
 
+def generate_encode_path_to_files_in_directory(path=None):
+
+    if path is None:
+        path = os.getcwd()
+    files = os.listdir(path)
+    encoded_file_path_list = []
+    for file in files:
+        file_path = os.path.join(path, file)
+        if os.path.isfile(file_path):
+            encoded_file_path = urllib.parse.quote(file_path)
+            encoded_file_path_list.append(encoded_file_path)
+            print(f"{file_path} -> {encoded_file_path}")
+    return encoded_file_path_list
+
+
+def generate_html_link_files_in_directory(path=None):
+    import global_config
+    if path is None:
+        path = os.getcwd()
+    encoded_file_path_list = generate_encode_path_to_files_in_directory(path)
+    timestamp = get_current_timestamp()
+    record_file = os.path.join(
+        global_config.output_file_path, f"html_link_{timestamp}.md")
+
+    with open(record_file, "w") as f:
+        for file in encoded_file_path_list:
+            html_str = f'{global_config.html_video_front}{file}{global_config.html_video_back}\n'
+            print(html_str)
+            f.write(html_str)
 
 def remove_all_out_exe_files(path=None):
     if path is None:
