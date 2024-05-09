@@ -118,8 +118,8 @@ def os_file_processor(num=0, num2=0):
         2: file_operations_utils.add_timestamp_to_filenames,
         3: file_operations_utils.get_current_timestamp,
         4: file_operations_utils.open_b_assets_folder,
-        5: file_operations_utils.rename_files_in_directories,
-        6: file_operations_utils.perform_regex_replacement,
+        5: file_operations_utils.rename_files_in_directories_4A,
+        6: file_operations_utils.perform_regex_replacement_4A,
         8: file_operations_utils.create_drawio_file_based_on_content,
         9: file_operations_utils.create_excalidraw_file_based_on_content,
         10: markmind.create_annotator,
@@ -134,7 +134,7 @@ def os_file_processor(num=0, num2=0):
     }
 
     if num in operations:
-        if num == 6:
+        if (num == 6) or (num == 5):
             operations[num](num2)
         else:
             operations[num]()
@@ -304,7 +304,7 @@ def extract_command_line_args(parser):
     elif args.book_processor:
         book_processor(args.input_int)
     elif args.os_file_processor:
-        os_file_processor(args.input_int, args.input_int_2)
+        os_file_processor(num=args.input_int, num2=args.input_int_2)
     elif args.chatgpt_input_data:
         chatgpt_input_data(args.input_int)
     elif args.mermaid_processor:

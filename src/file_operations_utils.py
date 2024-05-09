@@ -123,7 +123,7 @@ def test_find_files_with_multiple_extensions():
     all_files = find_files_with_multiple_extensions(base_path, extensions)
 
 
-def rename_order0(base_path):
+def rename_order01(base_path):
     """
     .*_{timestamp before}.svg
     ->
@@ -281,7 +281,7 @@ def rename_order7(base_path):
     """
     (.+?)(_\d{1,2}th)(_cn|_en|)(_\d{10}|)(\.pdf|\.epub)
     -->
-    \1 \2\3
+    \1_\2e\3\4\5
     """
     import flags_utils
     flags = flags_utils.get_flags_default()
@@ -302,7 +302,8 @@ def rename_order7(base_path):
                     os.rename(os.path.join(root, file),
                               os.path.join(root, new_file))
 
-def rename_files_in_directories_orders(base_path=None, order=5):
+
+def rename_files_in_directories_orders(base_path=None, order=0):
     import flags_utils
     flags = flags_utils.get_flags_default()
     TR_MODE = flags.get_flag("TR_MODE")
@@ -320,7 +321,7 @@ def rename_files_in_directories_orders(base_path=None, order=5):
         return
     try:
         if order == 0:
-            rename_order0(base_path)
+            print("Please select an order to rename files.")
         elif order == 1:
             rename_order1(base_path)
 
@@ -337,7 +338,7 @@ def rename_files_in_directories_orders(base_path=None, order=5):
         elif order == 7:
             rename_order7(base_path)
         elif order == 8:
-            pass
+            rename_order01(base_path)
         elif order == 9:
             pass
         elif order == 10:
@@ -353,8 +354,8 @@ def rename_files_in_directories_orders(base_path=None, order=5):
         raise ValueError(f"An error occurred during renaming: {e}")
 
 
-def rename_files_in_directories(base_path=None):
-    rename_files_in_directories_orders(order=7, base_path=base_path)
+def rename_files_in_directories_4A(order_input=0):
+    rename_files_in_directories_orders(order=order_input, base_path=None)
 
 
 def get_current_timestamp():
@@ -503,6 +504,9 @@ def get_regex_list_for_app_order(app_order):
         return []
 
 
+def perform_regex_replacement_4A(order_input=0):
+    perform_regex_replacement(
+        app_order=order_input, tree_bool=False, path=None, order="lines")
 def perform_regex_replacement(app_order=0, tree_bool=False, path=None, order="lines"):
     mode_string_dict = {
         1: "zotero_annotation_with_citation_2_md",
