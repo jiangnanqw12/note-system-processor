@@ -1,5 +1,5 @@
 import urllib.parse
-import chardet
+# import chardet
 import os
 import re
 import time
@@ -768,10 +768,10 @@ def initialize_notes_files_structure():
         with open(file_git_ignore, 'w') as f:
 
             f.write('*.flv\n*.mp4\n*.srt\n*.vtt\n*.pdf\n*.epub\n*.pptx\n')
-    file_readme = os.path.join(b_assets_directory, "readme.md")
-    if not os.path.exists(file_readme):
-        with open(file_readme, 'w') as f:
-            f.write(current_directory_name+"\n")
+    # file_readme = os.path.join(b_assets_directory, "readme.md")
+    # if not os.path.exists(file_readme):
+    #     with open(file_readme, 'w') as f:
+    #         f.write(current_directory_name+"\n")
 
 
 def rename_folders_4_mooc_b(path=None, zfill_num=3):

@@ -134,10 +134,10 @@ def format_code_current_dir(current_dir=None):
     if current_dir is None:
         current_dir = os.getcwd()
 
-    output_dir = os.path.join(current_dir, 'gpt_ready_code')
+    output_dir = os.path.join(current_dir, 'format_code')
     os.makedirs(output_dir, exist_ok=True)
     with open(os.path.join(output_dir, '.gitignore'), 'w', encoding="utf-8") as f:
-        f.write("*_gpt.md\n")
+        f.write("*_formated.md\n")
     for root, dirs, files in os.walk(current_dir):
         for file in files:
             if file.endswith('.c') or file.endswith('.cpp') or file.endswith('.h') or file.endswith('.hpp') or file.endswith('.ahk') or file.endswith('.ini') or file.endswith('.py'):
@@ -150,7 +150,7 @@ def format_code_current_dir(current_dir=None):
                 if dir_name.startswith('.'):
                     continue
                 origin_dir = os.path.join(root, file)
-                # read file skip none utf-8
+                
                 with open(origin_dir, 'r', encoding="utf-8") as f:
                     content = f.read()
                 # content = read_file_skip_non_utf8_parts(origin_dir)
@@ -159,9 +159,9 @@ def format_code_current_dir(current_dir=None):
                     content=content, copy_to_clipboard=False) if file.endswith('.py') else format_c_cpp_2_gpt_input(content, copy_to_clipboard=False)
                 floder_sep = os.path.join(output_dir, dir_name)
                 os.makedirs(floder_sep, exist_ok=True)
-                file_dir = os.path.join(floder_sep, f'{file_name}_gpt.md')
+                file_dir = os.path.join(floder_sep, f'{file_name}_formated.md')
                 total_dir = os.path.join(
-                    output_dir, f'{dir_name}_gpt.md')
+                    output_dir, f'{dir_name}_formated.md')
 
                 with open(file_dir, 'w', encoding="utf-8") as f1:
                     f1.write(f"\"{file_name}\": \"{content}\",\n")
