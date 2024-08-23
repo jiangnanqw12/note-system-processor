@@ -147,11 +147,11 @@ def os_file_processor(num=0, num2=0):
 
 
 def chatgpt_input_data(num=0):
-    import chatgpt_input_data
+    import code_processor
 
     operations = {
-        1: chatgpt_input_data.format_code_current_dir,
-        2: chatgpt_input_data.get_all_code,
+        1: code_processor.format_code_current_dir,
+        2: code_processor.get_all_code,
 
 
 
