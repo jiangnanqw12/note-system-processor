@@ -101,14 +101,14 @@ def read_file_skip_non_utf8_parts(file_path):
         logging.error(f"Error reading file {file_path}: {e}")
     return None
 
-def format_code_current_dir(current_dir=None, level=1):
+def format_code_current_dir(current_dir=None, level=2):
     if current_dir is None:
         current_dir = os.getcwd()
 
     output_dir = os.path.join(current_dir, 'format_code')
     os.makedirs(output_dir, exist_ok=True)
-    with open(os.path.join(output_dir, '.gitignore'), 'w', encoding="utf-8") as f:
-        f.write("*_formated.md\n")
+    # with open(os.path.join(output_dir, '.gitignore'), 'w', encoding="utf-8") as f:
+    #     f.write("*_formated.md\n")
 
     for root, dirs, files in os.walk(current_dir):
         for file in files:
