@@ -1,6 +1,7 @@
 import pyperclip
 import re
 import os
+import shutil
 
 def format_code(content=None, level=1, copy_to_clipboard=True):
     """
@@ -104,12 +105,14 @@ def read_file_skip_non_utf8_parts(file_path):
 def format_code_current_dir(current_dir=None, level=2):
     if current_dir is None:
         current_dir = os.getcwd()
-
     output_dir = os.path.join(current_dir, 'format_code')
-    os.makedirs(output_dir, exist_ok=True)
-    # with open(os.path.join(output_dir, '.gitignore'), 'w', encoding="utf-8") as f:
-    #     f.write("*_formated.md\n")
-
+    
+    # Check if output_dir exists; if yes, clear its contents
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)  # Remove all contents in the directory
+    
+    os.makedirs(output_dir, exist_ok=True)  # Create a fresh output_dir
+    
     for root, dirs, files in os.walk(current_dir):
         for file in files:
             if file.endswith(('.c', '.cpp', '.h', '.hpp', '.ahk', '.ini', '.py')):
@@ -117,24 +120,19 @@ def format_code_current_dir(current_dir=None, level=2):
                 dir_name = os.path.basename(root)
                 if dir_name.startswith('.'):
                     continue
-
                 origin_dir = os.path.join(root, file)
                 with open(origin_dir, 'r', encoding="utf-8") as f:
                     content = f.read()
-
                 if file.endswith('.py'):
                     content = format_python_2_gpt_input(content=content, level=level, copy_to_clipboard=False)
                 else:
                     content = format_c_cpp_2_gpt_input(content=content, level=level, copy_to_clipboard=False)
-
                 folder_sep = os.path.join(output_dir, dir_name)
                 os.makedirs(folder_sep, exist_ok=True)
                 file_dir = os.path.join(folder_sep, f'{file_name}_formated.md')
                 total_dir = os.path.join(output_dir, f'{dir_name}_formated.md')
-
                 with open(file_dir, 'w', encoding="utf-8") as f1:
-                    f1.write(f"\"{file_name}\": \"{content}\",\n")
-
+                    f1.write(f'"{file_name}": "{content}",\n')
                 if os.path.exists(total_dir):
                     with open(total_dir, 'r', encoding="utf-8") as f1:
                         content1 = f1.read()
@@ -142,9 +140,9 @@ def format_code_current_dir(current_dir=None, level=2):
                     content1 = ''
                 
                 with open(total_dir, 'w', encoding="utf-8") as f1:
-                    f1.write(content1 + f"\"{file_name}\": \"{content}\",\n")
-
+                    f1.write(content1 + f'"{file_name}": "{content}",\n')
     return current_dir
+
 
 def get_all_code(current_dir=None):
     if current_dir is None:
