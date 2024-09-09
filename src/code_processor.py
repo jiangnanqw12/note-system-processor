@@ -105,7 +105,8 @@ def read_file_skip_non_utf8_parts(file_path):
 def format_code_current_dir(current_dir=None, level=2):
     if current_dir is None:
         current_dir = os.getcwd()
-    output_dir = os.path.join(current_dir, 'format_code')
+    
+    output_dir = os.path.join("c://output//", 'format_code')
     
     # Check if output_dir exists; if yes, clear its contents
     if os.path.exists(output_dir):
@@ -129,8 +130,8 @@ def format_code_current_dir(current_dir=None, level=2):
                     content = format_c_cpp_2_gpt_input(content=content, level=level, copy_to_clipboard=False)
                 folder_sep = os.path.join(output_dir, dir_name)
                 os.makedirs(folder_sep, exist_ok=True)
-                file_dir = os.path.join(folder_sep, f'{file_name}_formated.md')
-                total_dir = os.path.join(output_dir, f'{dir_name}_formated.md')
+                file_dir = os.path.join(folder_sep, f'{file_name}_formated.txt')
+                total_dir = os.path.join(output_dir, f'{dir_name}_formated.txt')
                 with open(file_dir, 'w', encoding="utf-8") as f1:
                     f1.write(f'"{file_name}": "{content}",\n')
                 if os.path.exists(total_dir):
