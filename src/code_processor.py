@@ -2,6 +2,11 @@ import pyperclip
 import re
 import os
 import shutil
+import logging
+from typing import Optional, Union
+
+SUPPORTED_EXTENSIONS = ('.c', '.cpp', '.h', '.hpp', '.ahk', '.ini', '.py')
+DEFAULT_OUTPUT_DIR = "c://output//"
 
 def format_code(content=None, level=1, copy_to_clipboard=True):
     """
@@ -85,8 +90,7 @@ def format_c_cpp_2_gpt_input(content=None, level=1, copy_to_clipboard=True):
     """
     return format_code(content=content, level=level, copy_to_clipboard=copy_to_clipboard)
 
-def read_file_skip_non_utf8_parts(file_path):
-    import logging
+def read_file_skip_non_utf8_parts(file_path: str) -> Optional[str]:
     """
     Reads a file in binary mode and decodes it to UTF-8.
     Skips the parts of the file that are not UTF-8 encoded.
@@ -102,46 +106,60 @@ def read_file_skip_non_utf8_parts(file_path):
         logging.error(f"Error reading file {file_path}: {e}")
     return None
 
-def format_code_current_dir(current_dir=None, level=2):
+def format_code_current_dir(current_dir: Optional[str] = None, level: int = 2) -> str:
     if current_dir is None:
         current_dir = os.getcwd()
     
-    output_dir = os.path.join("c://output//", 'format_code')
+    output_dir = os.path.join(DEFAULT_OUTPUT_DIR, 'format_code')
     
-    # Check if output_dir exists; if yes, clear its contents
-    if os.path.exists(output_dir):
-        shutil.rmtree(output_dir)  # Remove all contents in the directory
-    
-    os.makedirs(output_dir, exist_ok=True)  # Create a fresh output_dir
-    
-    for root, dirs, files in os.walk(current_dir):
-        for file in files:
-            if file.endswith(('.c', '.cpp', '.h', '.hpp', '.ahk', '.ini', '.py')):
-                file_name = os.path.basename(file)
-                dir_name = os.path.basename(root)
-                if dir_name.startswith('.'):
-                    continue
-                origin_dir = os.path.join(root, file)
-                with open(origin_dir, 'r', encoding="utf-8") as f:
-                    content = f.read()
-                if file.endswith('.py'):
-                    content = format_python_2_gpt_input(content=content, level=level, copy_to_clipboard=False)
-                else:
-                    content = format_c_cpp_2_gpt_input(content=content, level=level, copy_to_clipboard=False)
-                folder_sep = os.path.join(output_dir, dir_name)
-                os.makedirs(folder_sep, exist_ok=True)
-                file_dir = os.path.join(folder_sep, f'{file_name}_formated.txt')
-                total_dir = os.path.join(output_dir, f'{dir_name}_formated.txt')
-                with open(file_dir, 'w', encoding="utf-8") as f1:
-                    f1.write(f'"{file_name}": "{content}",\n')
-                if os.path.exists(total_dir):
-                    with open(total_dir, 'r', encoding="utf-8") as f1:
-                        content1 = f1.read()
-                else:
-                    content1 = ''
-                
-                with open(total_dir, 'w', encoding="utf-8") as f1:
-                    f1.write(content1 + f'"{file_name}": "{content}",\n')
+    try:
+        # Check if output_dir exists; if yes, clear its contents
+        if os.path.exists(output_dir):
+            shutil.rmtree(output_dir)  # Remove all contents in the directory
+        
+        os.makedirs(output_dir, exist_ok=True)  # Create a fresh output_dir
+        
+        for root, dirs, files in os.walk(current_dir):
+            for file in files:
+                if file.endswith(SUPPORTED_EXTENSIONS):
+                    file_name = os.path.basename(file)
+                    dir_name = os.path.basename(root)
+                    if dir_name.startswith('.'):
+                        continue
+                    
+                    try:
+                        origin_dir = os.path.join(root, file)
+                        with open(origin_dir, 'r', encoding="utf-8") as f:
+                            content = f.read()
+                            
+                        content = (format_python_2_gpt_input if file.endswith('.py') else format_c_cpp_2_gpt_input)(
+                            content=content, level=level, copy_to_clipboard=False
+                        )
+                        
+                        folder_sep = os.path.join(output_dir, dir_name)
+                        os.makedirs(folder_sep, exist_ok=True)
+                        
+                        file_dir = os.path.join(folder_sep, f'{file_name}_formated.txt')
+                        total_dir = os.path.join(output_dir, f'{dir_name}_formated.txt')
+                        
+                        with open(file_dir, 'w', encoding="utf-8") as f1:
+                            f1.write(f'"{file_name}": "{content}",\n')
+                            
+                        content1 = ''
+                        if os.path.exists(total_dir):
+                            with open(total_dir, 'r', encoding="utf-8") as f1:
+                                content1 = f1.read()
+                        
+                        with open(total_dir, 'w', encoding="utf-8") as f1:
+                            f1.write(content1 + f'"{file_name}": "{content}",\n')
+                            
+                    except Exception as e:
+                        logging.error(f"Error processing file {file_name}: {e}")
+                        continue
+                        
+    except Exception as e:
+        logging.error(f"Error in format_code_current_dir: {e}")
+        
     return current_dir
 
 
